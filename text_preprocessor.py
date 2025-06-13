@@ -66,7 +66,12 @@ class TextPreprocessor:
                 'ordinal_semester': r'\b(?:first|second|third|fourth|fifth|sixth|seventh|eighth)\s*semester\b',
                 'season_semester': r'\b(?:fall|spring|summer|winter)\s*(?:semester|term)\b',
                 'year_semester': r'\b(?:freshman|sophomore|junior|senior)\s*(?:year|semester)\b',
-                'academic_year': r'\b(?:20\d{2}[-/]20\d{2})\s*(?:semester|academic year)\b'
+                'academic_year': r'\b(?:20\d{2}[-/]20\d{2})\s*(?:semester|academic year)\b',
+                'btech_semester': r'\bb\.?\s*tech\s+[IVX]+\s+year\s+[IVX]+\s+semester(?:\s*\([^)]+\))?(?:\s+(?:reg|supplementary)\.?)?',
+                'engineering_semester': r'\b(?:engineering|btech|b\.tech)\s+.*?semester\s*\([^)]*\)',
+                'year_semester_format': r'\b[IVX]+\s+year\s+[IVX]+\s+semester',
+                'regulation_semester': r'\bsemester\s*\(r\d+\)',
+                'course_semester': r'\b(?:b\.?\s*tech|engineering)\s+.*?(?:year|semester)',
             }
             
             logger.info("Text Preprocessor initialized successfully")

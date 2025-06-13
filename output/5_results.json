@@ -1,0 +1,16 @@
+{
+  "pdf_info": {
+    "file_name": "5.pdf",
+    "page_count": 17,
+    "total_sentences": 0
+  },
+  "extracted_text": "\n--- Page 1 ---\n\n\n--- Page 2 ---\n\n\n--- Page 3 ---\n\n\n--- Page 4 ---\n\n\n--- Page 5 ---\n\n\n--- Page 6 ---\n\n\n--- Page 7 ---\n\n\n--- Page 8 ---\n\n\n--- Page 9 ---\n\n\n--- Page 10 ---\n\n\n--- Page 11 ---\n\n\n--- Page 12 ---\n\n\n--- Page 13 ---\n\n\n--- Page 14 ---\n\n\n--- Page 15 ---\n\n\n--- Page 16 ---\n\n\n--- Page 17 ---\n\n",
+  "sentences": [],
+  "predictions": [],
+  "semester_entities": [],
+  "statistics": {
+    "total_semester_entities": 0,
+    "entity_distribution": {},
+    "avg_confidence": 0
+  }
+}
