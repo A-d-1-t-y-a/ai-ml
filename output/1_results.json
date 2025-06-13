@@ -1,0 +1,16 @@
+{
+  "pdf_info": {
+    "file_name": "1.pdf",
+    "page_count": 1,
+    "total_sentences": 0
+  },
+  "extracted_text": "\n--- Page 1 ---\n\n",
+  "sentences": [],
+  "predictions": [],
+  "semester_entities": [],
+  "statistics": {
+    "total_semester_entities": 0,
+    "entity_distribution": {},
+    "avg_confidence": 0
+  }
+}
