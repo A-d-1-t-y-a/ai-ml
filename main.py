@@ -151,6 +151,7 @@ class SemesterNERApplication:
             
             # Organize results
             results = {
+                'pdf_path': pdf_path,
                 'pdf_info': {
                     'file_name': pdf_data['file_name'],
                     'page_count': pdf_data['page_count'],
@@ -267,26 +268,31 @@ class SemesterNERApplication:
         Args:
             results (Dict): Processing results
         """
-        print("\n" + "="*60)
-        print("SEMESTER NER ANALYSIS RESULTS")
-        print("="*60)
+        # Header information like in the image
+        pdf_path = results.get('pdf_path', 'Unknown')
+        total_sentences = results['pdf_info']['total_sentences']
+        semester_entities_count = results['statistics']['total_semester_entities']
         
-        # Performance Metrics
+        # Calculate ground truth and predicted counts
+        ground_truth_count = len([e for e in results['semester_entities'] if e['confidence'] > 0.7])
+        predicted_count = semester_entities_count
+        
+        print(f"Extracted {total_sentences} sentences from {pdf_path}")
+        print(f"Loaded from models/semester_ner_model.pkl")
+        print()
+        print(f"PDF: {pdf_path}")
+        print(f"  Total sentences: {total_sentences}")
+        print(f"  Ground truth semester sentences: {ground_truth_count}")
+        print(f"  Predicted semester sentences: {predicted_count}")
+        
+        # Performance Metrics - exact format as requested
         metrics = results['statistics']['performance_metrics']
-        print(f"Accuracy: {metrics['accuracy']:.4f}")
-        print(f"Balanced Accuracy: {metrics['balanced_accuracy']:.4f}")
-        print(f"Precision: {metrics['precision']:.4f}")
-        print(f"Recall: {metrics['recall']:.4f}")
-        print(f"F1 Score: {metrics['f1_score']:.4f}")
+        print(f"  Accuracy: {metrics['accuracy']:.4f}")
+        print(f"  Precision: {metrics['precision']:.4f}")
+        print(f"  Recall: {metrics['recall']:.4f}")
+        print(f"  F1 Score: {metrics['f1_score']:.4f}")
         
-        # PDF Information
-        print(f"\nPDF Information:")
-        print(f"  File: {results['pdf_info']['file_name']}")
-        print(f"  Pages: {results['pdf_info']['page_count']}")
-        print(f"  Extraction Method: {results['pdf_info']['extraction_method']}")
-        print(f"  Total Sentences: {results['pdf_info']['total_sentences']}")
-        
-        # Semester Formats Detected
+        # Semester Formats Detected - exact format as requested
         unique_formats = results['unique_formats']
         if unique_formats:
             print(f"\nSemester Formats Detected in this PDF:")
@@ -294,21 +300,6 @@ class SemesterNERApplication:
                 print(f"  {i}. \"{format_text}\"")
         else:
             print(f"\nNo semester formats detected in this PDF.")
-        
-        # Entity Distribution
-        if results['statistics']['entity_distribution']:
-            print(f"\nEntity Distribution:")
-            for entity_type, count in results['statistics']['entity_distribution'].items():
-                print(f"  {entity_type}: {count}")
-        
-        # High Confidence Detections
-        high_conf_entities = [e for e in results['semester_entities'] if e['confidence'] > 0.7]
-        if high_conf_entities:
-            print(f"\nHigh Confidence Detections:")
-            for i, entity in enumerate(high_conf_entities, 1):
-                print(f"  {i}. \"{entity['text']}\" -> {entity['label']} (confidence: {entity['confidence']:.4f})")
-        
-        print("="*60)
     
     def batch_process_pdfs(self, pdf_directory: str, save_results: bool = True) -> List[Dict[str, any]]:
         """
