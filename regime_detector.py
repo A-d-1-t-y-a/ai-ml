@@ -5,6 +5,15 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from scipy.stats import zscore
 import logging
+
+# Try to import HDBSCAN for alternative clustering
+try:
+    from sklearn.cluster import HDBSCAN
+    HDBSCAN_AVAILABLE = True
+except ImportError:
+    HDBSCAN_AVAILABLE = False
+    print("Warning: HDBSCAN not available, using K-means only")
+
 from config import *
 
 # Set up logging
@@ -16,9 +25,10 @@ class MarketRegimeDetector:
     Advanced market regime detection system for financial markets
     """
     
-    def __init__(self):
+    def __init__(self, clustering_method='kmeans'):
         self.regime_models = {}
         self.regime_scalers = {}
+        self.clustering_method = clustering_method
         
     def detect_volatility_regimes(self, df):
         """Detect volatility regimes using K-means clustering"""
@@ -76,6 +86,81 @@ class MarketRegimeDetector:
             
             regime_counts = pd.Series(vol_regime_labels).value_counts().to_dict()
             logger.info(f"{market_type} volatility regimes: {regime_counts}")
+        
+        if regime_data:
+            volatility_regimes = pd.concat(regime_data, ignore_index=True)
+            return volatility_regimes
+        else:
+            return pd.DataFrame()
+    
+    def detect_volatility_regimes_hdbscan(self, df):
+        """Detect volatility regimes using HDBSCAN clustering (alternative method)"""
+        if not HDBSCAN_AVAILABLE:
+            logger.warning("HDBSCAN not available, falling back to K-means")
+            return self.detect_volatility_regimes(df)
+            
+        logger.info("Detecting volatility regimes using HDBSCAN...")
+        
+        regime_data = []
+        
+        for market_type in df['Market_Type'].unique():
+            market_data = df[df['Market_Type'] == market_type].copy()
+            
+            # Calculate daily market-level volatility
+            daily_data = market_data.groupby('date').agg({
+                'returns': 'std',
+                'volatility_20': 'mean',
+                'volume': 'sum'
+            }).reset_index()
+            
+            if len(daily_data) < 30:
+                logger.warning(f"Insufficient data for {market_type} volatility regime detection")
+                continue
+            
+            # Prepare features for clustering
+            features = daily_data[['returns', 'volatility_20']].fillna(0)
+            
+            # Scale features
+            scaler = StandardScaler()
+            features_scaled = scaler.fit_transform(features)
+            
+            # Apply HDBSCAN clustering
+            clusterer = HDBSCAN(min_cluster_size=10, min_samples=5)
+            cluster_labels = clusterer.fit_predict(features_scaled)
+            
+            # Handle noise points and map to volatility levels
+            unique_labels = np.unique(cluster_labels)
+            n_clusters = len(unique_labels[unique_labels >= 0])  # Exclude noise (-1)
+            
+            if n_clusters < 2:
+                logger.warning(f"HDBSCAN found insufficient clusters for {market_type}, using K-means fallback")
+                # Fallback to K-means
+                kmeans = KMeans(n_clusters=VOLATILITY_CLUSTERS, random_state=42, n_init=10)
+                cluster_labels = kmeans.fit_predict(features_scaled)
+                
+            # Map clusters to volatility regime labels
+            vol_regime_labels = []
+            for label in cluster_labels:
+                if label == -1:  # Noise points
+                    vol_regime_labels.append('Medium_Vol')
+                else:
+                    # Map based on cluster center volatility
+                    cluster_mask = cluster_labels == label
+                    avg_vol = features_scaled[cluster_mask, 1].mean()  # volatility_20 feature
+                    
+                    if avg_vol > 0.5:
+                        vol_regime_labels.append('High_Vol')
+                    elif avg_vol < -0.5:
+                        vol_regime_labels.append('Low_Vol')
+                    else:
+                        vol_regime_labels.append('Medium_Vol')
+            
+            daily_data['Market_Type'] = market_type
+            daily_data['volatility_regime'] = vol_regime_labels
+            regime_data.append(daily_data)
+            
+            regime_counts = pd.Series(vol_regime_labels).value_counts().to_dict()
+            logger.info(f"{market_type} volatility regimes (HDBSCAN): {regime_counts}")
         
         if regime_data:
             volatility_regimes = pd.concat(regime_data, ignore_index=True)

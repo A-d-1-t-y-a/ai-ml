@@ -190,7 +190,7 @@ def output_fn(prediction, content_type):
             return None
     
     def create_endpoint_config(self, model_name, config_name):
-        """Create endpoint configuration"""
+        """Create endpoint configuration with auto-scaling"""
         try:
             response = self.sagemaker_client.create_endpoint_config(
                 EndpointConfigName=config_name,
@@ -200,14 +200,118 @@ def output_fn(prediction, content_type):
                         'ModelName': model_name,
                         'InitialInstanceCount': 1,
                         'InstanceType': 'ml.t2.medium',
-                        'InitialVariantWeight': 1.0
+                        'InitialVariantWeight': 1.0,
+                        'AcceleratorType': 'ml.eia1.medium'  # Optional inference accelerator
                     }
-                ]
+                ],
+                # Add data capture config for monitoring
+                DataCaptureConfig={
+                    'EnableCapture': True,
+                    'InitialSamplingPercentage': 20,
+                    'DestinationS3Uri': f's3://{self.bucket_name}/data-capture/',
+                    'CaptureOptions': [
+                        {'CaptureMode': 'Input'},
+                        {'CaptureMode': 'Output'}
+                    ]
+                }
             )
             logger.info(f"Created endpoint config: {config_name}")
             return True
         except Exception as e:
             logger.error(f"Error creating endpoint config: {e}")
+            return False
+    
+    def setup_auto_scaling(self, endpoint_name):
+        """Configure auto-scaling for the endpoint"""
+        try:
+            autoscaling_client = boto3.client('application-autoscaling', region_name=AWS_REGION)
+            
+            # Register scalable target
+            autoscaling_client.register_scalable_target(
+                ServiceNamespace='sagemaker',
+                ResourceId=f'endpoint/{endpoint_name}/variant/primary',
+                ScalableDimension='sagemaker:variant:DesiredInstanceCount',
+                MinCapacity=1,
+                MaxCapacity=10,
+                RoleArn=f"arn:aws:iam::{AWS_ACCOUNT_ID}:role/{SAGEMAKER_ROLE}"
+            )
+            
+            # Create scaling policy
+            autoscaling_client.put_scaling_policy(
+                PolicyName=f'{endpoint_name}-scaling-policy',
+                ServiceNamespace='sagemaker',
+                ResourceId=f'endpoint/{endpoint_name}/variant/primary',
+                ScalableDimension='sagemaker:variant:DesiredInstanceCount',
+                PolicyType='TargetTrackingScaling',
+                TargetTrackingScalingPolicyConfiguration={
+                    'TargetValue': 70.0,
+                    'PredefinedMetricSpecification': {
+                        'PredefinedMetricType': 'SageMakerVariantInvocationsPerInstance'
+                    },
+                    'ScaleOutCooldown': 300,
+                    'ScaleInCooldown': 300
+                }
+            )
+            
+            logger.info(f"Auto-scaling configured for {endpoint_name}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error setting up auto-scaling: {e}")
+            return False
+    
+    def setup_monitoring(self, endpoint_name):
+        """Set up CloudWatch monitoring and alarms"""
+        try:
+            cloudwatch = boto3.client('cloudwatch', region_name=AWS_REGION)
+            
+            # Create alarm for high error rate
+            cloudwatch.put_metric_alarm(
+                AlarmName=f'{endpoint_name}-HighErrorRate',
+                ComparisonOperator='GreaterThanThreshold',
+                EvaluationPeriods=2,
+                MetricName='ModelError',
+                Namespace='AWS/SageMaker',
+                Period=300,
+                Statistic='Average',
+                Threshold=5.0,
+                ActionsEnabled=True,
+                AlarmDescription='Alert when error rate is high',
+                Dimensions=[
+                    {
+                        'Name': 'EndpointName',
+                        'Value': endpoint_name
+                    },
+                ],
+                Unit='Percent'
+            )
+            
+            # Create alarm for high latency
+            cloudwatch.put_metric_alarm(
+                AlarmName=f'{endpoint_name}-HighLatency',
+                ComparisonOperator='GreaterThanThreshold',
+                EvaluationPeriods=2,
+                MetricName='ModelLatency',
+                Namespace='AWS/SageMaker',
+                Period=300,
+                Statistic='Average',
+                Threshold=10000.0,  # 10 seconds in milliseconds
+                ActionsEnabled=True,
+                AlarmDescription='Alert when latency is high',
+                Dimensions=[
+                    {
+                        'Name': 'EndpointName',
+                        'Value': endpoint_name
+                    },
+                ],
+                Unit='Milliseconds'
+            )
+            
+            logger.info(f"Monitoring configured for {endpoint_name}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error setting up monitoring: {e}")
             return False
     
     def create_endpoint(self, endpoint_name, config_name):
@@ -266,7 +370,14 @@ def output_fn(prediction, content_type):
                 endpoint_name = f"{model_name}-endpoint-{datetime.now().strftime('%Y%m%d%H%M%S')}"
                 if self.create_endpoint(endpoint_name, config_name):
                     self.endpoints[model_name] = endpoint_name
-                    logger.info(f"✅ {model_name} model deployed successfully")
+                    
+                    # Set up auto-scaling
+                    self.setup_auto_scaling(endpoint_name)
+                    
+                    # Set up monitoring
+                    self.setup_monitoring(endpoint_name)
+                    
+                    logger.info(f"✅ {model_name} model deployed successfully with auto-scaling and monitoring")
                 else:
                     logger.error(f"❌ Failed to deploy {model_name} model")
                     

@@ -174,6 +174,7 @@ class AttentionLSTM:
         self.units = units
         self.model = None
         self.scaler = StandardScaler()
+        self.attention_weights = None
         
     def create_sequences(self, data, target):
         """Create sequences for LSTM training"""
@@ -215,6 +216,69 @@ class AttentionLSTM:
                 random_state=42
             )
     
+    def extract_attention_weights(self, X):
+        """Extract attention weights for visualization"""
+        if not TF_AVAILABLE or not hasattr(self.model, 'layers'):
+            logger.warning("Attention weights extraction not available")
+            return None
+            
+        try:
+            # Find attention layer
+            attention_layer = None
+            for layer in self.model.layers:
+                if 'multi_head_attention' in layer.name.lower():
+                    attention_layer = layer
+                    break
+            
+            if attention_layer is None:
+                logger.warning("No attention layer found in model")
+                return None
+            
+            # Create intermediate model to extract attention weights
+            X_scaled = self.scaler.transform(X)
+            X_seq, _ = self.create_sequences(X_scaled, np.zeros(len(X_scaled)))
+            
+            if len(X_seq) > 0:
+                # Get attention weights (simplified approach)
+                attention_weights = attention_layer(X_seq[:10])  # Sample first 10 sequences
+                return attention_weights
+            
+        except Exception as e:
+            logger.error(f"Error extracting attention weights: {e}")
+            return None
+    
+    def calculate_cross_market_influence_scores(self, attention_weights, feature_names=None):
+        """Calculate cross-market influence scores from attention weights"""
+        if attention_weights is None:
+            logger.warning("No attention weights available for influence calculation")
+            return {}
+        
+        try:
+            # Simplified influence score calculation
+            if feature_names is None:
+                feature_names = [f"Feature_{i}" for i in range(self.features)]
+            
+            # Calculate average attention for each feature across time steps
+            avg_attention = np.mean(attention_weights, axis=(0, 1))  # Average across batch and time
+            
+            # Identify cross-market features
+            cross_market_scores = {}
+            for i, feature_name in enumerate(feature_names):
+                if any(market in feature_name for market in ['Stock', 'Crypto', 'ETF']):
+                    if i < len(avg_attention):
+                        cross_market_scores[feature_name] = float(avg_attention[i])
+            
+            # Sort by influence score
+            sorted_scores = dict(sorted(cross_market_scores.items(), 
+                                     key=lambda x: x[1], reverse=True))
+            
+            logger.info(f"Top cross-market influences: {list(sorted_scores.keys())[:5]}")
+            return sorted_scores
+            
+        except Exception as e:
+            logger.error(f"Error calculating cross-market influence scores: {e}")
+            return {}
+    
     def fit(self, X, y, regimes=None):
         """Train LSTM model"""
         logger.info("Training LSTM with attention mechanism...")
@@ -234,6 +298,9 @@ class AttentionLSTM:
                     validation_split=0.2,
                     verbose=0
                 )
+                
+                # Extract attention weights for analysis
+                self.attention_weights = self.extract_attention_weights(X)
         else:
             # Fallback to MLP
             self.build_model()
@@ -254,6 +321,26 @@ class AttentionLSTM:
         
         # Fallback prediction
         return self.model.predict(X_scaled)
+    
+    def get_cross_market_influence_report(self, feature_names=None):
+        """Generate comprehensive cross-market influence report"""
+        if self.attention_weights is None:
+            return "No attention weights available. Train model first."
+        
+        influence_scores = self.calculate_cross_market_influence_scores(
+            self.attention_weights, feature_names
+        )
+        
+        report = "Cross-Market Influence Analysis\n"
+        report += "=" * 40 + "\n"
+        
+        if influence_scores:
+            for feature, score in list(influence_scores.items())[:10]:
+                report += f"{feature}: {score:.4f}\n"
+        else:
+            report += "No cross-market influences detected.\n"
+        
+        return report
 
 def prepare_model_data(df, target_column='return_target_1d', test_size=0.2):
     """Prepare data for model training with improved handling"""
@@ -302,27 +389,44 @@ def prepare_model_data(df, target_column='return_target_1d', test_size=0.2):
     return X_train, X_test, y_train, y_test, regimes_train, regimes_test
 
 def evaluate_model(y_true, y_pred, model_name="Model"):
-    """Comprehensive model evaluation"""
-    mse = mean_squared_error(y_true, y_pred)
-    mae = mean_absolute_error(y_true, y_pred)
-    rmse = np.sqrt(mse)
-    r2 = r2_score(y_true, y_pred)
-    
-    # Directional accuracy
-    y_true_direction = (y_true > 0).astype(int)
-    y_pred_direction = (y_pred > 0).astype(int)
-    directional_accuracy = accuracy_score(y_true_direction, y_pred_direction)
-    
-    results = {
-        'model': model_name,
-        'mse': mse,
-        'mae': mae,
-        'rmse': rmse,
-        'r2': r2,
-        'directional_accuracy': directional_accuracy
-    }
-    
-    return results
+    """Evaluate model performance with comprehensive metrics"""
+    try:
+        # Basic regression metrics
+        mse = mean_squared_error(y_true, y_pred)
+        mae = mean_absolute_error(y_true, y_pred)
+        rmse = np.sqrt(mse)
+        r2 = r2_score(y_true, y_pred)
+        
+        # MAPE calculation with safe division
+        def safe_mape(y_true, y_pred):
+            mask = y_true != 0
+            if mask.sum() == 0:
+                return 0
+            return np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100
+        
+        mape = safe_mape(y_true, y_pred)
+        
+        # Directional accuracy
+        y_true_direction = np.sign(y_true)
+        y_pred_direction = np.sign(y_pred)
+        directional_accuracy = accuracy_score(y_true_direction, y_pred_direction)
+        
+        results = {
+            'model': model_name,
+            'mse': mse,
+            'mae': mae,
+            'rmse': rmse,
+            'r2': r2,
+            'mape': mape,
+            'directional_accuracy': directional_accuracy
+        }
+        
+        logger.info(f"{model_name} Performance: RMSE={rmse:.4f}, MAE={mae:.4f}, MAPE={mape:.2f}%, R²={r2:.4f}")
+        return results
+        
+    except Exception as e:
+        logger.error(f"Error evaluating model {model_name}: {str(e)}")
+        return {'model': model_name, 'error': str(e)}
 
 def evaluate_by_regime(y_true, y_pred, regimes, model_name="Model"):
     """Evaluate model performance by regime"""

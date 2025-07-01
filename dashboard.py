@@ -274,6 +274,93 @@ def create_model_performance_chart(results_df):
         logger.error(f"Error creating model performance chart: {e}")
         return go.Figure()
 
+def create_attention_heatmap(attention_weights, feature_names=None):
+    """Create attention heatmap visualization"""
+    if attention_weights is None:
+        return go.Figure().add_annotation(
+            text="No attention weights available",
+            xref="paper", yref="paper", x=0.5, y=0.5,
+            showarrow=False, font_size=16
+        )
+    
+    try:
+        # Convert to numpy array if needed
+        if hasattr(attention_weights, 'numpy'):
+            attention_weights = attention_weights.numpy()
+        
+        # If 3D, take mean across first dimension (batch)
+        if attention_weights.ndim == 3:
+            attention_weights = np.mean(attention_weights, axis=0)
+        
+        # Create feature names if not provided
+        if feature_names is None:
+            feature_names = [f"Feature_{i}" for i in range(attention_weights.shape[-1])]
+        
+        # Create heatmap
+        fig = go.Figure(data=go.Heatmap(
+            z=attention_weights,
+            x=feature_names[:attention_weights.shape[1]] if len(feature_names) >= attention_weights.shape[1] else feature_names,
+            y=[f"Time_{i}" for i in range(attention_weights.shape[0])],
+            colorscale='Viridis',
+            colorbar=dict(title="Attention Weight")
+        ))
+        
+        fig.update_layout(
+            title="Cross-Market Attention Heatmap",
+            xaxis_title="Features",
+            yaxis_title="Time Steps",
+            height=500,
+            xaxis_tickangle=-45
+        )
+        
+        return fig
+        
+    except Exception as e:
+        logger.error(f"Error creating attention heatmap: {e}")
+        return go.Figure().add_annotation(
+            text=f"Error creating heatmap: {str(e)}",
+            xref="paper", yref="paper", x=0.5, y=0.5,
+            showarrow=False, font_size=14
+        )
+
+def create_cross_market_influence_chart(influence_scores):
+    """Create cross-market influence scores visualization"""
+    if not influence_scores:
+        return go.Figure().add_annotation(
+            text="No cross-market influence data available",
+            xref="paper", yref="paper", x=0.5, y=0.5,
+            showarrow=False, font_size=16
+        )
+    
+    try:
+        # Convert to lists for plotting
+        features = list(influence_scores.keys())[:15]  # Top 15 features
+        scores = [influence_scores[f] for f in features]
+        
+        # Create horizontal bar chart
+        fig = go.Figure(data=go.Bar(
+            y=features,
+            x=scores,
+            orientation='h',
+            marker_color='rgba(55, 83, 109, 0.6)',
+            marker_line_color='rgba(55, 83, 109, 1.0)',
+            marker_line_width=1
+        ))
+        
+        fig.update_layout(
+            title="Cross-Market Influence Scores",
+            xaxis_title="Influence Score",
+            yaxis_title="Features",
+            height=600,
+            margin=dict(l=200)  # More space for feature names
+        )
+        
+        return fig
+        
+    except Exception as e:
+        logger.error(f"Error creating influence chart: {e}")
+        return go.Figure()
+
 def main():
     """Main dashboard application"""
     
@@ -329,11 +416,12 @@ def main():
             ]
     
     # Main dashboard tabs
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "📈 Market Overview", 
         "🎯 Analysis", 
         "🤖 Model Performance", 
-        "🌐 Cross-Market"
+        "🌐 Cross-Market",
+        "🔮 What-If Scenarios"
     ])
     
     # Tab 1: Market Overview
@@ -507,9 +595,196 @@ def main():
         else:
             st.info("Cross-market analysis requires multiple symbols in the dataset.")
     
+    # Tab 5: What-If Scenarios
+    with tab5:
+        st.header("🔮 What-If Scenario Analysis")
+        st.markdown("Simulate different market conditions and see how predictions change")
+        
+        col1, col2 = st.columns([1, 2])
+        
+        with col1:
+            st.subheader("🎛️ Scenario Parameters")
+            
+            # Market regime selection
+            regime_options = ['High_Vol', 'Medium_Vol', 'Low_Vol', 'Uptrend', 'Downtrend', 'Sideways']
+            selected_regime = st.selectbox("📊 Market Regime", regime_options, index=1)
+            
+            # Volatility adjustment
+            volatility_multiplier = st.slider(
+                "📈 Volatility Multiplier", 
+                min_value=0.1, max_value=3.0, value=1.0, step=0.1,
+                help="Adjust market volatility (1.0 = normal)"
+            )
+            
+            # Return adjustment
+            return_adjustment = st.slider(
+                "💰 Return Shift (%)", 
+                min_value=-10.0, max_value=10.0, value=0.0, step=0.5,
+                help="Shift expected returns up or down"
+            )
+            
+            # Cross-market correlation
+            correlation_strength = st.slider(
+                "🔗 Cross-Market Correlation", 
+                min_value=0.0, max_value=1.0, value=0.5, step=0.1,
+                help="Strength of cross-market relationships"
+            )
+            
+            # Market stress scenario
+            stress_scenario = st.checkbox("⚠️ Apply Market Stress Scenario")
+            
+            if st.button("🚀 Run Simulation"):
+                st.success("Simulation parameters updated!")
+                
+                # Simulate scenario adjustments
+                scenario_data = data.copy() if not data.empty else pd.DataFrame()
+                
+                if not scenario_data.empty and selected_symbol in scenario_data['Symbol'].values:
+                    symbol_data = scenario_data[scenario_data['Symbol'] == selected_symbol].copy()
+                    
+                    # Apply adjustments to the data
+                    if 'returns' in symbol_data.columns:
+                        # Adjust returns
+                        symbol_data['adjusted_returns'] = (
+                            symbol_data['returns'] + (return_adjustment / 100)
+                        )
+                        
+                        # Adjust volatility
+                        if 'volatility_20' in symbol_data.columns:
+                            symbol_data['adjusted_volatility'] = (
+                                symbol_data['volatility_20'] * volatility_multiplier
+                            )
+                        
+                        # Apply stress scenario
+                        if stress_scenario:
+                            symbol_data['adjusted_returns'] *= 1.5  # Increase volatility
+                            symbol_data['adjusted_volatility'] *= 2.0
+                    
+                    # Store simulation results
+                    st.session_state['simulation_data'] = symbol_data
+                    st.session_state['simulation_params'] = {
+                        'regime': selected_regime,
+                        'volatility_multiplier': volatility_multiplier,
+                        'return_adjustment': return_adjustment,
+                        'correlation_strength': correlation_strength,
+                        'stress_scenario': stress_scenario
+                    }
+        
+        with col2:
+            st.subheader("📊 Simulation Results")
+            
+            if 'simulation_data' in st.session_state:
+                sim_data = st.session_state['simulation_data']
+                sim_params = st.session_state['simulation_params']
+                
+                # Display scenario summary
+                st.info(f"""
+                **Current Scenario:** {sim_params['regime']} Market
+                - Volatility: {sim_params['volatility_multiplier']:.1f}x normal
+                - Return Shift: {sim_params['return_adjustment']:+.1f}%
+                - Stress Mode: {'ON' if sim_params['stress_scenario'] else 'OFF'}
+                """)
+                
+                # Show adjusted metrics
+                if not sim_data.empty:
+                    latest_sim = sim_data.iloc[-1]
+                    
+                    col_a, col_b, col_c = st.columns(3)
+                    
+                    with col_a:
+                        original_return = latest_sim.get('returns', 0)
+                        adjusted_return = latest_sim.get('adjusted_returns', original_return)
+                        st.metric(
+                            "📈 Adjusted Return",
+                            f"{adjusted_return:.2%}",
+                            delta=f"{(adjusted_return - original_return):.2%}"
+                        )
+                    
+                    with col_b:
+                        original_vol = latest_sim.get('volatility_20', 0)
+                        adjusted_vol = latest_sim.get('adjusted_volatility', original_vol)
+                        st.metric(
+                            "📊 Adjusted Volatility",
+                            f"{adjusted_vol:.4f}",
+                            delta=f"{(adjusted_vol - original_vol):.4f}"
+                        )
+                    
+                    with col_c:
+                        risk_score = adjusted_vol * abs(adjusted_return) * 100
+                        st.metric("⚠️ Risk Score", f"{risk_score:.2f}")
+                    
+                    # Scenario comparison chart
+                    if len(sim_data) > 1:
+                        fig = go.Figure()
+                        
+                        # Original returns
+                        if 'returns' in sim_data.columns:
+                            fig.add_trace(go.Scatter(
+                                x=sim_data.index,
+                                y=sim_data['returns'],
+                                mode='lines',
+                                name='Original Returns',
+                                line=dict(color='blue')
+                            ))
+                        
+                        # Adjusted returns
+                        if 'adjusted_returns' in sim_data.columns:
+                            fig.add_trace(go.Scatter(
+                                x=sim_data.index,
+                                y=sim_data['adjusted_returns'],
+                                mode='lines',
+                                name='Scenario Returns',
+                                line=dict(color='red', dash='dash')
+                            ))
+                        
+                        fig.update_layout(
+                            title="Return Comparison: Original vs Scenario",
+                            xaxis_title="Time",
+                            yaxis_title="Returns",
+                            height=400
+                        )
+                        
+                        st.plotly_chart(fig, use_container_width=True)
+                
+                # Scenario insights
+                st.subheader("🧠 Scenario Insights")
+                
+                insights = []
+                if sim_params['volatility_multiplier'] > 1.5:
+                    insights.append("⚠️ High volatility environment may increase prediction uncertainty")
+                if abs(sim_params['return_adjustment']) > 5:
+                    insights.append("💡 Large return shifts suggest regime change likelihood")
+                if sim_params['stress_scenario']:
+                    insights.append("🚨 Stress conditions active - consider defensive positioning")
+                if sim_params['correlation_strength'] > 0.8:
+                    insights.append("🔗 High correlations may reduce diversification benefits")
+                
+                if insights:
+                    for insight in insights:
+                        st.write(insight)
+                else:
+                    st.write("📊 Current scenario represents normal market conditions")
+            
+            else:
+                st.info("👆 Adjust parameters and click 'Run Simulation' to see results")
+                
+                # Show example scenario results
+                st.markdown("### 💡 Example Scenarios")
+                
+                example_scenarios = [
+                    {"name": "📈 Bull Market", "desc": "Low volatility, positive returns, high correlation"},
+                    {"name": "📉 Bear Market", "desc": "High volatility, negative returns, high correlation"},
+                    {"name": "🔀 Sideways Market", "desc": "Medium volatility, flat returns, low correlation"},
+                    {"name": "💥 Crisis Mode", "desc": "Extreme volatility, negative returns, stress conditions"}
+                ]
+                
+                for scenario in example_scenarios:
+                    with st.expander(scenario["name"]):
+                        st.write(scenario["desc"])
+    
     # Footer
     st.markdown("---")
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
         st.metric("📊 Data Points", len(data))
@@ -519,6 +794,8 @@ def main():
         st.metric("📋 Features", len(data.columns))
     with col4:
         st.metric("🕐 Last Update", datetime.now().strftime("%H:%M:%S"))
+    with col5:
+        st.metric("🔮 Scenario Runs", len(st.session_state['simulation_data']) if 'simulation_data' in st.session_state else 0)
     
     st.markdown("**📊 Time Series Forecasting Dashboard** | Powered by Streamlit")
 
