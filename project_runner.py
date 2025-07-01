@@ -9,6 +9,9 @@ import sys
 import os
 from datetime import datetime
 
+# Import project configuration
+from config import configure_aws_environment
+
 def print_header(title):
     """Print a formatted header"""
     print("\n" + "="*70)
@@ -33,22 +36,15 @@ def run_script(script_name, description):
     print_info(f"Running: {script_name}")
     
     try:
+        # Run without capturing output so we can see real-time results
         result = subprocess.run([sys.executable, script_name], 
-                              capture_output=True, 
-                              text=True, 
                               timeout=300)  # 5 minute timeout
         
         if result.returncode == 0:
             print_success(f"{description} completed successfully!")
-            if result.stdout:
-                print("Output:")
-                print(result.stdout)
             return True
         else:
-            print_error(f"{description} failed!")
-            if result.stderr:
-                print("Error details:")
-                print(result.stderr)
+            print_error(f"{description} failed with exit code: {result.returncode}")
             return False
             
     except subprocess.TimeoutExpired:
@@ -59,17 +55,19 @@ def run_script(script_name, description):
         return False
 
 def check_aws_credentials():
-    """Check if AWS credentials are set"""
-    aws_vars = ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_SESSION_TOKEN']
-    missing_vars = [var for var in aws_vars if not os.environ.get(var)]
-    
-    if missing_vars:
-        print_error("Missing AWS credentials!")
-        print_info("Please set these environment variables:")
-        for var in missing_vars:
-            print_info(f"  - {var}")
+    """Check and configure AWS credentials from config.py"""
+    try:
+        # Configure AWS environment from config file
+        if configure_aws_environment():
+            print_success("AWS credentials configured from config.py")
+            return True
+        else:
+            print_error("Failed to configure AWS credentials from config.py")
+            return False
+    except Exception as e:
+        print_error(f"Error configuring AWS credentials: {str(e)}")
+        print_info("Please check your AWS credentials in config.py")
         return False
-    return True
 
 def main():
     """Main function to run the complete project workflow"""
@@ -80,23 +78,23 @@ def main():
     # Step 0: Check AWS Configuration
     print_header("STEP 0: AWS CONFIGURATION CHECK")
     if not check_aws_credentials():
-        print_error("AWS credentials not found in environment variables")
-        print_info("Please set your AWS credentials and try again")
+        print_error("AWS credentials not configured properly")
+        print_info("Please update your AWS credentials in config.py and try again")
         return False
     
-    if not run_script("0_test_aws_setup.py", "AWS Configuration Test"):
+    if not run_script("aws_configuration_test.py", "AWS Configuration Test"):
         print_error("AWS configuration test failed!")
         print_info("Please fix AWS configuration and try again")
         return False
     
     # Project workflow steps
     steps = [
-        ("1_demo_quick_start.py", "Quick Demo (Financial Data Analysis)"),
-        ("2_data_collection.py", "Data Collection from Multiple Markets"),
-        ("3_feature_engineering.py", "Feature Engineering & Technical Indicators"),
-        ("4_regime_detection.py", "Market Regime Detection"),
-        ("5_ml_models.py", "Machine Learning Model Training"),
-        ("6_full_pipeline.py", "Complete Pipeline Execution")
+        ("financial_data_demo.py", "Quick Demo (Financial Data Analysis)"),
+        ("data_collector.py", "Data Collection from Multiple Markets"),
+        ("feature_engineer.py", "Feature Engineering & Technical Indicators"),
+        ("regime_detector.py", "Market Regime Detection"),
+        ("ml_models.py", "Machine Learning Model Training"),
+        ("main_pipeline.py", "Complete Pipeline Execution")
     ]
     
     successful_steps = 0

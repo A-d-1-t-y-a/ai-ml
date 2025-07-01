@@ -30,21 +30,21 @@
 
 ```
 📂 ai-ml/
-├── 📜 0_test_aws_setup.py      # ✅ AWS configuration test
-├── 📜 1_demo_quick_start.py    # ✅ Quick financial data demo  
-├── 📜 2_data_collection.py     # Data collection from multiple markets
-├── 📜 3_feature_engineering.py # Technical indicators & features
-├── 📜 4_regime_detection.py    # Market regime detection
-├── 📜 5_ml_models.py          # Machine learning models
-├── 📜 6_full_pipeline.py      # Complete pipeline execution
-├── 📜 run_project.py          # Main runner script
-├── 📜 config.py               # Configuration settings
-├── 📜 requirements.txt        # Dependencies list
-├── 📜 SageMaker_Demo.ipynb    # Jupyter notebook demo
-├── 📂 venv/                   # Virtual environment
-├── 📂 data/                   # Data storage
-├── 📂 models/                 # Trained models
-└── 📂 logs/                   # Log files
+├── 📜 aws_configuration_test.py  # ✅ AWS configuration test
+├── 📜 financial_data_demo.py     # ✅ Quick financial data demo  
+├── 📜 data_collector.py          # Data collection from multiple markets
+├── 📜 feature_engineer.py        # Technical indicators & features
+├── 📜 regime_detector.py         # Market regime detection
+├── 📜 ml_models.py              # Machine learning models
+├── 📜 main_pipeline.py          # Complete pipeline execution
+├── 📜 project_runner.py         # Main runner script
+├── 📜 config.py                 # Configuration settings & AWS credentials
+├── 📜 requirements.txt          # Dependencies list
+├── 📜 SageMaker_Demo.ipynb      # Jupyter notebook demo
+├── 📂 venv/                     # Virtual environment
+├── 📂 data/                     # Data storage
+├── 📂 models/                   # Trained models
+└── 📂 logs/                     # Log files
 ```
 
 ---
@@ -53,24 +53,24 @@
 
 ### **Method 1: Quick Demo (Recommended)**
 ```powershell
-python 1_demo_quick_start.py
+python financial_data_demo.py
 ```
 ✅ **Already tested and working!**
 
 ### **Method 2: Individual Components**
 ```powershell
-python 0_test_aws_setup.py      # Test AWS setup
-python 1_demo_quick_start.py    # Quick demo
-python 2_data_collection.py     # Collect financial data
-python 3_feature_engineering.py # Create features
-python 4_regime_detection.py    # Detect market regimes
-python 5_ml_models.py          # Train ML models
-python 6_full_pipeline.py      # Run complete pipeline
+python aws_configuration_test.py  # Test AWS setup
+python financial_data_demo.py     # Quick demo
+python data_collector.py          # Collect financial data
+python feature_engineer.py        # Create features
+python regime_detector.py         # Detect market regimes
+python ml_models.py               # Train ML models
+python main_pipeline.py           # Run complete pipeline
 ```
 
 ### **Method 3: Complete Automated Workflow**
 ```powershell
-python run_project.py
+python project_runner.py
 ```
 *(Runs all components automatically with AWS checks)*
 
@@ -78,15 +78,18 @@ python run_project.py
 
 ## 🔧 **AWS Credentials Setup:**
 
-**Your AWS Academy credentials are configured as:**
-```powershell
-$env:AWS_ACCESS_KEY_ID="ASIAUJ455IZYAPABYNUP"
-$env:AWS_SECRET_ACCESS_KEY="550ElrdoxG2Gq7WGROUkvHjL6JFBpoO3++wJFkAD"
-$env:AWS_SESSION_TOKEN="[your-session-token]"
-$env:AWS_DEFAULT_REGION="us-east-1"
+**Your AWS Academy credentials are now configured in `config.py`:**
+```python
+# AWS Credentials (From AWS Academy)
+AWS_ACCESS_KEY_ID = 'ASIAUJ455IZYAPABYNUP'
+AWS_SECRET_ACCESS_KEY = '550ElrdoxG2Gq7WGROUkvHjL6JFBpoO3++wJFkAD'
+AWS_SESSION_TOKEN = '[your-session-token]'
+AWS_REGION = 'us-east-1'
 ```
 
-**⚠️ Note:** These are temporary credentials that expire. Re-run these commands if you get authentication errors.
+**✅ Automatic Configuration:** The project automatically loads these credentials when you run any script - no need to set environment variables manually!
+
+**⚠️ Note:** These are temporary credentials that expire. Update them in `config.py` when you get new credentials from AWS Academy.
 
 ---
 

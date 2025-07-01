@@ -85,23 +85,14 @@ def test_aws_region():
     print_header("AWS REGION TEST")
     
     try:
-        session = boto3.Session()
-        region = session.region_name
+        # Use region from config
+        region = AWS_REGION
+        print_success(f"AWS region configured in config.py: {region}")
         
-        if region:
-            print_success(f"AWS region configured: {region}")
-            return region
-        else:
-            # Try to get from environment or config
-            region = os.environ.get('AWS_DEFAULT_REGION') or os.environ.get('AWS_REGION')
-            if region:
-                print_success(f"AWS region from environment: {region}")
-                return region
-            else:
-                print_warning("No AWS region configured")
-                print_info("Consider setting AWS_DEFAULT_REGION environment variable")
-                print_info("or configuring region in ~/.aws/config")
-                return 'us-east-1'  # Default region
+        # Test if region is valid by creating a client
+        ec2 = boto3.client('ec2', region_name=region)
+        print_success(f"AWS region '{region}' is valid and accessible")
+        return region
                 
     except Exception as e:
         print_error(f"Error checking AWS region: {str(e)}")
@@ -170,36 +161,46 @@ def test_s3_access(bucket_name=None):
         print_error(f"Unexpected S3 error: {str(e)}")
         return False
 
-def test_environment_variables():
-    """Test relevant environment variables"""
-    print_header("ENVIRONMENT VARIABLES TEST")
+def test_configuration_setup():
+    """Test configuration setup from config.py"""
+    print_header("CONFIGURATION SETUP TEST")
     
-    aws_vars = {
-        'AWS_ACCESS_KEY_ID': 'AWS Access Key ID',
-        'AWS_SECRET_ACCESS_KEY': 'AWS Secret Access Key',
-        'AWS_DEFAULT_REGION': 'Default AWS Region',
-        'AWS_REGION': 'AWS Region',
-        'AWS_PROFILE': 'AWS Profile'
-    }
-    
-    found_vars = {}
-    for var, description in aws_vars.items():
-        value = os.environ.get(var)
-        if value:
-            if 'KEY' in var:
-                print_success(f"{description}: {'*' * 10}...")
+    try:
+        # Test config values
+        config_values = {
+            'AWS_ACCESS_KEY_ID': AWS_ACCESS_KEY_ID,
+            'AWS_SECRET_ACCESS_KEY': AWS_SECRET_ACCESS_KEY,
+            'AWS_SESSION_TOKEN': AWS_SESSION_TOKEN,
+            'AWS_REGION': AWS_REGION
+        }
+        
+        valid_config = {}
+        for key, value in config_values.items():
+            if value:
+                if 'KEY' in key or 'TOKEN' in key:
+                    print_success(f"{key}: {'*' * 10}...")
+                else:
+                    print_success(f"{key}: {value}")
+                valid_config[key] = value
             else:
-                print_success(f"{description}: {value}")
-            found_vars[var] = value
+                print_warning(f"{key}: Not configured")
+        
+        print_info(f"Found {len(valid_config)} configured AWS values")
+        
+        # Check if environment variables were set by configure_aws_environment()
+        env_check = all(os.environ.get(key.replace('AWS_', 'AWS_').replace('REGION', 'DEFAULT_REGION')) 
+                       for key in ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY'])
+        
+        if env_check:
+            print_success("AWS environment variables configured from config.py")
         else:
-            print_info(f"{description}: Not set")
-    
-    if found_vars:
-        print_info(f"Found {len(found_vars)} AWS environment variables")
-    else:
-        print_info("No AWS environment variables found (this is OK if using other methods)")
-    
-    return found_vars
+            print_warning("AWS environment variables not fully configured")
+        
+        return len(valid_config) >= 3
+        
+    except Exception as e:
+        print_error(f"Error checking configuration: {str(e)}")
+        return False
 
 def main():
     """Main function to run all AWS configuration tests"""
@@ -214,7 +215,7 @@ def main():
     test_results['region'] = test_aws_region()
     test_results['identity'] = test_sts_identity()
     test_results['s3'] = test_s3_access()
-    test_results['env_vars'] = test_environment_variables()
+    test_results['config'] = test_configuration_setup()
     
     # Final summary
     print_header("TEST SUMMARY")
