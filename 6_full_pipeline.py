@@ -15,10 +15,28 @@ warnings.filterwarnings('ignore')
 
 # Import project modules
 from config import *
-from data_collector import FinancialDataCollector
-from feature_engineering import FeatureEngineer
-from regime_detection import MarketRegimeDetector
-from ml_models import CrossMarketXGBoost, prepare_model_data, evaluate_model
+import importlib.util
+
+# Import renamed modules using importlib
+def import_module_from_file(file_path, module_name):
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+# Import all required modules
+data_collection = import_module_from_file("2_data_collection.py", "data_collection")
+feature_engineering = import_module_from_file("3_feature_engineering.py", "feature_engineering")
+regime_detection = import_module_from_file("4_regime_detection.py", "regime_detection")
+ml_models = import_module_from_file("5_ml_models.py", "ml_models")
+
+# Create shortcuts for classes
+FinancialDataCollector = data_collection.FinancialDataCollector
+FeatureEngineer = feature_engineering.FeatureEngineer
+MarketRegimeDetector = regime_detection.MarketRegimeDetector
+CrossMarketXGBoost = ml_models.CrossMarketXGBoost
+prepare_model_data = ml_models.prepare_model_data
+evaluate_model = ml_models.evaluate_model
 
 # Set up logging
 logging.basicConfig(
