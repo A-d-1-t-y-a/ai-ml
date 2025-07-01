@@ -127,10 +127,11 @@ class FinancialDataCollector:
         # Convert date column to datetime
         df['date'] = pd.to_datetime(df['date'])
         
-        # Remove rows with missing values
+        # Remove rows with missing values only in essential columns
+        essential_columns = ['date', 'open', 'high', 'low', 'close', 'volume', 'Symbol', 'Market_Type']
         initial_rows = len(df)
-        df = df.dropna()
-        logger.info(f"Removed {initial_rows - len(df)} rows with missing values")
+        df = df.dropna(subset=essential_columns)
+        logger.info(f"Removed {initial_rows - len(df)} rows with missing essential values")
         
         # Remove duplicates
         initial_rows = len(df)
