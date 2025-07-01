@@ -37,18 +37,34 @@ class FinancialDataCollector:
             
             # Reset index and standardize columns
             data = data.reset_index()
+            
+            # Handle multi-level columns from yfinance
+            if isinstance(data.columns, pd.MultiIndex):
+                # Flatten multi-level columns
+                data.columns = [col[0] if col[1] == '' else col[0] for col in data.columns]
+            
             data['Symbol'] = symbol.replace('-USD', '') if market_type == 'Crypto' else symbol
             data['Market_Type'] = market_type
             
-            # Standardize column names
-            data = data.rename(columns={
+            # Standardize column names - handle different possible column names
+            column_mapping = {
                 'Date': 'date',
-                'Open': 'open',
+                'Open': 'open', 
                 'High': 'high',
                 'Low': 'low',
                 'Close': 'close',
+                'Adj Close': 'close',  # Use adjusted close if available
                 'Volume': 'volume'
-            })
+            }
+            data = data.rename(columns=column_mapping)
+            
+            # Ensure we have all required columns
+            required_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+            missing_columns = [col for col in required_columns if col not in data.columns]
+            
+            if missing_columns:
+                logger.warning(f"Missing columns for {symbol}: {missing_columns}")
+                return None
             
             # Select only needed columns
             columns_to_keep = ['date', 'open', 'high', 'low', 'close', 'volume', 'Symbol', 'Market_Type']
@@ -61,7 +77,7 @@ class FinancialDataCollector:
             logger.error(f"✗ Error downloading {symbol}: {str(e)}")
             return None
     
-    def collect_market_data(self, symbols, market_type, start_date=START_DATE, end_date=END_DATE, max_workers=5):
+    def collect_market_data(self, symbols, market_type, start_date=START_DATE, end_date=END_DATE, max_workers=1):
         """Collect data for multiple symbols using parallel processing"""
         logger.info(f"Collecting {market_type} data for {len(symbols)} symbols...")
         
@@ -86,9 +102,30 @@ class FinancialDataCollector:
                     logger.error(f"Error processing {symbol}: {str(e)}")
         
         if all_data:
-            combined_data = pd.concat(all_data, ignore_index=True)
-            logger.info(f"✓ {market_type} data collection complete: {len(combined_data)} total records")
-            return combined_data
+            # Standardize all datasets before concatenation
+            standardized_data = []
+            expected_columns = ['date', 'open', 'high', 'low', 'close', 'volume', 'Symbol', 'Market_Type']
+            
+            for data in all_data:
+                # Handle multi-level columns if they exist
+                if isinstance(data.columns, pd.MultiIndex):
+                    data.columns = [col[0] if col[1] == '' else col[0] for col in data.columns]
+                
+                # Ensure we have the expected columns
+                if all(col in data.columns for col in expected_columns):
+                    data_clean = data[expected_columns].copy()
+                    standardized_data.append(data_clean)
+                else:
+                    missing_cols = [col for col in expected_columns if col not in data.columns]
+                    logger.warning(f"Skipping dataset missing columns: {missing_cols}")
+            
+            if standardized_data:
+                combined_data = pd.concat(standardized_data, ignore_index=True)
+                logger.info(f"✓ {market_type} data collection complete: {len(combined_data)} total records")
+                return combined_data
+            else:
+                logger.warning(f"No valid data collected for {market_type}")
+                return pd.DataFrame()
         else:
             logger.warning(f"No data collected for {market_type}")
             return pd.DataFrame()
@@ -106,10 +143,32 @@ class FinancialDataCollector:
         all_datasets = [df for df in [stock_data, crypto_data, etf_data] if not df.empty]
         
         if all_datasets:
-            combined_data = pd.concat(all_datasets, ignore_index=True)
+            # Ensure all datasets have the same column structure before concatenation
+            standardized_datasets = []
+            expected_columns = ['date', 'open', 'high', 'low', 'close', 'volume', 'Symbol', 'Market_Type']
             
-            # Clean and sort data
-            combined_data = self.clean_data(combined_data)
+            for dataset in all_datasets:
+                # Handle multi-level columns if they exist
+                if isinstance(dataset.columns, pd.MultiIndex):
+                    dataset.columns = [col[0] if col[1] == '' else col[0] for col in dataset.columns]
+                
+                # Ensure only expected columns are kept
+                available_columns = [col for col in expected_columns if col in dataset.columns]
+                if len(available_columns) == len(expected_columns):
+                    dataset_clean = dataset[expected_columns].copy()
+                    standardized_datasets.append(dataset_clean)
+                else:
+                    logger.warning(f"Dataset missing required columns: {set(expected_columns) - set(available_columns)}")
+            
+            if standardized_datasets:
+                combined_data = pd.concat(standardized_datasets, ignore_index=True)
+                logger.info(f"Combined datasets successfully: {len(combined_data)} total records")
+                
+                # Clean and sort data
+                combined_data = self.clean_data(combined_data)
+            else:
+                logger.error("No datasets could be standardized for concatenation")
+                return pd.DataFrame()
             
             logger.info(f"✓ All markets data collected: {len(combined_data)} total records")
             logger.info(f"✓ Date range: {combined_data['date'].min()} to {combined_data['date'].max()}")
@@ -124,13 +183,26 @@ class FinancialDataCollector:
         """Clean and standardize the collected data"""
         logger.info("Cleaning and standardizing data...")
         
-        # Convert date column to datetime
-        df['date'] = pd.to_datetime(df['date'])
+        # Debug: Check what columns we actually have
+        logger.info(f"Available columns: {df.columns.tolist()}")
         
-        # Remove rows with missing values only in essential columns
-        essential_columns = ['date', 'open', 'high', 'low', 'close', 'volume', 'Symbol', 'Market_Type']
+        # Convert date column to datetime
+        if 'date' in df.columns:
+            df['date'] = pd.to_datetime(df['date'])
+        
+        # Check which essential columns exist
+        required_columns = ['date', 'open', 'high', 'low', 'close', 'volume', 'Symbol', 'Market_Type']
+        available_columns = [col for col in required_columns if col in df.columns]
+        missing_columns = [col for col in required_columns if col not in df.columns]
+        
+        if missing_columns:
+            logger.warning(f"Missing columns: {missing_columns}")
+            logger.warning("Cannot proceed with data cleaning due to missing columns")
+            return pd.DataFrame()
+        
+        # Remove rows with missing values only in available essential columns
         initial_rows = len(df)
-        df = df.dropna(subset=essential_columns)
+        df = df.dropna(subset=available_columns)
         logger.info(f"Removed {initial_rows - len(df)} rows with missing essential values")
         
         # Remove duplicates

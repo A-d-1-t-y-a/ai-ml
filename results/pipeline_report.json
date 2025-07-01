@@ -1,0 +1,44 @@
+{
+  "pipeline_timestamp": "2025-07-01T06:33:57.271865",
+  "pipeline_results": {
+    "data_collection": {
+      "total_records": 82987,
+      "date_range": "2019-01-01 00:00:00 to 2023-12-31 00:00:00",
+      "symbols": 61,
+      "markets": {
+        "Stock": 37740,
+        "Crypto": 25119,
+        "ETF": 20128
+      }
+    },
+    "feature_engineering": {
+      "input_records": 82987,
+      "output_records": 82873,
+      "features_created": 88,
+      "total_features": 96
+    },
+    "regime_detection": {
+      "regimes_detected": 5,
+      "regime_distribution": {
+        "Transition_Regime": 51191,
+        "Bull_Market": 13333,
+        "Consolidation": 12082,
+        "Bear_Market": 5946,
+        "Crisis_Regime": 321
+      }
+    },
+    "model_performance": {
+      "xgboost": {
+        "model": "Model",
+        "mse": 14957.414842998463,
+        "mae": 0.977339364884352,
+        "rmse": 122.30051039549453,
+        "r2": -4.467272754804519e-05,
+        "directional_accuracy": 0.9977661051741834
+      },
+      "training_samples": 66249,
+      "test_samples": 16563,
+      "features_used": 102
+    }
+  }
+}
