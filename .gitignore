@@ -8,3 +8,13 @@ __pycache__/
 *.pywz
 *.pyzw
 *.pyzwz
+data/
+logs/
+models/
+results/
+.DS_Store
+.env
+.venv
+.vscode
+.gitignore
+.gitignore
