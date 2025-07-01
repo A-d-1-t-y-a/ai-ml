@@ -13,6 +13,9 @@ from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
+# Import project configuration
+from config import configure_aws_environment, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN, AWS_REGION
+
 def print_header(title):
     """Print a formatted header"""
     print("\n" + "="*60)
@@ -40,33 +43,37 @@ def test_aws_credentials():
     print_header("AWS CREDENTIALS TEST")
     
     try:
-        # Try to create a session
+        # Configure AWS environment from config file
+        configure_aws_environment()
+        print_success("AWS credentials loaded from config.py")
+        
+        # Verify credentials in config
+        if not AWS_ACCESS_KEY_ID or not AWS_SECRET_ACCESS_KEY:
+            print_error("AWS credentials not configured in config.py!")
+            print_info("Please update the following in config.py:")
+            print_info("  - AWS_ACCESS_KEY_ID")
+            print_info("  - AWS_SECRET_ACCESS_KEY")
+            print_info("  - AWS_SESSION_TOKEN (for AWS Academy)")
+            return False
+        
+        print_success("AWS credentials found in configuration")
+        print_info(f"Access Key: {AWS_ACCESS_KEY_ID[:10]}...")
+        
+        # Check if session token exists (for temporary credentials)
+        if AWS_SESSION_TOKEN:
+            print_info("Using temporary credentials (AWS Academy)")
+        else:
+            print_info("Using permanent credentials")
+        
+        # Try to create a session to verify credentials work
         session = boto3.Session()
         credentials = session.get_credentials()
         
-        if credentials is None:
-            print_error("No AWS credentials found!")
-            print_info("Please configure AWS credentials using one of:")
-            print_info("  1. AWS CLI: aws configure")
-            print_info("  2. Environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY")
-            print_info("  3. IAM Roles (if running on EC2)")
-            print_info("  4. AWS credentials file (~/.aws/credentials)")
-            return False
-        
-        # Check if credentials are accessible
-        if credentials.access_key and credentials.secret_key:
-            print_success("AWS credentials found and accessible")
-            print_info(f"Access Key: {credentials.access_key[:10]}...")
-            
-            # Check if temporary credentials (from assumed role)
-            if credentials.token:
-                print_info("Using temporary credentials (assumed role/STS)")
-            else:
-                print_info("Using permanent credentials")
-            
+        if credentials and credentials.access_key:
+            print_success("AWS session created successfully")
             return True
         else:
-            print_error("AWS credentials are incomplete")
+            print_error("Failed to create AWS session with configured credentials")
             return False
             
     except Exception as e:
