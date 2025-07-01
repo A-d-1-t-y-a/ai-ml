@@ -1,5 +1,5 @@
 {
-  "pipeline_timestamp": "2025-07-01T06:33:57.271865",
+  "pipeline_timestamp": "2025-07-01T09:38:50.131783",
   "pipeline_results": {
     "data_collection": {
       "total_records": 82987,
@@ -30,11 +30,12 @@
     "model_performance": {
       "xgboost": {
         "model": "Model",
-        "mse": 14957.414842998463,
-        "mae": 0.977339364884352,
-        "rmse": 122.30051039549453,
-        "r2": -4.467272754804519e-05,
-        "directional_accuracy": 0.9977661051741834
+        "mse": 14957.410791443519,
+        "mae": 0.9772993502307805,
+        "rmse": 122.3004938315603,
+        "r2": -4.4401842774099975e-05,
+        "mape": 295.1645417785643,
+        "directional_accuracy": 0.9849664915776127
       },
       "training_samples": 66249,
       "test_samples": 16563,
