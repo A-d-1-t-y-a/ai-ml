@@ -85,7 +85,7 @@ class TimeSeriesForecastingPipeline:
             'markets': raw_data['Market_Type'].value_counts().to_dict()
         }
         
-        logger.info(f"✓ Data collection completed: {len(raw_data):,} records")
+        logger.info(f" Data collection completed: {len(raw_data):,} records")
         return raw_data
     
     def run_feature_engineering(self, raw_data):
@@ -113,7 +113,7 @@ class TimeSeriesForecastingPipeline:
             'total_features': len(enhanced_data.columns)
         }
         
-        logger.info(f"✓ Feature engineering completed: {len(enhanced_data.columns)} features")
+        logger.info(f" Feature engineering completed: {len(enhanced_data.columns)} features")
         return enhanced_data
     
     def run_regime_detection(self, enhanced_data):
@@ -143,7 +143,7 @@ class TimeSeriesForecastingPipeline:
                 'regime_distribution': regime_dist
             }
         
-        logger.info("✓ Regime detection completed")
+        logger.info(" Regime detection completed")
         return data_with_regimes
     
     def run_model_training(self, final_data):
@@ -183,7 +183,7 @@ class TimeSeriesForecastingPipeline:
             if xgb_model.feature_importance is not None:
                 xgb_model.feature_importance.to_csv(f"{RESULTS_DIR}feature_importance.csv", index=False)
             
-            logger.info("✓ Model training completed successfully")
+            logger.info(" Model training completed successfully")
             return xgb_model, xgb_results
             
         except Exception as e:

@@ -88,7 +88,7 @@ class FeatureEngineer:
         
         if technical_data:
             result_df = pd.concat(technical_data, ignore_index=True)
-            logger.info(f"✓ Technical indicators created for {len(result_df['Symbol'].unique())} symbols")
+            logger.info(f" Technical indicators created for {len(result_df['Symbol'].unique())} symbols")
             return result_df
         else:
             logger.error("No technical indicators created")
@@ -117,7 +117,7 @@ class FeatureEngineer:
         # Merge with original data
         df_with_cross = df.merge(market_pivot, on='date', how='left')
         
-        logger.info(f"✓ Cross-market features created. Shape: {df_with_cross.shape}")
+        logger.info(f" Cross-market features created. Shape: {df_with_cross.shape}")
         return df_with_cross
     
     def create_rolling_correlations(self, df, window=20):
@@ -155,7 +155,7 @@ class FeatureEngineer:
         if correlation_features:
             corr_df = pd.DataFrame(correlation_features)
             df_with_corr = df.merge(corr_df, on='date', how='left')
-            logger.info(f"✓ Rolling correlations created: {len(corr_df.columns)-1} features")
+            logger.info(f" Rolling correlations created: {len(corr_df.columns)-1} features")
             return df_with_corr
         else:
             logger.warning("No correlation features created")
@@ -194,7 +194,7 @@ class FeatureEngineer:
         
         if momentum_data:
             result_df = pd.concat(momentum_data, ignore_index=True)
-            logger.info(f"✓ Momentum features created")
+            logger.info(f" Momentum features created")
             return result_df
         else:
             return df
@@ -229,7 +229,7 @@ class FeatureEngineer:
         
         if microstructure_data:
             result_df = pd.concat(microstructure_data, ignore_index=True)
-            logger.info(f"✓ Market microstructure features created")
+            logger.info(f" Market microstructure features created")
             return result_df
         else:
             return df
@@ -263,7 +263,7 @@ class FeatureEngineer:
                 # Replace normalized data
                 df_normalized.loc[symbol_mask, feature_columns] = normalized_data
         
-        logger.info(f"✓ Normalized {len(feature_columns)} features")
+        logger.info(f" Normalized {len(feature_columns)} features")
         return df_normalized
     
     def create_target_variables(self, df, horizons=[1, 5, 10]):
@@ -291,7 +291,7 @@ class FeatureEngineer:
         
         if target_data:
             result_df = pd.concat(target_data, ignore_index=True)
-            logger.info(f"✓ Target variables created")
+            logger.info(f" Target variables created")
             return result_df
         else:
             return df
@@ -324,8 +324,8 @@ class FeatureEngineer:
         # Step 7: Clean final dataset
         final_df = df_with_targets.dropna(thresh=len(df_with_targets.columns) * 0.5)  # Remove rows with >50% missing values
         
-        logger.info(f"✓ Feature engineering complete. Final shape: {final_df.shape}")
-        logger.info(f"✓ Features created: {len(final_df.columns)} total columns")
+        logger.info(f" Feature engineering complete. Final shape: {final_df.shape}")
+        logger.info(f" Features created: {len(final_df.columns)} total columns")
         
         return final_df
 

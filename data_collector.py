@@ -70,7 +70,7 @@ class FinancialDataCollector:
             columns_to_keep = ['date', 'open', 'high', 'low', 'close', 'volume', 'Symbol', 'Market_Type']
             data = data[columns_to_keep]
             
-            logger.info(f"✓ Downloaded {symbol}: {len(data)} records")
+            logger.info(f" Downloaded {symbol}: {len(data)} records")
             return data
             
         except Exception as e:
@@ -121,7 +121,7 @@ class FinancialDataCollector:
             
             if standardized_data:
                 combined_data = pd.concat(standardized_data, ignore_index=True)
-                logger.info(f"✓ {market_type} data collection complete: {len(combined_data)} total records")
+                logger.info(f" {market_type} data collection complete: {len(combined_data)} total records")
                 return combined_data
             else:
                 logger.warning(f"No valid data collected for {market_type}")
@@ -170,9 +170,9 @@ class FinancialDataCollector:
                 logger.error("No datasets could be standardized for concatenation")
                 return pd.DataFrame()
             
-            logger.info(f"✓ All markets data collected: {len(combined_data)} total records")
-            logger.info(f"✓ Date range: {combined_data['date'].min()} to {combined_data['date'].max()}")
-            logger.info(f"✓ Market distribution: {combined_data['Market_Type'].value_counts().to_dict()}")
+            logger.info(f" All markets data collected: {len(combined_data)} total records")
+            logger.info(f" Date range: {combined_data['date'].min()} to {combined_data['date'].max()}")
+            logger.info(f" Market distribution: {combined_data['Market_Type'].value_counts().to_dict()}")
             
             return combined_data
         else:
@@ -230,7 +230,7 @@ class FinancialDataCollector:
                     Key=key,
                     Body=csv_buffer
                 )
-                logger.info(f"✓ Data saved to s3://{self.s3_bucket}/{key}")
+                logger.info(f" Data saved to s3://{self.s3_bucket}/{key}")
                 return True
             except Exception as e:
                 logger.error(f"Error saving to S3: {str(e)}")
@@ -242,7 +242,7 @@ class FinancialDataCollector:
         try:
             filepath = f"{DATA_DIR}{filename}"
             data.to_csv(filepath, index=False)
-            logger.info(f"✓ Data saved to {filepath}")
+            logger.info(f" Data saved to {filepath}")
             return True
         except Exception as e:
             logger.error(f"Error saving locally: {str(e)}")

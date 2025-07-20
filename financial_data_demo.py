@@ -35,7 +35,7 @@ def quick_demo():
                 data['Symbol'] = symbol
                 data['Market_Type'] = 'Crypto' if 'USD' in symbol else ('ETF' if symbol == 'SPY' else 'Stock')
                 all_data.append(data)
-                print(f"  ✓ Downloaded {symbol}: {len(data)} records")
+                print(f"   Downloaded {symbol}: {len(data)} records")
         except Exception as e:
             print(f"  ✗ Failed to download {symbol}: {e}")
     
