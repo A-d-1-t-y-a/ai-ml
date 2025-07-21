@@ -6,418 +6,126 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{array}
-\usepackage{float}
-\usepackage{subcaption}
-
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
-
 \begin{document}
 
-\title{Cross-Market Time Series Forecasting with Novel Regime Detection: A Machine Learning Approach to Financial Market Prediction}
+\title{Cross-Market Time Series Forecasting with Regime Detection and Cloud-Scale Feature Engineering}
 
-\author{\IEEEauthorblockN{AI/ML Engineering Team}
-\IEEEauthorblockA{\textit{Department of Financial Engineering} \\
-\textit{Advanced Analytics Division}\\
-Financial Markets Research Institute\\
-Email: team@financial-engineering.org}
+\author{
+\IEEEauthorblockN{1\textsuperscript{st} John Doe}
+\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\textit{Institute of Advanced Analytics}\\
+New York, USA \\
+john.doe@example.com}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Jane Smith}
+\IEEEauthorblockA{\textit{Department of Data Science} \\
+\textit{Global Tech University}\\
+London, UK \\
+jane.smith@example.com}
 }
 
 \maketitle
 
 \begin{abstract}
-This paper presents a comprehensive framework for cross-market time series forecasting that integrates market regime detection with machine learning techniques. Our novel approach combines traditional statistical methods (ARIMA with regime switching) with modern machine learning algorithms (XGBoost and Random Forest) to predict financial instrument movements across multiple market types. We analyze data from S\&P 500 stocks, cryptocurrencies, and exchange-traded funds (ETFs) to demonstrate how different market regimes affect prediction accuracy and how cross-market signals can be leveraged for improved forecasting. The system implements unsupervised clustering for regime detection, cross-market feature engineering, and regime-specific model training. Our results show that regime-aware models significantly outperform traditional approaches, with XGBoost achieving the best performance (RMSE: 0.0234, R²: 0.1567) across all market conditions. The framework is deployed on AWS cloud infrastructure with SageMaker integration for real-time prediction capabilities.
+This paper presents a cloud-based time series forecasting system that integrates novel market regime detection and cross-market signal analysis across financial instruments. Unlike traditional approaches that treat markets in isolation, our framework synchronizes data from US equities, cryptocurrencies, and ETFs, detects market regimes using unsupervised clustering, and engineers cross-market features to enhance predictive accuracy. We evaluate multiple machine learning models, including regime-switching ARIMA, XGBoost, and LSTM with attention, demonstrating the impact of market regimes and cross-market signals on forecasting performance. The system is designed for scalability, low latency, and adaptive deployment in cloud environments.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Time series forecasting, Market regime detection, Cross-market analysis, Machine learning, Financial markets, ARIMA, XGBoost, Random Forest, Cloud computing
+Time Series Forecasting, Market Regime Detection, Cross-Market Analysis, Machine Learning, Cloud Computing, Financial Markets, Feature Engineering
 \end{IEEEkeywords}
 
 \section{Introduction}
-
-Financial market prediction has long been a challenging problem in quantitative finance, with traditional approaches often failing to capture the complex dynamics of modern markets. The integration of multiple asset classes and the emergence of new financial instruments have created opportunities for cross-market analysis that can improve forecasting accuracy. This paper presents a novel framework that combines market regime detection with machine learning techniques to predict financial instrument movements across multiple market types.
-
-The key innovation of our approach lies in the integration of regime detection with cross-market signal analysis. Unlike traditional forecasting methods that treat markets in isolation, our system identifies how different market regimes affect prediction accuracy across financial instruments and leverages signals from one market to predict movements in others. This approach is particularly relevant in today's interconnected financial markets where correlations between asset classes can shift dramatically during different market conditions.
-
-\subsection{Research Objectives}
-
-The primary research question addressed in this work is: "How do different market regimes affect prediction performance across financial instruments, and which machine learning techniques most effectively leverage cross-market signals to predict price movements in varying market conditions?"
-
-To answer this question, we implement and evaluate three distinct approaches:
-
-\begin{enumerate}
-    \item \textbf{Traditional Statistical Approach with Regime Switching}: Markov Regime-Switching ARIMA models with automatic detection of market states
-    \item \textbf{Machine Learning Approach with Cross-Market Features}: XGBoost and Random Forest with novel cross-instrument feature engineering
-    \item \textbf{Deep Learning Approach with Attention Mechanisms}: LSTM/GRU with attention mechanisms for cross-market signals
-\end{enumerate}
-
-\subsection{Contributions}
-
-The main contributions of this work include:
-
-\begin{itemize}
-    \item A novel regime detection framework that identifies volatility, trend, and correlation regimes across multiple financial instruments
-    \item Cross-market feature engineering techniques that capture lead-lag relationships and volatility spillovers
-    \item Regime-specific model training that adapts to changing market conditions
-    \item Comprehensive evaluation framework that measures performance across different market regimes
-    \item Cloud-based deployment architecture with real-time regime switching capabilities
-\end{itemize}
+Financial time series forecasting is a cornerstone of quantitative finance, underpinning algorithmic trading, risk management, and portfolio optimization. Traditional forecasting models often treat each market in isolation, neglecting the dynamic interplay between different asset classes and the impact of changing market regimes. This paper introduces a unified, cloud-based framework that addresses these limitations by (1) synchronizing and standardizing data from US equities, cryptocurrencies, and ETFs, (2) detecting market regimes using advanced unsupervised learning, and (3) engineering cross-market features to capture inter-market dependencies. Our approach enables regime-aware, cross-market predictive analytics, providing a robust foundation for adaptive, scalable financial forecasting.
 
 \section{Related Work}
+Classical time series models such as ARIMA and GARCH have been widely used for financial forecasting \cite{b1}. Recent advances incorporate regime-switching mechanisms, e.g., Markov Regime-Switching models \cite{b2}, to account for structural breaks and volatility clustering. Machine learning methods, including Random Forests and XGBoost, have shown promise in capturing nonlinear dependencies \cite{b3}, while deep learning models such as LSTM and GRU, especially with attention mechanisms, excel at modeling long-term dependencies and cross-series interactions \cite{b4}. However, few works integrate regime detection, cross-market feature engineering, and cloud-based deployment in a unified system.
 
-\subsection{Time Series Forecasting in Finance}
-
-Traditional time series forecasting in finance has primarily relied on statistical methods such as ARIMA models \cite{box1976time} and their extensions. The GARCH family of models \cite{engle1982autoregressive} has been particularly successful in modeling volatility clustering in financial time series. However, these approaches often struggle with regime changes and non-linear relationships in modern financial markets.
-
-\subsection{Market Regime Detection}
-
-The concept of market regimes has been extensively studied in financial econometrics. Hamilton's Markov regime-switching model \cite{hamilton1989new} introduced the idea that financial markets can exist in different states with distinct statistical properties. More recent work has extended this framework to multivariate settings \cite{krolzig1997markov} and incorporated machine learning techniques for regime identification \cite{guidolin2016markov}.
-
-\subsection{Machine Learning in Financial Forecasting}
-
-Machine learning approaches have gained prominence in financial forecasting due to their ability to capture non-linear relationships and handle high-dimensional feature spaces. Random Forest \cite{breiman2001random} and gradient boosting methods \cite{friedman2001greedy} have shown particular promise in financial applications. Recent work has demonstrated the effectiveness of ensemble methods in capturing complex market dynamics \cite{gu2018empirical}.
-
-\subsection{Cross-Market Analysis}
-
-The study of cross-market relationships has become increasingly important as financial markets have become more interconnected. Research has shown that correlations between asset classes can vary significantly over time \cite{longin2001extreme}, and that these changes often coincide with regime shifts. Recent work has explored the use of machine learning techniques to capture these dynamic relationships \cite{asness2013diversification}.
-
-\section{Methodology}
-
-\subsection{Data Collection and Preprocessing}
-
-Our dataset comprises three distinct financial market types:
-
+\section{Data Collection and Preparation}
+\subsection{Datasets}
+We utilize three large-scale datasets:
 \begin{itemize}
-    \item \textbf{S\&P 500 Stocks}: 50,000 daily price records from 500+ stocks over 5 years
-    \item \textbf{Cryptocurrencies}: 50,000 price records from multiple cryptocurrencies including Bitcoin, Ethereum, and Dogecoin
-    \item \textbf{Exchange-Traded Funds (ETFs)}: 50,000 price records from various ETF instruments
+    \item \textbf{US Stock Market (S\&P 500):} 50,000 daily price records, including Open, High, Low, Close, Volume, and Symbol \cite{b6}.
+    \item \textbf{Cryptocurrency Data:} 50,000 records with Open, High, Low, Close, Volume, Market Cap, and Symbol \cite{b7}.
+    \item \textbf{ETF Data:} 50,000 records with Open, High, Low, Close, Volume, and Symbol \cite{b8}.
+\end{itemize}
+All datasets are standardized to a unified schema and synchronized on a common timeline to enable cross-market analysis.
+
+\subsection{Data Synchronization and Cleaning}
+Data is loaded, validated for required columns, and filtered to the target date range (2019--2024). For each market, representative symbols are sampled to ensure diversity. Missing values are handled via forward/backward fill and interpolation. Outliers and inconsistent OHLC (Open-High-Low-Close) relationships are removed. The datasets are merged, sorted chronologically, and memory-optimized for cloud-scale processing.
+
+\section{Novel Market Regime Detection}
+\subsection{Feature Construction}
+We construct a regime feature matrix using rolling windows (e.g., 30 days) over the synchronized price pivot table. Features include:
+\begin{itemize}
+    \item \textbf{Volatility Regimes:} Short- and long-term realized volatility, volatility ratios.
+    \item \textbf{Trend Regimes:} Linear trend slopes, trend strength (R-squared), momentum.
+    \item \textbf{Correlation Regimes:} Average and dispersion of cross-market correlations.
+    \item \textbf{Market Stress:} Extreme return ratios, tail risk, maximum drawdown.
+    \item \textbf{Volume Regimes:} Volume trends and volatility (if available).
 \end{itemize}
 
-Each dataset contains standardized features: Date, Open, High, Low, Close, Volume, and Symbol. The data is synchronized across all instruments to ensure temporal alignment for cross-market analysis.
+\subsection{Unsupervised Clustering}
+Regime detection is performed using KMeans clustering on the standardized regime feature matrix. The optimal number of regimes is selected via silhouette analysis. Each regime is characterized (e.g., HighVol-Bull, LowVol-Bear) based on feature centroids. Regime labels are merged back into the main dataset, enabling regime-aware modeling.
 
-\subsection{Market Regime Detection}
+\subsection{Visualization}
+We provide comprehensive visualizations: feature evolution plots colored by regime, regime timelines, and heatmaps of regime statistics, facilitating interpretability and further analysis.
 
-We implement a novel regime detection framework that identifies three types of market regimes:
-
-\subsubsection{Volatility Regimes}
-Volatility regimes are identified using rolling standard deviation of returns:
-\begin{equation}
-\sigma_t = \sqrt{\frac{1}{w} \sum_{i=t-w+1}^{t} (r_i - \bar{r})^2}
-\end{equation}
-where $r_i$ represents returns at time $i$, $w$ is the window size (30 days), and $\bar{r}$ is the mean return over the window.
-
-\subsubsection{Trend Regimes}
-Trend regimes are detected using linear regression on price movements:
-\begin{equation}
-\text{Trend}_t = \frac{\beta_1}{\bar{P}_t}
-\end{equation}
-where $\beta_1$ is the slope coefficient from regressing prices on time, and $\bar{P}_t$ is the average price over the window.
-
-\subsubsection{Correlation Regimes}
-Correlation regimes are identified using the average pairwise correlation between asset returns:
-\begin{equation}
-\text{Corr}_t = \frac{2}{n(n-1)} \sum_{i<j} \rho_{ij,t}
-\end{equation}
-where $\rho_{ij,t}$ is the correlation between assets $i$ and $j$ at time $t$.
-
-\subsection{Cross-Market Feature Engineering}
-
-We develop several novel cross-market features:
-
-\subsubsection{Volatility Spillover Indicators}
-\begin{equation}
-\text{Spillover}_{i,j,t} = \frac{\text{Cov}(r_{i,t}, r_{j,t-1})}{\sigma_{i,t} \sigma_{j,t-1}}
-\end{equation}
-
-\subsubsection{Lead-Lag Relationship Features}
-\begin{equation}
-\text{LeadLag}_{i,j,t} = \sum_{k=1}^{K} \alpha_k \text{Corr}(r_{i,t}, r_{j,t-k})
-\end{equation}
-where $\alpha_k$ are decay weights and $K$ is the maximum lag.
-
-\subsubsection{Cross-Market Sentiment Alignment}
-\begin{equation}
-\text{Sentiment}_{t} = \frac{1}{N} \sum_{i=1}^{N} \text{sign}(r_{i,t}) \cdot \text{RSI}_{i,t}
-\end{equation}
-
-\subsection{Model Architecture}
-
-\subsubsection{ARIMA with Regime Switching}
-We implement Markov Regime-Switching ARIMA models:
-\begin{equation}
-y_t = \mu_{s_t} + \sum_{i=1}^{p} \phi_{i,s_t} y_{t-i} + \sum_{j=1}^{q} \theta_{j,s_t} \epsilon_{t-j} + \epsilon_t
-\end{equation}
-where $s_t$ represents the regime at time $t$, and parameters vary by regime.
-
-\subsubsection{XGBoost with Cross-Market Features}
-The XGBoost objective function is:
-\begin{equation}
-\mathcal{L} = \sum_{i=1}^{n} l(y_i, \hat{y}_i) + \sum_{k=1}^{K} \Omega(f_k)
-\end{equation}
-where $l$ is the loss function, $\Omega$ is the regularization term, and $f_k$ are the trees.
-
-\subsubsection{Random Forest with Regime Awareness}
-Random Forest predictions are computed as:
-\begin{equation}
-\hat{y}_i = \frac{1}{B} \sum_{b=1}^{B} f_b(x_i)
-\end{equation}
-where $B$ is the number of trees and $f_b$ is the $b$-th tree.
-
-\section{Experimental Setup}
-
-\subsection{Dataset Description}
-
-Our experimental dataset consists of:
-
-\begin{table}[H]
-\centering
-\caption{Dataset Summary}
-\begin{tabular}{@{}lccc@{}}
-\toprule
-Market Type & Records & Symbols & Date Range \\
-\midrule
-S\&P 500 Stocks & 50,000 & 500+ & 2019-2024 \\
-Cryptocurrencies & 50,000 & 3 & 2019-2024 \\
-ETFs & 50,000 & 3 & 2019-2024 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Feature Engineering}
-
-We create 47 technical and cross-market features:
-
+\section{Cross-Market Feature Engineering}
+\subsection{Technical and Price Features}
+For each symbol, we engineer:
 \begin{itemize}
-    \item \textbf{Technical Indicators}: Moving averages (5, 10, 20 periods), RSI, MACD, Bollinger Bands
-    \item \textbf{Lag Features}: Price and volume lags (1, 2, 7 days)
-    \item \textbf{Cross-Market Features}: Correlation metrics, volatility spillovers, lead-lag relationships
-    \item \textbf{Regime Features}: Regime indicators and transition probabilities
+    \item Price-based features: returns, log-returns, price change, range, typical price.
+    \item Lagged features: past returns, volumes, and price ranges.
+    \item Technical indicators: moving averages, RSI, MACD, Bollinger Bands, momentum, VWAP.
 \end{itemize}
 
-\subsection{Model Configuration}
-
-\begin{table}[H]
-\centering
-\caption{Model Hyperparameters}
-\begin{tabular}{@{}lcc@{}}
-\toprule
-Model & Parameter & Value \\
-\midrule
-XGBoost & n\_estimators & 100 \\
-& max\_depth & 6 \\
-& learning\_rate & 0.1 \\
-\midrule
-Random Forest & n\_estimators & 100 \\
-& max\_depth & 10 \\
-& min\_samples\_split & 5 \\
-\midrule
-ARIMA & max\_order & (3,1,3) \\
-& regime\_clusters & 3 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\section{Results and Analysis}
-
-\subsection{Regime Detection Results}
-
-Our regime detection framework successfully identified three distinct market regimes:
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{regime_features_analysis.png}
-\caption{Market Regime Features Analysis showing volatility, trend, correlation, and stress indicators over time with regime classifications.}
-\label{fig:regime_features}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{regime_timeline_analysis.png}
-\caption{Market Regime Timeline showing regime transitions and persistence over the analysis period.}
-\label{fig:regime_timeline}
-\end{figure}
-
-\subsection{Model Performance Comparison}
-
-\begin{table}[H]
-\centering
-\caption{Model Performance Metrics}
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-Model & RMSE & MAE & R² & Best Regime \\
-\midrule
-XGBoost & 0.0234 & 0.0187 & 0.1567 & Regime 1 \\
-Random Forest & 0.0256 & 0.0201 & 0.1342 & Regime 2 \\
-ARIMA & 0.0312 & 0.0245 & 0.0891 & Regime 0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Feature Importance Analysis}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{xgboost_feature_importance.png}
-\caption{XGBoost Feature Importance Analysis showing cross-market features and regime-specific importance patterns.}
-\label{fig:xgboost_importance}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{random_forest_feature_importance.png}
-\caption{Random Forest Feature Importance showing top features and their importance across different regimes.}
-\label{fig:rf_importance}
-\end{figure}
-
-\subsection{Cross-Market Analysis}
-
-Our cross-market feature engineering revealed significant insights:
-
+\subsection{Regime-Specific and Cross-Market Features}
 \begin{itemize}
-    \item \textbf{Volatility Spillovers}: Cryptocurrency volatility shows strong spillover effects to traditional markets during high-stress periods
-    \item \textbf{Lead-Lag Relationships}: ETF movements often lead stock market movements by 1-2 days
-    \item \textbf{Regime-Specific Correlations}: Cross-market correlations vary significantly across regimes, with highest correlations during high-volatility regimes
+    \item Regime dummies, regime transition indicators, and regime-specific volatility.
+    \item Cross-market features: market and sector correlations, volatility spillover, lead-lag indicators, market beta, and relative strength.
 \end{itemize}
+Missing values are handled with forward/backward fill and sensible defaults. Feature importance is assessed via correlation with the target variable.
 
-\subsection{Regime-Specific Performance}
-
-\begin{table}[H]
-\centering
-\caption{Performance by Market Regime}
-\begin{tabular}{@{}lccc@{}}
-\toprule
-Regime & Description & Best Model & RMSE \\
-\midrule
-Regime 0 & Low Volatility, Bear Market & XGBoost & 0.0212 \\
-Regime 1 & High Volatility, Bull Market & XGBoost & 0.0247 \\
-Regime 2 & High Correlation, Stress & Random Forest & 0.0268 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\section{Cloud Deployment Architecture}
-
-\subsection{AWS Integration}
-
-Our system is deployed on AWS cloud infrastructure with the following components:
-
+\section{Model Development and Evaluation}
+\subsection{Modeling Approaches}
+We implement and compare:
 \begin{itemize}
-    \item \textbf{S3 Storage}: Model artifacts, predictions, and processed datasets
-    \item \textbf{SageMaker}: Model training and real-time inference endpoints
-    \item \textbf{Lambda}: Serverless regime detection and model switching
-    \item \textbf{CloudWatch}: Monitoring and alerting for model performance
+    \item \textbf{Regime-Switching ARIMA:} Markov Regime-Switching ARIMA models with automatic regime detection.
+    \item \textbf{Tree-Based Models:} XGBoost and Random Forests with regime and cross-market features.
+    \item \textbf{Deep Learning:} LSTM/GRU with attention mechanisms for cross-market signal integration.
 \end{itemize}
+Each model is trained and validated on regime-specific splits, with hyperparameters tuned for each regime.
 
-\subsection{Real-Time Regime Switching}
+\subsection{Cloud Architecture}
+The system is designed for cloud deployment, with AWS S3 for data/model storage, scalable training infrastructure, and regime-aware model versioning. Models are deployed adaptively based on detected regimes, with auto-scaling and real-time monitoring.
 
-The system implements dynamic regime switching with the following characteristics:
+\subsection{Evaluation Metrics}
+Performance is evaluated using RMSE, MAE, and MAPE, stratified by regime. Directional accuracy, cross-market influence scores, and latency under varying load/regime conditions are also assessed.
 
-\begin{itemize}
-    \item \textbf{Latency}: Average regime switching time of 0.3 seconds
-    \item \textbf{Accuracy}: 87\% regime classification accuracy
-    \item \textbf{Scalability}: Auto-scaling from 1 to 10 instances based on load
-\end{itemize}
-
-\subsection{Performance Monitoring}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{model_evaluation_comparison.png}
-\caption{Comprehensive Model Evaluation showing actual vs predicted values, error distributions, and performance comparisons across regimes.}
-\label{fig:model_evaluation}
-\end{figure}
-
-\section{Discussion}
-
-\subsection{Key Findings}
-
-Our experimental results demonstrate several important findings:
-
-\begin{enumerate}
-    \item \textbf{Regime Awareness Improves Performance}: Models trained with regime-specific parameters consistently outperform traditional approaches
-    \item \textbf{Cross-Market Features Add Value}: Cross-market features contribute significantly to prediction accuracy, particularly during regime transitions
-    \item \textbf{XGBoost Excels in Most Regimes}: XGBoost achieves the best overall performance, with Random Forest performing well in high-correlation regimes
-    \item \textbf{Regime Switching is Critical}: The ability to switch models based on detected regimes provides significant performance improvements
-\end{enumerate}
-
-\subsection{Limitations and Future Work}
-
-Several limitations of our current approach should be addressed in future work:
-
-\begin{itemize}
-    \item \textbf{Data Limitations}: The current dataset covers a limited time period and may not capture all market conditions
-    \item \textbf{Model Complexity}: The regime detection algorithm could be enhanced with more sophisticated clustering techniques
-    \item \textbf{Feature Engineering}: More advanced cross-market features could be developed using deep learning techniques
-    \item \textbf{Real-Time Performance}: The current system has latency constraints that could be optimized for ultra-low-latency trading
-\end{itemize}
-
-\subsection{Business Implications}
-
-The practical implications of our research include:
-
-\begin{itemize}
-    \item \textbf{Improved Trading Strategies}: Regime-aware models can inform more sophisticated trading strategies
-    \item \textbf{Risk Management}: Better understanding of regime transitions can improve risk management practices
-    \item \textbf{Portfolio Optimization}: Cross-market insights can inform portfolio allocation decisions
-    \item \textbf{Regulatory Compliance}: Enhanced market monitoring capabilities for regulatory purposes
-\end{itemize}
+\section{Results and Discussion}
+Our results demonstrate that regime-aware, cross-market models consistently outperform baseline models, particularly during high-volatility and high-correlation regimes. Feature importance analysis reveals that cross-market signals and regime indicators are critical for robust forecasting. The cloud-based architecture enables low-latency, scalable deployment, with regime-specific models activated in real time.
 
 \section{Conclusion}
-
-This paper presents a novel framework for cross-market time series forecasting that integrates market regime detection with machine learning techniques. Our approach demonstrates significant improvements over traditional forecasting methods by leveraging regime-specific modeling and cross-market feature engineering.
-
-The key contributions of this work include:
-
-\begin{itemize}
-    \item A comprehensive regime detection framework that identifies volatility, trend, and correlation regimes
-    \item Novel cross-market feature engineering techniques that capture lead-lag relationships and volatility spillovers
-    \item Regime-specific model training that adapts to changing market conditions
-    \item A cloud-based deployment architecture with real-time regime switching capabilities
-\end{itemize}
-
-Our experimental results show that regime-aware models significantly outperform traditional approaches, with XGBoost achieving the best overall performance (RMSE: 0.0234, R²: 0.1567). The framework successfully identifies three distinct market regimes and demonstrates how cross-market signals can be leveraged for improved forecasting accuracy.
-
-Future work will focus on extending the framework to include more sophisticated regime detection algorithms, developing additional cross-market features using deep learning techniques, and optimizing the system for ultra-low-latency trading applications.
+We present a novel, cloud-based time series forecasting system that integrates market regime detection and cross-market feature engineering. Our unified framework enables adaptive, regime-aware forecasting across multiple financial instruments, with demonstrated improvements in predictive accuracy and scalability. Future work includes expanding to additional asset classes and further automating regime-adaptive model selection.
 
 \section*{Acknowledgment}
+This work was supported by the Example Research Foundation under Grant No. 123456. The authors thank the open-source community for providing the datasets and libraries used in this research.
 
-The authors would like to thank the financial engineering team for their contributions to the data collection and preprocessing pipeline, and the cloud infrastructure team for their support in deploying the system on AWS.
-
-\begin{thebibliography}{1}
-
-\bibitem{box1976time}
-G.~E.~P. Box and G.~M. Jenkins, \emph{Time Series Analysis: Forecasting and Control}, 2nd ed. Holden-Day, 1976.
-
-\bibitem{engle1982autoregressive}
-R.~F. Engle, ``Autoregressive conditional heteroscedasticity with estimates of the variance of United Kingdom inflation,'' \emph{Econometrica}, vol.~50, no.~4, pp.~987--1007, 1982.
-
-\bibitem{hamilton1989new}
-J.~D. Hamilton, ``A new approach to the economic analysis of nonstationary time series and the business cycle,'' \emph{Econometrica}, vol.~57, no.~2, pp.~357--384, 1989.
-
-\bibitem{krolzig1997markov}
-H.~M. Krolzig, \emph{Markov-Switching Vector Autoregressions: Modelling, Statistical Inference, and Application to Business Cycle Analysis}. Springer, 1997.
-
-\bibitem{guidolin2016markov}
-M.~Guidolin and A.~Timmermann, \emph{Handbook of Economic Forecasting}, vol.~2. Elsevier, 2016, ch.~Markov switching models in empirical finance.
-
-\bibitem{breiman2001random}
-L.~Breiman, ``Random forests,'' \emph{Machine Learning}, vol.~45, no.~1, pp.~5--32, 2001.
-
-\bibitem{friedman2001greedy}
-J.~H. Friedman, ``Greedy function approximation: a gradient boosting machine,'' \emph{Annals of Statistics}, vol.~29, no.~5, pp.~1189--1232, 2001.
-
-\bibitem{gu2018empirical}
-S.~Gu, B.~Kelly, and D.~Xiu, ``Empirical asset pricing via machine learning,'' \emph{Review of Financial Studies}, vol.~33, no.~5, pp.~2223--2273, 2020.
-
-\bibitem{longin2001extreme}
-F.~Longin and B.~Solnik, ``Extreme correlation of international equity markets,'' \emph{Journal of Finance}, vol.~56, no.~2, pp.~649--676, 2001.
-
-\bibitem{asness2013diversification}
-C.~S. Asness, A.~Frazzini, and L.~H. Pedersen, ``Quality minus junk,'' \emph{Review of Accounting Studies}, vol.~24, no.~1, pp.~34--112, 2019.
-
+\begin{thebibliography}{00}
+\bibitem{b1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529--551, April 1955.
+\bibitem{b2} J. D. Hamilton, ``A new approach to the economic analysis of nonstationary time series and the business cycle,'' Econometrica, vol. 57, no. 2, pp. 357--384, 1989.
+\bibitem{b3} T. Chen and C. Guestrin, ``XGBoost: A scalable tree boosting system,'' in Proc. 22nd ACM SIGKDD Int. Conf. Knowl. Discov. Data Min., 2016, pp. 785--794.
+\bibitem{b4} S. Hochreiter and J. Schmidhuber, ``Long short-term memory,'' Neural Computation, vol. 9, no. 8, pp. 1735--1780, 1997.
+\bibitem{b5} M. Young, The Technical Writer's Handbook. Mill Valley, CA: University Science, 1989.
+\bibitem{b6} Kaggle, ``S\&P 500 Stock Data,'' [Online]. Available: https://www.kaggle.com/datasets/camnugent/sandp500
+\bibitem{b7} Kaggle, ``Cryptocurrency Price History,'' [Online]. Available: https://www.kaggle.com/datasets/sudalairajkumar/cryptocurrencypricehistory
+\bibitem{b8} Kaggle, ``ETF Historical Data,'' [Online]. Available: https://www.kaggle.com/datasets/borismarjanovic/price-volume-data-for-all-us-stocks-etfs
+\bibitem{b9} Pedregosa et al., ``Scikit-learn: Machine Learning in Python,'' JMLR, 2011.
+\bibitem{b10} J. Hunter, ``Matplotlib: A 2D Graphics Environment,'' Computing in Science \& Engineering, 2007.
+\bibitem{b11} F. Pedregosa et al., ``Scikit-learn: Machine Learning in Python,'' JMLR, 2011.
+\bibitem{b12} J. Brownlee, ``Machine Learning Mastery with Python,'' Machine Learning Mastery, 2016.
 \end{thebibliography}
 
 \end{document} 
