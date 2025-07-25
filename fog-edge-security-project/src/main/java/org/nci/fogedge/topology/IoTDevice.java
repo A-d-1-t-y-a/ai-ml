@@ -19,7 +19,8 @@ public class IoTDevice {
     private Location location;
     private String deviceType;
     private double dataGenerationRate; // packets per second
-    private EdgeNode connectedEdgeNode;
+    private EdgeNode connectedEdgeNode; // For backward compatibility
+    private List<EdgeNode> connectedEdgeNodes; // Support for multiple edge nodes
     private boolean encryptionEnabled;
     private String encryptionAlgorithm;
     private boolean authenticationEnabled;
@@ -42,6 +43,7 @@ public class IoTDevice {
         this.encryptionAlgorithm = "AES-256";
         this.authenticationEnabled = true;
         this.generatedDataIds = new ArrayList<>();
+        this.connectedEdgeNodes = new ArrayList<>();
         this.random = new Random(System.currentTimeMillis());
     }
     
@@ -70,7 +72,7 @@ public class IoTDevice {
      * @return True if data sent successfully, false otherwise
      */
     public boolean sendData(String dataId, double currentTime) {
-        if (connectedEdgeNode == null) {
+        if (connectedEdgeNodes.isEmpty() && connectedEdgeNode == null) {
             System.err.println("Error: IoT device " + id + " not connected to any edge node");
             return false;
         }
@@ -78,8 +80,17 @@ public class IoTDevice {
         // Apply security measures before sending
         String securedDataId = applySecurityMeasures(dataId);
         
-        // Send data to edge node
-        boolean success = connectedEdgeNode.receiveData(securedDataId, this, currentTime);
+        boolean success = false;
+        
+        // If we have multiple edge nodes, use those
+        if (!connectedEdgeNodes.isEmpty()) {
+            // For simplicity, send to the first connected edge node
+            EdgeNode targetEdge = connectedEdgeNodes.get(0);
+            success = targetEdge.receiveData(securedDataId, this, currentTime);
+        } else {
+            // For backward compatibility
+            success = connectedEdgeNode.receiveData(securedDataId, this, currentTime);
+        }
         
         return success;
     }
@@ -159,6 +170,34 @@ public class IoTDevice {
      */
     public void setConnectedEdgeNode(EdgeNode connectedEdgeNode) {
         this.connectedEdgeNode = connectedEdgeNode;
+        
+        // Also add to the list of connected edge nodes if not already present
+        if (connectedEdgeNode != null && !connectedEdgeNodes.contains(connectedEdgeNode)) {
+            connectedEdgeNodes.add(connectedEdgeNode);
+        }
+    }
+    
+    /**
+     * Add a connected edge node
+     * @param edgeNode Edge node to connect to
+     */
+    public void addConnectedEdgeNode(EdgeNode edgeNode) {
+        if (edgeNode != null && !connectedEdgeNodes.contains(edgeNode)) {
+            connectedEdgeNodes.add(edgeNode);
+        }
+        
+        // For backward compatibility, if this is the first edge node, also set it as the primary
+        if (connectedEdgeNode == null && !connectedEdgeNodes.isEmpty()) {
+            connectedEdgeNode = connectedEdgeNodes.get(0);
+        }
+    }
+    
+    /**
+     * Get all connected edge nodes
+     * @return List of connected edge nodes
+     */
+    public List<EdgeNode> getConnectedEdgeNodes() {
+        return connectedEdgeNodes;
     }
     
     /**

@@ -24,6 +24,7 @@ public class EdgeNode {
     private double memory; // in MB
     private List<IoTDevice> connectedDevices;
     private FogNode connectedFogNode;
+    private List<FogNode> connectedFogNodes; // Support for multiple fog nodes
     private Map<String, Double> receivedData; // Data ID -> Receive time
     private Map<String, Double> processedData; // Data ID -> Process time
     private boolean intrusionDetectionEnabled;
@@ -48,6 +49,7 @@ public class EdgeNode {
         this.processingCapacity = processingCapacity;
         this.memory = memory;
         this.connectedDevices = new ArrayList<>();
+        this.connectedFogNodes = new ArrayList<>();
         this.receivedData = new HashMap<>();
         this.processedData = new HashMap<>();
         this.intrusionDetectionEnabled = true;
@@ -177,7 +179,7 @@ public class EdgeNode {
      * @param dataId ID of data to process
      * @return Processing time in simulation time units
      */
-    private double calculateProcessingTime(String dataId) {
+    public double calculateProcessingTime(String dataId) {
         // Base processing time
         double baseTime = 0.01; // 10 ms
         
@@ -262,6 +264,34 @@ public class EdgeNode {
      */
     public void setConnectedFogNode(FogNode connectedFogNode) {
         this.connectedFogNode = connectedFogNode;
+        
+        // Also add to the list of connected fog nodes if not already present
+        if (connectedFogNode != null && !connectedFogNodes.contains(connectedFogNode)) {
+            connectedFogNodes.add(connectedFogNode);
+        }
+    }
+    
+    /**
+     * Add a connected fog node
+     * @param fogNode Fog node to connect to
+     */
+    public void addConnectedFogNode(FogNode fogNode) {
+        if (fogNode != null && !connectedFogNodes.contains(fogNode)) {
+            connectedFogNodes.add(fogNode);
+        }
+        
+        // For backward compatibility, if this is the first fog node, also set it as the primary
+        if (connectedFogNode == null && !connectedFogNodes.isEmpty()) {
+            connectedFogNode = connectedFogNodes.get(0);
+        }
+    }
+    
+    /**
+     * Get all connected fog nodes
+     * @return List of connected fog nodes
+     */
+    public List<FogNode> getConnectedFogNodes() {
+        return connectedFogNodes;
     }
     
     /**
@@ -326,6 +356,41 @@ public class EdgeNode {
      */
     public int getSecurityIncidentsMitigated() {
         return securityIncidentsMitigated;
+    }
+    
+    /**
+     * Process data and return processed data ID
+     * @param dataId ID of data to process
+     * @param currentTime Current simulation time
+     * @return Processed data ID
+     */
+    public String processData(String dataId, double currentTime) {
+        // Apply edge analytics to data
+        String processedDataId = applyEdgeAnalytics(dataId);
+        
+        // Record processed data with timestamp
+        processedData.put(processedDataId, currentTime + calculateProcessingTime(dataId));
+        
+        return processedDataId;
+    }
+    
+    /**
+     * Handle a security incident
+     * @param dataId ID of data with security incident
+     * @param currentTime Current simulation time
+     * @return True if incident handled successfully, false otherwise
+     */
+    public boolean handleSecurityIncident(String dataId, double currentTime) {
+        securityIncidentsDetected++;
+        
+        // Simulate security incident handling with 70% success rate
+        boolean mitigated = random.nextDouble() < 0.7;
+        
+        if (mitigated) {
+            securityIncidentsMitigated++;
+        }
+        
+        return mitigated;
     }
     
     @Override

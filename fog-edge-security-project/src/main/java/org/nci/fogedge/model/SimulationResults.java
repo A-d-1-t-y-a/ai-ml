@@ -24,6 +24,9 @@ public class SimulationResults {
     private int securityIncidentsDetected;
     private int securityIncidentsMitigated;
     private int securityIncidentsUnmitigated;
+    private long packetsTransmittedToEdge;
+    private long packetsTransmittedToFog;
+    private long packetsTransmittedToCloud;
     private double averageLatency; // in milliseconds
     private double bandwidthSaved; // in MB
     private double energyConsumption; // in kWh
@@ -128,18 +131,128 @@ public class SimulationResults {
      */
     public void recordSecurityIncident(String incidentType, boolean mitigated) {
         securityIncidentsDetected++;
+        
         if (mitigated) {
             securityIncidentsMitigated++;
         } else {
             securityIncidentsUnmitigated++;
         }
         
-        // Update incident count by type
-        if (securityIncidentsByType.containsKey(incidentType)) {
-            securityIncidentsByType.put(incidentType, securityIncidentsByType.get(incidentType) + 1);
-        } else {
-            securityIncidentsByType.put(incidentType, 1);
+        // Record incident by type
+        securityIncidentsByType.put(incidentType, 
+            securityIncidentsByType.getOrDefault(incidentType, 0) + 1);
+    }
+    
+    /**
+     * Increment the total packets generated counter
+     */
+    public void incrementTotalPacketsGenerated() {
+        totalPacketsGenerated++;
+    }
+    
+    /**
+     * Increment the packets transmitted to edge counter
+     */
+    public void incrementPacketsTransmittedToEdge() {
+        packetsTransmittedToEdge++;
+    }
+    
+    /**
+     * Increment the packets processed at edge counter
+     */
+    public void incrementPacketsProcessedAtEdge() {
+        packetsProcessedAtEdge++;
+    }
+    
+    /**
+     * Increment the packets transmitted to fog counter
+     */
+    public void incrementPacketsTransmittedToFog() {
+        packetsTransmittedToFog++;
+    }
+    
+    /**
+     * Increment the packets processed at fog counter
+     */
+    public void incrementPacketsProcessedAtFog() {
+        packetsProcessedAtFog++;
+    }
+    
+    /**
+     * Increment the packets transmitted to cloud counter
+     */
+    public void incrementPacketsTransmittedToCloud() {
+        packetsTransmittedToCloud++;
+    }
+    
+    /**
+     * Increment the packets processed at cloud counter
+     */
+    public void incrementPacketsProcessedAtCloud() {
+        packetsProcessedAtCloud++;
+    }
+    
+    /**
+     * Increment the packets processed locally counter
+     */
+    public void incrementPacketsProcessedLocally() {
+        packetsProcessedLocally++;
+    }
+    
+    /**
+     * Increment the security incidents detected counter
+     */
+    public void incrementSecurityIncidentsDetected() {
+        securityIncidentsDetected++;
+    }
+    
+    /**
+     * Increment the security incidents mitigated counter
+     */
+    public void incrementSecurityIncidentsMitigated() {
+        securityIncidentsMitigated++;
+    }
+    
+    /**
+     * Increment the security incidents unmitigated counter
+     */
+    public void incrementSecurityIncidentsUnmitigated() {
+        securityIncidentsUnmitigated++;
+    }
+    
+    /**
+     * Calculate derived metrics based on raw data
+     */
+    public void calculateDerivedMetrics() {
+        // Calculate average latency if we have values
+        if (!latencyValues.isEmpty()) {
+            double sum = 0.0;
+            for (Double value : latencyValues) {
+                sum += value;
+            }
+            averageLatency = sum / latencyValues.size();
         }
+        
+        // Calculate energy metrics
+        totalEnergyConsumed = energyConsumedByIoT + energyConsumedByEdge + 
+                             energyConsumedByFog + energyConsumedByCloud;
+        
+        // Calculate bandwidth saved
+        bandwidthSaved = bandwidthSavedByEdgeProcessing + bandwidthSavedByFogProcessing;
+        
+        // Calculate security metrics
+        if (securityIncidentsDetected > 0) {
+            mitigationSuccessRate = (double) securityIncidentsMitigated / securityIncidentsDetected;
+        }
+        
+        // Calculate energy efficiency
+        if (totalPacketsGenerated > 0) {
+            energyPerPacket = totalEnergyConsumed / totalPacketsGenerated;
+        }
+        
+        // Calculate other derived metrics as needed
+        totalSecurityOverhead = averageSecurityOverheadIoT + averageSecurityOverheadEdge + 
+                               averageSecurityOverheadFog;
     }
     
     /**
@@ -246,6 +359,70 @@ public class SimulationResults {
     
     public double getEnergyConsumedByIoT() {
         return energyConsumedByIoT;
+    }
+    
+    /**
+     * Get the number of packets transmitted to edge
+     * @return Number of packets transmitted to edge
+     */
+    public long getPacketsTransmittedToEdge() {
+        return packetsTransmittedToEdge;
+    }
+    
+    /**
+     * Set the number of packets transmitted to edge
+     * @param packetsTransmittedToEdge Number of packets transmitted to edge
+     */
+    public void setPacketsTransmittedToEdge(long packetsTransmittedToEdge) {
+        this.packetsTransmittedToEdge = packetsTransmittedToEdge;
+    }
+    
+    /**
+     * Get the number of packets transmitted to fog
+     * @return Number of packets transmitted to fog
+     */
+    public long getPacketsTransmittedToFog() {
+        return packetsTransmittedToFog;
+    }
+    
+    /**
+     * Set the number of packets transmitted to fog
+     * @param packetsTransmittedToFog Number of packets transmitted to fog
+     */
+    public void setPacketsTransmittedToFog(long packetsTransmittedToFog) {
+        this.packetsTransmittedToFog = packetsTransmittedToFog;
+    }
+    
+    /**
+     * Get the number of packets transmitted to cloud
+     * @return Number of packets transmitted to cloud
+     */
+    public long getPacketsTransmittedToCloud() {
+        return packetsTransmittedToCloud;
+    }
+    
+    /**
+     * Set the number of packets transmitted to cloud
+     * @param packetsTransmittedToCloud Number of packets transmitted to cloud
+     */
+    public void setPacketsTransmittedToCloud(long packetsTransmittedToCloud) {
+        this.packetsTransmittedToCloud = packetsTransmittedToCloud;
+    }
+    
+    /**
+     * Get the number of packets processed locally
+     * @return Number of packets processed locally
+     */
+    public long getPacketsProcessedLocally() {
+        return packetsProcessedLocally;
+    }
+    
+    /**
+     * Set the number of packets processed locally
+     * @param packetsProcessedLocally Number of packets processed locally
+     */
+    public void setPacketsProcessedLocally(long packetsProcessedLocally) {
+        this.packetsProcessedLocally = packetsProcessedLocally;
     }
     
     public void setEnergyConsumedByIoT(double energyConsumedByIoT) {
@@ -396,13 +573,8 @@ public class SimulationResults {
         this.averageDecoyTechniqueOverhead = averageDecoyTechniqueOverhead;
     }
     
-    public long getPacketsProcessedLocally() {
-        return packetsProcessedLocally;
-    }
-    
-    public void setPacketsProcessedLocally(long packetsProcessedLocally) {
-        this.packetsProcessedLocally = packetsProcessedLocally;
-    }
+    // These methods are already defined elsewhere in the class
+    // Removed duplicate declarations
     
     public int getSecurityIncidentsUnmitigated() {
         return securityIncidentsUnmitigated;

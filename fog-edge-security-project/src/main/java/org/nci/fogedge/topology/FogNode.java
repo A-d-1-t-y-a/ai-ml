@@ -212,7 +212,7 @@ public class FogNode {
      * @param dataId ID of data to process
      * @return Processing time in simulation time units
      */
-    private double calculateProcessingTime(String dataId) {
+    public double calculateProcessingTime(String dataId) {
         // Base processing time
         double baseTime = 0.005; // 5 ms
         
@@ -401,6 +401,41 @@ public class FogNode {
      */
     public int getSecurityIncidentsMitigated() {
         return securityIncidentsMitigated;
+    }
+    
+    /**
+     * Process data and return processed data ID
+     * @param dataId ID of data to process
+     * @param currentTime Current simulation time
+     * @return Processed data ID
+     */
+    public String processData(String dataId, double currentTime) {
+        // Apply fog analytics to data
+        String processedDataId = applyFogAnalytics(dataId);
+        
+        // Record processed data with timestamp
+        processedData.put(processedDataId, currentTime + calculateProcessingTime(dataId));
+        
+        return processedDataId;
+    }
+    
+    /**
+     * Handle a security incident
+     * @param dataId ID of data with security incident
+     * @param currentTime Current simulation time
+     * @return True if incident handled successfully, false otherwise
+     */
+    public boolean handleSecurityIncident(String dataId, double currentTime) {
+        securityIncidentsDetected++;
+        
+        // Simulate security incident handling with 85% success rate (better than edge)
+        boolean mitigated = random.nextDouble() < 0.85;
+        
+        if (mitigated) {
+            securityIncidentsMitigated++;
+        }
+        
+        return mitigated;
     }
     
     @Override

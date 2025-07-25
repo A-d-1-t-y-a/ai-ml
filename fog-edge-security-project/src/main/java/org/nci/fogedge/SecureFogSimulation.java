@@ -128,6 +128,40 @@ public class SecureFogSimulation {
         CloudDatacenter cloud = new CloudDatacenter("cloud-1", new Location(0.0, 0.0), 20000.0, 8192.0);
         topology.setCloudDatacenter(cloud);
         
+        // Connect IoT devices to edge nodes (round-robin assignment)
+        List<IoTDevice> iotDevices = topology.getIotDevices();
+        List<EdgeNode> edgeNodes = topology.getEdgeNodes();
+        for (int i = 0; i < iotDevices.size(); i++) {
+            // Connect each IoT device to one edge node (round-robin)
+            EdgeNode targetEdge = edgeNodes.get(i % edgeNodes.size());
+            iotDevices.get(i).addConnectedEdgeNode(targetEdge);
+            
+            // For redundancy, also connect to a second edge node if available
+            if (edgeNodes.size() > 1) {
+                EdgeNode secondEdge = edgeNodes.get((i + 1) % edgeNodes.size());
+                iotDevices.get(i).addConnectedEdgeNode(secondEdge);
+            }
+        }
+        
+        // Connect edge nodes to fog nodes (round-robin assignment)
+        List<FogNode> fogNodes = topology.getFogNodes();
+        for (int i = 0; i < edgeNodes.size(); i++) {
+            // Connect each edge node to one fog node (round-robin)
+            FogNode targetFog = fogNodes.get(i % fogNodes.size());
+            edgeNodes.get(i).addConnectedFogNode(targetFog);
+            
+            // For redundancy, also connect to a second fog node if available
+            if (fogNodes.size() > 1) {
+                FogNode secondFog = fogNodes.get((i + 1) % fogNodes.size());
+                edgeNodes.get(i).addConnectedFogNode(secondFog);
+            }
+        }
+        
+        // Connect fog nodes to cloud datacenter
+        for (FogNode fog : fogNodes) {
+            fog.setConnectedCloud(cloud);
+        }
+        
         return topology;
     }
 }

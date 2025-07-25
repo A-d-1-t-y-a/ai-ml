@@ -1,0 +1,24 @@
+=======================================================
+             ENERGY CONSUMPTION REPORT                 
+=======================================================
+
+ENERGY CONSUMPTION BY LAYER:
+--------------------------
+IoT layer energy consumption: 0.00 J
+Edge layer energy consumption: 0.00 J
+Fog layer energy consumption: 0.00 J
+Cloud layer energy consumption: 0.00 J
+Total energy consumption: 0.00 J
+
+ENERGY CONSUMPTION BY COMPONENT:
+------------------------------
+Processing energy consumption: 0.00 J
+Transmission energy consumption: 0.00 J
+Storage energy consumption: 0.00 J
+Security energy consumption: 0.00 J
+
+ENERGY EFFICIENCY METRICS:
+------------------------
+Energy per bit: 0.00 J/bit
+Energy per packet: 0.00 J/packet
+

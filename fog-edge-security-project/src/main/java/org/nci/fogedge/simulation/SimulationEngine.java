@@ -74,7 +74,7 @@ public class SimulationEngine {
      */
     public void initialize() {
         // Schedule initial data generation events for all IoT devices
-        for (IoTDevice device : topology.getIoTDevices()) {
+        for (IoTDevice device : topology.getIotDevices()) {
             scheduleEvent(new SimulationEvent(
                 EventType.GENERATE_DATA,
                 random.nextDouble() * parameters.getInitialDataGenerationDelay(),
@@ -93,7 +93,7 @@ public class SimulationEngine {
             null
         ));
         
-        System.out.println("Simulation initialized with " + topology.getIoTDevices().size() + " IoT devices, " +
+        System.out.println("Simulation initialized with " + topology.getIotDevices().size() + " IoT devices, " +
                 topology.getEdgeNodes().size() + " edge nodes, " + topology.getFogNodes().size() + " fog nodes, and " +
                 (topology.getCloudDatacenter() != null ? "1" : "0") + " cloud datacenter.");
     }
@@ -521,7 +521,7 @@ public class SimulationEngine {
      * @return IoT device, or null if not found
      */
     private IoTDevice findIoTDevice(String deviceId) {
-        for (IoTDevice device : topology.getIoTDevices()) {
+        for (IoTDevice device : topology.getIotDevices()) {
             if (device.getId().equals(deviceId)) {
                 return device;
             }
