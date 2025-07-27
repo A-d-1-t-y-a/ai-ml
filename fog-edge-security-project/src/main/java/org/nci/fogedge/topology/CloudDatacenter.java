@@ -108,6 +108,34 @@ public class CloudDatacenter {
     }
     
     /**
+     * Process data in the cloud datacenter
+     * @param dataId ID of data to process
+     * @param data The data to process
+     * @return Processed data
+     */
+    public String processData(String dataId, String data) {
+        // Record received data if not already recorded
+        if (!receivedData.containsKey(dataId)) {
+            receivedData.put(dataId, System.currentTimeMillis() / 1000.0);
+            totalDataReceived++;
+        }
+        
+        // Process the data
+        double processingTime = calculateProcessingTime(dataId);
+        totalProcessingTime += processingTime;
+        
+        // Apply cloud analytics
+        Object processedData = applyCloudAnalytics(dataId);
+        
+        // Store data
+        dataStorage.put(dataId, processedData);
+        this.processedData.put(dataId, System.currentTimeMillis() / 1000.0);
+        totalDataProcessed++;
+        
+        return data + "_CLOUD_PROCESSED";
+    }
+    
+    /**
      * Apply cloud analytics to data
      * @param dataId ID of data to process
      * @return Processed data object

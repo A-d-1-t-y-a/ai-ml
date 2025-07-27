@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Class to hold the results of the fog computing simulation
@@ -90,8 +91,93 @@ public class SimulationResults {
     // Detailed metrics
     private List<Double> latencyValues = new ArrayList<>();
     private Map<String, Integer> securityIncidentsByType = new HashMap<>();
-    private Map<String, Double> energyConsumptionByLayer = new HashMap<>();
+    private Map<String, Integer> securityIncidentsMitigatedByType = new HashMap<>();
+    
+    // Per-device metrics
+    private Map<String, Integer> packetsGeneratedByDevice = new HashMap<>();
+    private Map<String, Double> energyConsumedByDevice = new HashMap<>();
+    private Map<String, List<Double>> latenciesByDevice = new HashMap<>();
+    
+    // Per-node metrics
+    private Map<String, Integer> packetsProcessedByEdgeNode = new HashMap<>();
+    private Map<String, Integer> packetsProcessedByFogNode = new HashMap<>();
+    private Map<String, Double> energyConsumedByEdgeNode = new HashMap<>();
+    private Map<String, Double> energyConsumedByFogNode = new HashMap<>();
+    
+    // Offloading metrics
+    private Map<String, List<OffloadingRecord>> offloadingRecords = new HashMap<>();
+    
+    // Security metrics
+    private Map<String, List<SecurityIncidentRecord>> securityIncidentRecords = new HashMap<>();
+    
+    // Packet completion metrics
+    private Map<String, PacketCompletionRecord> packetCompletionRecords = new HashMap<>();
+    
+    // Inner classes for detailed records
+    private class OffloadingRecord {
+        String sourceId;
+        String destinationId;
+        String dataId;
+        int dataSize;
+        double timestamp;
+        String offloadingType;
+        
+        public OffloadingRecord(String sourceId, String destinationId, String dataId, int dataSize, double timestamp, String offloadingType) {
+            this.sourceId = sourceId;
+            this.destinationId = destinationId;
+            this.dataId = dataId;
+            this.dataSize = dataSize;
+            this.timestamp = timestamp;
+            this.offloadingType = offloadingType;
+        }
+    }
+    
+    private class SecurityIncidentRecord {
+        String incidentType;
+        String sourceId;
+        String destinationId;
+        String dataId;
+        double timestamp;
+        boolean mitigated;
+        double mitigationTime;
+        double energyOverhead;
+        
+        public SecurityIncidentRecord(String incidentType, String sourceId, String destinationId, String dataId, double timestamp) {
+            this.incidentType = incidentType;
+            this.sourceId = sourceId;
+            this.destinationId = destinationId;
+            this.dataId = dataId;
+            this.timestamp = timestamp;
+            this.mitigated = false;
+            this.mitigationTime = 0.0;
+            this.energyOverhead = 0.0;
+        }
+    }
+    
+    private class PacketCompletionRecord {
+        String dataId;
+        String sourceDeviceId;
+        double latency;
+        double completionTime;
+        
+        public PacketCompletionRecord(String dataId, String sourceDeviceId, double latency, double completionTime) {
+            this.dataId = dataId;
+            this.sourceDeviceId = sourceDeviceId;
+            this.latency = latency;
+            this.completionTime = completionTime;
+        }
+    }
+    
+    // Packet processing logs
+    private List<Map<String, Object>> packetProcessingLogs = new ArrayList<>();
     private List<Double> processingTimeByLayer = new ArrayList<>();
+    
+    // Per-device metrics for additional tracking
+    private Map<String, Double> processingTimeByDevice = new HashMap<>();
+    private Map<String, Integer> packetsProcessedByDevice = new HashMap<>();
+    
+    // Offloading logs
+    private List<Map<String, Object>> dataOffloadingLogs = new ArrayList<>();
     
     /**
      * Default constructor
@@ -227,18 +313,40 @@ public class SimulationResults {
         // Calculate average latency if we have values
         if (!latencyValues.isEmpty()) {
             double sum = 0.0;
+            double sumSquared = 0.0;
+            minEndToEndLatency = Double.MAX_VALUE;
+            maxEndToEndLatency = 0.0;
+            
             for (Double value : latencyValues) {
                 sum += value;
+                sumSquared += value * value;
+                minEndToEndLatency = Math.min(minEndToEndLatency, value);
+                maxEndToEndLatency = Math.max(maxEndToEndLatency, value);
             }
+            
             averageLatency = sum / latencyValues.size();
+            averageEndToEndLatency = averageLatency;
+            
+            // Calculate standard deviation
+            double mean = sum / latencyValues.size();
+            double variance = (sumSquared / latencyValues.size()) - (mean * mean);
+            latencyStandardDeviation = Math.sqrt(variance);
         }
         
         // Calculate energy metrics
         totalEnergyConsumed = energyConsumedByIoT + energyConsumedByEdge + 
                              energyConsumedByFog + energyConsumedByCloud;
         
+        // Set layer energy consumption for reporting
+        ioTLayerEnergyConsumption = energyConsumedByIoT;
+        edgeLayerEnergyConsumption = energyConsumedByEdge;
+        fogLayerEnergyConsumption = energyConsumedByFog;
+        cloudLayerEnergyConsumption = energyConsumedByCloud;
+        totalEnergyConsumption = totalEnergyConsumed;
+        
         // Calculate bandwidth saved
         bandwidthSaved = bandwidthSavedByEdgeProcessing + bandwidthSavedByFogProcessing;
+        totalBandwidthSaved = bandwidthSaved;
         
         // Calculate security metrics
         if (securityIncidentsDetected > 0) {
@@ -248,11 +356,42 @@ public class SimulationResults {
         // Calculate energy efficiency
         if (totalPacketsGenerated > 0) {
             energyPerPacket = totalEnergyConsumed / totalPacketsGenerated;
+            // Assuming average packet size of 1KB = 8192 bits
+            energyPerBit = energyPerPacket / 8192.0;
         }
         
-        // Calculate other derived metrics as needed
-        totalSecurityOverhead = averageSecurityOverheadIoT + averageSecurityOverheadEdge + 
-                               averageSecurityOverheadFog;
+        // Calculate security overhead metrics
+        totalSecurityOverhead = 0.0;
+        for (Double overhead : securityOverheadByLayer.values()) {
+            totalSecurityOverhead += overhead;
+        }
+        
+        // Calculate average security overhead by layer
+        if (securityOverheadByLayer.containsKey("IoT")) {
+            averageSecurityOverheadIoT = securityOverheadByLayer.get("IoT");
+        }
+        if (securityOverheadByLayer.containsKey("Edge")) {
+            averageSecurityOverheadEdge = securityOverheadByLayer.get("Edge");
+        }
+        if (securityOverheadByLayer.containsKey("Fog")) {
+            averageSecurityOverheadFog = securityOverheadByLayer.get("Fog");
+        }
+        
+        // Calculate energy consumption breakdown
+        processingEnergyConsumption = totalEnergyConsumed * 0.7; // Assuming 70% for processing
+        transmissionEnergyConsumption = totalEnergyConsumed * 0.2; // Assuming 20% for transmission
+        storageEnergyConsumption = totalEnergyConsumed * 0.05; // Assuming 5% for storage
+        securityEnergyConsumption = totalEnergyConsumed * 0.05; // Assuming 5% for security
+        
+        // Calculate energy saved metrics
+        energySavedByEdgeProcessing = packetsProcessedAtEdge * 0.001; // 1mWh saved per packet processed at edge
+        energySavedByFogProcessing = packetsProcessedAtFog * 0.0005; // 0.5mWh saved per packet processed at fog
+        totalEnergySaved = energySavedByEdgeProcessing + energySavedByFogProcessing;
+        
+        // Calculate energy efficiency ratio
+        if (totalEnergyConsumed > 0) {
+            energyEfficiencyRatio = totalEnergySaved / totalEnergyConsumed;
+        }
     }
     
     /**
@@ -261,14 +400,181 @@ public class SimulationResults {
      * @param energy Energy consumed in kWh
      */
     public void recordEnergyConsumption(String layer, double energy) {
-        if (energyConsumptionByLayer.containsKey(layer)) {
-            energyConsumptionByLayer.put(layer, energyConsumptionByLayer.get(layer) + energy);
-        } else {
-            energyConsumptionByLayer.put(layer, energy);
+        if (layer.equals("IoT")) {
+            energyConsumedByIoT += energy;
+        } else if (layer.equals("Edge")) {
+            energyConsumedByEdge += energy;
+        } else if (layer.equals("Fog")) {
+            energyConsumedByFog += energy;
+        } else if (layer.equals("Cloud")) {
+            energyConsumedByCloud += energy;
         }
         
-        // Update total energy consumption
-        this.energyConsumption += energy;
+        // Update energy consumption by layer map
+        Double currentEnergy = energyConsumptionByLayer.getOrDefault(layer, 0.0);
+        energyConsumptionByLayer.put(layer, currentEnergy + energy);
+    }
+    
+    /**
+     * Records energy consumption for a specific device
+     * @param deviceId Device ID
+     * @param energy Energy consumed in kWh
+     */
+    public void recordEnergyConsumptionByDevice(String deviceId, double energy) {
+        Double currentEnergy = energyConsumedByDevice.getOrDefault(deviceId, 0.0);
+        energyConsumedByDevice.put(deviceId, currentEnergy + energy);
+    }
+    
+    /**
+     * Records security overhead by type
+     * @param type Security measure type (encryption, authentication, etc.)
+     * @param overhead Overhead in milliseconds
+     */
+    public void recordSecurityOverhead(String type, double overhead) {
+        Double currentOverhead = securityOverheadByType.getOrDefault(type, 0.0);
+        securityOverheadByType.put(type, currentOverhead + overhead);
+        
+        // Update specific overhead metrics
+        if (type.equals("encryption")) {
+            averageEncryptionOverhead += overhead;
+        } else if (type.equals("authentication")) {
+            averageAuthenticationOverhead += overhead;
+        } else if (type.equals("intrusion_detection")) {
+            averageIntrusionDetectionOverhead += overhead;
+        } else if (type.equals("blockchain")) {
+            averageBlockchainOverhead += overhead;
+        } else if (type.equals("decoy")) {
+            averageDecoyTechniqueOverhead += overhead;
+        }
+    }
+    
+    /**
+     * Records security overhead by layer
+     * @param layer Layer name (IoT, Edge, Fog)
+     * @param overhead Overhead in milliseconds
+     */
+    public void recordSecurityOverheadByLayer(String layer, double overhead) {
+        Double currentOverhead = securityOverheadByLayer.getOrDefault(layer, 0.0);
+        securityOverheadByLayer.put(layer, currentOverhead + overhead);
+    }
+    
+    /**
+     * Records a packet generation event
+     * @param deviceId Source device ID
+     * @param packetId Packet ID
+     * @param size Packet size in bytes
+     * @param timestamp Generation timestamp
+     */
+    public void recordPacketGeneration(String deviceId, String packetId, int size, double timestamp) {
+        // Increment packets generated by device
+        Integer currentCount = packetsGeneratedByDevice.getOrDefault(deviceId, 0);
+        packetsGeneratedByDevice.put(deviceId, currentCount + 1);
+        
+        // Record packet processing log
+        Map<String, Object> log = new HashMap<>();
+        log.put("packetId", packetId);
+        log.put("sourceId", deviceId);
+        log.put("size", size);
+        log.put("generationTime", timestamp);
+        log.put("status", "generated");
+        packetProcessingLogs.add(log);
+    }
+    
+    /**
+     * Records data offloading from one node to another
+     * @param sourceId Source node ID
+     * @param destinationId Destination node ID
+     * @param packetId Packet ID
+     * @param size Packet size in bytes
+     * @param timestamp Offloading timestamp
+     * @param type Offloading type (IoT-to-Edge, Edge-to-Fog, etc.)
+     */
+    public void recordDataOffloading(String sourceId, String destinationId, String packetId, int size, double timestamp, String type) {
+        Map<String, Object> log = new HashMap<>();
+        log.put("packetId", packetId);
+        log.put("sourceId", sourceId);
+        log.put("destinationId", destinationId);
+        log.put("size", size);
+        log.put("timestamp", timestamp);
+        log.put("type", type);
+        dataOffloadingLogs.add(log);
+    }
+    
+    /**
+     * Increments transmission energy consumption
+     * @param energy Energy consumed in kWh
+     */
+    public void incrementTransmissionEnergyConsumption(double energy) {
+        transmissionEnergyConsumption += energy;
+    }
+    
+    /**
+     * Get energy consumed by a specific device
+     * @param deviceId Device ID
+     * @return Energy consumed in kWh
+     */
+    public double getDeviceEnergyConsumption(String deviceId) {
+        return energyConsumedByDevice.getOrDefault(deviceId, 0.0);
+    }
+    
+    /**
+     * Get packets generated by a specific device
+     * @param deviceId Device ID
+     * @return Number of packets generated
+     */
+    public int getPacketsGeneratedByDevice(String deviceId) {
+        return packetsGeneratedByDevice.getOrDefault(deviceId, 0);
+    }
+    
+    /**
+     * Get packets processed by a specific device
+     * @param deviceId Device ID
+     * @return Number of packets processed
+     */
+    public int getPacketsProcessedByDevice(String deviceId) {
+        return packetsProcessedByDevice.getOrDefault(deviceId, 0);
+    }
+    
+    /**
+     * Get all device IDs that have generated packets
+     * @return Set of device IDs
+     */
+    public Set<String> getAllDeviceIds() {
+        return packetsGeneratedByDevice.keySet();
+    }
+    
+    /**
+     * Get all data offloading logs
+     * @return List of offloading logs
+     */
+    public List<Map<String, Object>> getDataOffloadingLogs() {
+        return dataOffloadingLogs;
+    }
+    
+    /**
+     * Get security overhead by type
+     * @param type Security measure type
+     * @return Overhead in milliseconds
+     */
+    public double getSecurityOverheadByType(String type) {
+        return securityOverheadByType.getOrDefault(type, 0.0);
+    }
+    
+    /**
+     * Get security overhead by layer
+     * @param layer Layer name
+     * @return Overhead in milliseconds
+     */
+    public double getSecurityOverheadByLayer(String layer) {
+        return securityOverheadByLayer.getOrDefault(layer, 0.0);
+    }
+    
+    /**
+     * Get all packet processing logs
+     * @return List of packet processing logs
+     */
+    public List<Map<String, Object>> getPacketProcessingLogs() {
+        return packetProcessingLogs;
     }
     
     // Getters and setters
@@ -276,7 +582,6 @@ public class SimulationResults {
     public long getTotalPacketsGenerated() {
         return totalPacketsGenerated;
     }
-    
     public void setTotalPacketsGenerated(long totalPacketsGenerated) {
         this.totalPacketsGenerated = totalPacketsGenerated;
     }
@@ -797,5 +1102,278 @@ public class SimulationResults {
     
     public void setSecurityEnergyConsumption(double securityEnergyConsumption) {
         this.securityEnergyConsumption = securityEnergyConsumption;
+    }
+    
+    /**
+     * Record a security incident with detailed information
+     * @param incidentType Type of security incident
+     * @param sourceId Source ID where incident originated
+     * @param destinationId Destination ID where incident was detected
+     * @param dataId Data packet ID involved in the incident
+     * @param timestamp Time when the incident was detected
+     */
+    public void recordSecurityIncident(String incidentType, String sourceId, String destinationId, String dataId, double timestamp) {
+        // Increment the count for this incident type
+        securityIncidentsByType.put(incidentType, securityIncidentsByType.getOrDefault(incidentType, 0) + 1);
+        
+        // Create a new security incident record
+        SecurityIncidentRecord record = new SecurityIncidentRecord(incidentType, sourceId, destinationId, dataId, timestamp);
+        
+        // Add to the records map
+        List<SecurityIncidentRecord> records = securityIncidentRecords.getOrDefault(incidentType, new ArrayList<>());
+        records.add(record);
+        securityIncidentRecords.put(incidentType, records);
+    }
+    
+    /**
+     * Record security incident handling details
+     * @param sourceId Source ID where incident originated
+     * @param destinationId Destination ID where incident was detected
+     * @param dataId Data packet ID involved in the incident
+     * @param mitigated Whether the incident was successfully mitigated
+     * @param mitigationTime Time taken to mitigate the incident
+     * @param energyOverhead Energy consumed for mitigation
+     * @param timestamp Time when mitigation was completed
+     */
+    public void recordSecurityIncidentHandling(String sourceId, String destinationId, String dataId, boolean mitigated, 
+                                             double mitigationTime, double energyOverhead, double timestamp) {
+        // Find the incident record
+        for (List<SecurityIncidentRecord> records : securityIncidentRecords.values()) {
+            for (SecurityIncidentRecord record : records) {
+                if (record.dataId.equals(dataId) && record.destinationId.equals(destinationId)) {
+                    record.mitigated = mitigated;
+                    record.mitigationTime = mitigationTime;
+                    record.energyOverhead = energyOverhead;
+                    break;
+                }
+            }
+        }
+        
+        // Record energy consumption for security
+        recordEnergyConsumption("Security", energyOverhead);
+    }
+    
+    /**
+     * Record offloading of a data packet
+     * @param sourceId Source ID
+     * @param destinationId Destination ID
+     * @param dataId Data packet ID
+     * @param dataSize Size of the data packet
+     * @param timestamp Time of offloading
+     * @param offloadingType Type of offloading (e.g., "IoT-to-Edge", "Edge-to-Fog", etc.)
+     */
+    public void recordOffloading(String sourceId, String destinationId, String dataId, int dataSize, double timestamp, String offloadingType) {
+        OffloadingRecord record = new OffloadingRecord(sourceId, destinationId, dataId, dataSize, timestamp, offloadingType);
+        
+        List<OffloadingRecord> records = offloadingRecords.getOrDefault(offloadingType, new ArrayList<>());
+        records.add(record);
+        offloadingRecords.put(offloadingType, records);
+    }
+    
+    /**
+     * Record packet completion with latency
+     * @param dataId Data packet ID
+     * @param sourceDeviceId Source device ID
+     * @param latency End-to-end latency
+     * @param completionTime Time of completion
+     */
+    public void recordPacketCompletion(String dataId, String sourceDeviceId, double latency, double completionTime) {
+        PacketCompletionRecord record = new PacketCompletionRecord(dataId, sourceDeviceId, latency, completionTime);
+        packetCompletionRecords.put(dataId, record);
+        
+        // Also record the latency for the device
+        List<Double> deviceLatencies = latenciesByDevice.getOrDefault(sourceDeviceId, new ArrayList<>());
+        deviceLatencies.add(latency);
+        latenciesByDevice.put(sourceDeviceId, deviceLatencies);
+    }
+    
+    /**
+     * Increment security overhead
+     * @param overhead Overhead in milliseconds
+     */
+    public void incrementSecurityOverhead(double overhead) {
+        totalSecurityOverhead += overhead;
+    }
+    
+    /**
+     * Calculate device-specific metrics
+     * @param deviceId Device ID
+     */
+    public void calculateDeviceMetrics(String deviceId) {
+        // Calculate average latency for this device
+        List<Double> deviceLatencies = latenciesByDevice.getOrDefault(deviceId, new ArrayList<>());
+        if (!deviceLatencies.isEmpty()) {
+            double sum = 0.0;
+            for (Double latency : deviceLatencies) {
+                sum += latency;
+            }
+            double avgLatency = sum / deviceLatencies.size();
+            System.out.println("Device " + deviceId + " average latency: " + String.format("%.3f", avgLatency) + " ms");
+        }
+        
+        // Calculate energy consumption for this device
+        double energy = energyConsumedByDevice.getOrDefault(deviceId, 0.0);
+        System.out.println("Device " + deviceId + " energy consumption: " + String.format("%.6f", energy) + " mWh");
+        
+        // Calculate packets generated by this device
+        int packets = packetsGeneratedByDevice.getOrDefault(deviceId, 0);
+        System.out.println("Device " + deviceId + " packets generated: " + packets);
+    }
+    
+    /**
+     * Calculate edge node specific metrics
+     * @param edgeId Edge node ID
+     */
+    public void calculateEdgeNodeMetrics(String edgeId) {
+        // Calculate packets processed by this edge node
+        int packets = packetsProcessedByEdgeNode.getOrDefault(edgeId, 0);
+        System.out.println("Edge node " + edgeId + " packets processed: " + packets);
+        
+        // Calculate energy consumption for this edge node
+        double energy = energyConsumedByEdgeNode.getOrDefault(edgeId, 0.0);
+        System.out.println("Edge node " + edgeId + " energy consumption: " + String.format("%.6f", energy) + " mWh");
+    }
+    
+    /**
+     * Calculate fog node specific metrics
+     * @param fogId Fog node ID
+     */
+    public void calculateFogNodeMetrics(String fogId) {
+        // Calculate packets processed by this fog node
+        int packets = packetsProcessedByFogNode.getOrDefault(fogId, 0);
+        System.out.println("Fog node " + fogId + " packets processed: " + packets);
+        
+        // Calculate energy consumption for this fog node
+        double energy = energyConsumedByFogNode.getOrDefault(fogId, 0.0);
+        System.out.println("Fog node " + fogId + " energy consumption: " + String.format("%.6f", energy) + " mWh");
+    }
+    
+    /**
+     * Calculate cloud datacenter metrics
+     * @param cloudId Cloud datacenter ID
+     */
+    public void calculateCloudMetrics(String cloudId) {
+        // For now, just print the total packets processed at cloud
+        System.out.println("Cloud datacenter " + cloudId + " packets processed: " + packetsProcessedAtCloud);
+        
+        // Calculate energy consumption for cloud
+        double energy = energyConsumptionByLayer.getOrDefault("Cloud", 0.0);
+        System.out.println("Cloud datacenter " + cloudId + " energy consumption: " + String.format("%.6f", energy) + " mWh");
+    }
+    
+    /**
+     * Calculate security-related metrics
+     */
+    public void calculateSecurityMetrics() {
+        // Calculate security mitigation rate
+        if (securityIncidentsDetected > 0) {
+            mitigationSuccessRate = (double) securityIncidentsMitigated / securityIncidentsDetected;
+        }
+        
+        System.out.println("Security incidents by type:");
+        for (Map.Entry<String, Integer> entry : securityIncidentsByType.entrySet()) {
+            System.out.println("  " + entry.getKey() + ": " + entry.getValue());
+        }
+        
+        System.out.println("Security overhead by type:");
+        for (Map.Entry<String, Double> entry : securityOverheadByType.entrySet()) {
+            System.out.println("  " + entry.getKey() + ": " + String.format("%.3f", entry.getValue()) + " ms");
+        }
+        
+        System.out.println("Security overhead by layer:");
+        for (Map.Entry<String, Double> entry : securityOverheadByLayer.entrySet()) {
+            System.out.println("  " + entry.getKey() + ": " + String.format("%.3f", entry.getValue()) + " ms");
+        }
+    }
+    
+    /**
+     * Calculate offloading-related metrics
+     */
+    public void calculateOffloadingMetrics() {
+        System.out.println("Offloading statistics:");
+        for (Map.Entry<String, List<OffloadingRecord>> entry : offloadingRecords.entrySet()) {
+            System.out.println("  " + entry.getKey() + ": " + entry.getValue().size() + " packets");
+        }
+    }
+    
+    /**
+     * Calculate network-related metrics
+     */
+    public void calculateNetworkMetrics() {
+        // Calculate bandwidth saved by edge and fog processing
+        double totalDataSize = 0.0;
+        double edgeDataSize = 0.0;
+        double fogDataSize = 0.0;
+        
+        for (Map.Entry<String, List<OffloadingRecord>> entry : offloadingRecords.entrySet()) {
+            for (OffloadingRecord record : entry.getValue()) {
+                if (entry.getKey().equals("IoT-to-Edge")) {
+                    totalDataSize += record.dataSize;
+                } else if (entry.getKey().equals("Edge-to-Fog")) {
+                    edgeDataSize += record.dataSize;
+                } else if (entry.getKey().equals("Fog-to-Cloud")) {
+                    fogDataSize += record.dataSize;
+                }
+            }
+        }
+        
+        // Calculate bandwidth saved (data that didn't need to go to cloud)
+        bandwidthSavedByEdgeProcessing = totalDataSize - edgeDataSize;
+        bandwidthSavedByFogProcessing = edgeDataSize - fogDataSize;
+        totalBandwidthSaved = bandwidthSavedByEdgeProcessing + bandwidthSavedByFogProcessing;
+        
+        System.out.println("Network metrics:");
+        System.out.println("  Total data size: " + String.format("%.2f", totalDataSize / 1024.0) + " KB");
+        System.out.println("  Bandwidth saved by edge processing: " + String.format("%.2f", bandwidthSavedByEdgeProcessing / 1024.0) + " KB");
+        System.out.println("  Bandwidth saved by fog processing: " + String.format("%.2f", bandwidthSavedByFogProcessing / 1024.0) + " KB");
+        System.out.println("  Total bandwidth saved: " + String.format("%.2f", totalBandwidthSaved / 1024.0) + " KB");
+    }
+    
+    /**
+     * Get security mitigation rate
+     * @return Security mitigation rate (0.0 to 1.0)
+     */
+    public double getSecurityMitigationRate() {
+        return mitigationSuccessRate;
+    }
+    
+    /**
+     * Increment bandwidth saved by edge processing
+     * @param bandwidthSaved Bandwidth saved in bytes
+     */
+    public void incrementBandwidthSavedByEdgeProcessing(double bandwidthSaved) {
+        this.bandwidthSavedByEdgeProcessing += bandwidthSaved;
+    }
+    
+    /**
+     * Increment bandwidth saved by fog processing
+     * @param bandwidthSaved Bandwidth saved in bytes
+     */
+    public void incrementBandwidthSavedByFogProcessing(double bandwidthSaved) {
+        this.bandwidthSavedByFogProcessing += bandwidthSaved;
+    }
+    
+    /**
+     * Increment energy saved by edge processing
+     * @param energySaved Energy saved in mWh
+     */
+    public void incrementEnergySavedByEdgeProcessing(double energySaved) {
+        this.energySavedByEdgeProcessing += energySaved;
+    }
+    
+    /**
+     * Increment energy saved by fog processing
+     * @param energySaved Energy saved in mWh
+     */
+    public void incrementEnergySavedByFogProcessing(double energySaved) {
+        this.energySavedByFogProcessing += energySaved;
+    }
+    
+    /**
+     * Get all device IDs in the simulation
+     * @return Set of device IDs
+     */
+    public java.util.Set<String> getAllDeviceIds() {
+        return packetsGeneratedByDevice.keySet();
     }
 }

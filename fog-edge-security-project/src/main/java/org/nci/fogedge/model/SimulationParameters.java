@@ -233,4 +233,20 @@ public class SimulationParameters {
     public void setFogBlockchainEnabled(boolean fogBlockchainEnabled) {
         this.fogBlockchainEnabled = fogBlockchainEnabled;
     }
+    
+    /**
+     * Alias for getEdgeToFogForwardingProbability
+     * @return Edge to fog offloading probability (0-1)
+     */
+    public double getEdgeToFogOffloadingProbability() {
+        return getEdgeToFogForwardingProbability();
+    }
+    
+    /**
+     * Alias for getFogToCloudForwardingProbability
+     * @return Fog to cloud offloading probability (0-1)
+     */
+    public double getFogToCloudOffloadingProbability() {
+        return getFogToCloudForwardingProbability();
+    }
 }
