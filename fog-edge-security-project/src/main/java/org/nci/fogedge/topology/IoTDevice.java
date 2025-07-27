@@ -12,9 +12,18 @@ import java.util.Random;
  * that is processed by edge and fog nodes.
  */
 public class IoTDevice {
+    /**
+     * Enum representing different wireless technologies used by IoT devices
+     */
+    public enum WirelessType {
+        WIFI,       // WiFi - high bandwidth, high power
+        BLE,        // Bluetooth Low Energy - medium bandwidth, low power
+        LORAWAN     // LoRaWAN - low bandwidth, very low power
+    }
+    
     private String deviceId;
     private EdgeNode parentEdge;
-    private String wirelessTechnology;
+    private WirelessType wirelessType;
     private SecurityManager securityManager;
     private double energyConsumption;
     private double securityOverhead;
@@ -28,14 +37,14 @@ public class IoTDevice {
      * Creates a new IoT device with specified parameters
      * 
      * @param deviceId Unique identifier for the device
+     * @param wirelessType The wireless technology type used
      * @param parentEdge The edge node this device connects to
-     * @param wirelessTechnology The wireless technology used (WiFi, BLE, LoRaWAN)
      * @param securityManager The security manager for encryption/authentication
      */
-    public IoTDevice(String deviceId, EdgeNode parentEdge, String wirelessTechnology, SecurityManager securityManager) {
+    public IoTDevice(String deviceId, WirelessType wirelessType, EdgeNode parentEdge, SecurityManager securityManager) {
         this.deviceId = deviceId;
         this.parentEdge = parentEdge;
-        this.wirelessTechnology = wirelessTechnology;
+        this.wirelessType = wirelessType;
         this.securityManager = securityManager;
         
         // Initialize metrics
@@ -43,16 +52,16 @@ public class IoTDevice {
         this.securityOverhead = 0.0;
         
         // Set data generation rate based on wireless technology
-        switch (wirelessTechnology) {
-            case "WiFi":
+        switch (wirelessType) {
+            case WIFI:
                 this.dataGenerationRate = 50.0 + random.nextDouble() * 50.0; // 50-100 KB/s
                 this.securityLevel = SecurityLevel.HIGH;
                 break;
-            case "BLE":
+            case BLE:
                 this.dataGenerationRate = 10.0 + random.nextDouble() * 15.0; // 10-25 KB/s
                 this.securityLevel = SecurityLevel.MEDIUM;
                 break;
-            case "LoRaWAN":
+            case LORAWAN:
                 this.dataGenerationRate = 0.5 + random.nextDouble() * 1.5; // 0.5-2 KB/s
                 this.securityLevel = SecurityLevel.LOW;
                 break;
@@ -64,7 +73,7 @@ public class IoTDevice {
         // Register with parent edge node
         parentEdge.registerIoTDevice(this);
         
-        Log.printLine("IoT Device " + deviceId + " created with " + wirelessTechnology + 
+        Log.printLine("IoT Device " + deviceId + " created with " + wirelessType + 
                 " technology and data generation rate of " + String.format("%.2f", dataGenerationRate) + " KB/s");
     }
     
@@ -117,12 +126,12 @@ public class IoTDevice {
      */
     private double calculateTransmissionEnergy(double dataSize) {
         // Energy models based on wireless technology
-        switch (wirelessTechnology) {
-            case "WiFi":
+        switch (wirelessType) {
+            case WIFI:
                 return 0.05 * dataSize; // 0.05 mJ/KB
-            case "BLE":
+            case BLE:
                 return 0.02 * dataSize; // 0.02 mJ/KB
-            case "LoRaWAN":
+            case LORAWAN:
                 return 0.01 * dataSize; // 0.01 mJ/KB
             default:
                 return 0.03 * dataSize; // Default
@@ -155,8 +164,8 @@ public class IoTDevice {
         return deviceId;
     }
     
-    public String getWirelessTechnology() {
-        return wirelessTechnology;
+    public WirelessType getWirelessType() {
+        return wirelessType;
     }
     
     public double getEnergyConsumption() {

@@ -30,6 +30,7 @@ public class SimulationResults {
     private Map<String, Double> deviceEnergyConsumption;
     private Map<String, Double> edgeProcessingTimes;
     private Map<String, Double> fogProcessingTimes;
+    private Map<IoTDevice.WirelessType, Integer> wirelessTypeDistribution;
     
     private String resultsLogFile;
     
@@ -53,6 +54,12 @@ public class SimulationResults {
         this.deviceEnergyConsumption = new HashMap<>();
         this.edgeProcessingTimes = new HashMap<>();
         this.fogProcessingTimes = new HashMap<>();
+        this.wirelessTypeDistribution = new HashMap<>();
+        
+        // Initialize wireless type distribution
+        for (IoTDevice.WirelessType type : IoTDevice.WirelessType.values()) {
+            wirelessTypeDistribution.put(type, 0);
+        }
         
         // Create results log file
         this.resultsLogFile = LoggingUtil.createSimulationResultsLog("SecureFogSim");
@@ -67,11 +74,15 @@ public class SimulationResults {
         this.totalIoTDevices = devices.size();
         
         for (IoTDevice device : devices) {
-            this.totalDataGenerated += device.getTotalDataGenerated();
+            this.totalDataGenerated += device.getDataGenerationRate();
             this.totalEnergyConsumption += device.getEnergyConsumption();
             this.totalSecurityOverhead += device.getSecurityOverhead();
             
             deviceEnergyConsumption.put(device.getDeviceId(), device.getEnergyConsumption());
+            
+            // Count wireless type distribution
+            IoTDevice.WirelessType type = device.getWirelessType();
+            wirelessTypeDistribution.put(type, wirelessTypeDistribution.get(type) + 1);
         }
         
         Log.printLine("Collected metrics from " + devices.size() + " IoT devices");
@@ -220,7 +231,15 @@ public class SimulationResults {
         report.append("- Security Enabled: ").append(securityEnabled).append("\n");
         report.append("- Total IoT Devices: ").append(totalIoTDevices).append("\n");
         report.append("- Total Edge Nodes: ").append(totalEdgeNodes).append("\n");
-        report.append("- Total Fog Nodes: ").append(totalFogNodes).append("\n\n");
+        report.append("- Total Fog Nodes: ").append(totalFogNodes).append("\n");
+        
+        // Add wireless technology distribution
+        report.append("- Wireless Technology Distribution:\n");
+        for (Map.Entry<IoTDevice.WirelessType, Integer> entry : wirelessTypeDistribution.entrySet()) {
+            report.append("  - ").append(entry.getKey()).append(": ")
+                  .append(entry.getValue()).append(" devices\n");
+        }
+        report.append("\n");
         
         report.append("## Performance Metrics\n");
         report.append("- Total Data Generated: ").append(String.format("%.2f", totalDataGenerated)).append(" KB\n");
