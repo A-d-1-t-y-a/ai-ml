@@ -1,7 +1,7 @@
 package org.nci.fogedge.security;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.cloudbus.cloudsim.Log;
+import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;

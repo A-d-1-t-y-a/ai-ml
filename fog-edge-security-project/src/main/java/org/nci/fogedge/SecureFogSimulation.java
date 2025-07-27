@@ -1,8 +1,8 @@
 package org.nci.fogedge;
 
 import org.apache.log4j.Level;
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.core.CloudSim;
+import java.util.logging.Logger;
+
 import org.nci.fogedge.model.SimulationResults;
 import org.nci.fogedge.security.SecurityManager;
 import org.nci.fogedge.security.SecurityLevel;

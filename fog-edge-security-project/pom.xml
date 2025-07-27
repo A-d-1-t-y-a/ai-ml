@@ -22,12 +22,6 @@
     </repositories>
 
     <dependencies>
-        <!-- iFogSim dependency -->
-        <dependency>
-            <groupId>com.github.Cloudslab</groupId>
-            <artifactId>iFogSim</artifactId>
-            <version>master-SNAPSHOT</version>
-        </dependency>
         
         <!-- For cryptographic operations -->
         <dependency>
@@ -85,7 +79,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>org.nci.fogedge.SecureFogSimulation</mainClass>
+                            <mainClass>org.nci.fogedge.SimulationDemo</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -1,6 +1,6 @@
 package org.nci.fogedge.model;
 
-import org.cloudbus.cloudsim.Log;
+import java.util.logging.Logger;
 import org.nci.fogedge.topology.EdgeNode;
 import org.nci.fogedge.topology.FogNode;
 import org.nci.fogedge.topology.IoTDevice;

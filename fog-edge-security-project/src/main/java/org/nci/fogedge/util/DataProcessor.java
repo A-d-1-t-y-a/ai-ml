@@ -1,6 +1,6 @@
 package org.nci.fogedge.util;
 
-import org.cloudbus.cloudsim.Log;
+import java.util.logging.Logger;
 
 import java.util.Arrays;
 import java.util.Random;

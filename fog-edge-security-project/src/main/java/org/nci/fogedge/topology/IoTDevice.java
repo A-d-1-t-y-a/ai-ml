@@ -1,6 +1,6 @@
 package org.nci.fogedge.topology;
 
-import org.cloudbus.cloudsim.Log;
+import java.util.logging.Logger;
 import org.nci.fogedge.security.SecurityManager;
 import org.nci.fogedge.security.SecurityLevel;
 

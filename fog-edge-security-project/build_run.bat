@@ -30,20 +30,13 @@ if not exist "results" mkdir results
 echo.
 echo [1] Building project...
 
-if "%USE_MAVEN%"=="true" (
-    echo Using Maven for build...
-    call mvn clean compile
-    if %ERRORLEVEL% NEQ 0 (
-        echo ERROR: Maven build failed.
-        echo Falling back to direct Java compilation...
-        set USE_MAVEN=false
-    )
-)
+REM Skip Maven build and use direct Java compilation
+set USE_MAVEN=false
 
 if "%USE_MAVEN%"=="false" (
     echo Using direct Java compilation...
     dir /s /b src\main\java\*.java > sources.txt
-    javac -d target\classes @sources.txt
+    javac -d target\classes -cp target\classes @sources.txt
     if %ERRORLEVEL% NEQ 0 (
         echo ERROR: Compilation failed.
         del sources.txt

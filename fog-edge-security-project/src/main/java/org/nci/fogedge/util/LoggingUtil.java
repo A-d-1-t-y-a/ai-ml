@@ -5,7 +5,7 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.cloudbus.cloudsim.Log;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
