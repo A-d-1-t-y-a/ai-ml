@@ -21,25 +21,23 @@ public class EdgeNode extends Device {
      * Constructor for an Edge Node
      * 
      * @param id Unique identifier for the device
-     * @param processingPower Processing power in MIPS
-     * @param memory Memory in MB
-     * @param storage Storage in GB
-     * @param batteryCapacity Battery capacity in mAh (0 for always-on devices)
+     * @param name Human-readable name for the device
      * @param xPos Initial X position
      * @param yPos Initial Y position
-     * @param networkBandwidth Network bandwidth in Mbps
-     * @param networkLatency Network latency in ms
+     * @param cpuCapacity CPU capacity in MIPS
+     * @param ramCapacity RAM capacity in MB
+     * @param storageCapacity Storage capacity in GB
+     * @param batteryCapacity Battery capacity in mAh (0 for always-on devices)
      * @param maxConnections Maximum number of connected devices
-     * @param securityLevel Security level (0-1)
      */
-    public EdgeNode(String id, double processingPower, double memory, double storage,
-                   double batteryCapacity, double xPos, double yPos, double networkBandwidth,
-                   double networkLatency, int maxConnections, double securityLevel) {
-        super(id, DeviceType.EDGE_NODE, processingPower, memory, storage, batteryCapacity, xPos, yPos);
-        this.networkBandwidth = networkBandwidth;
-        this.networkLatency = networkLatency;
+    public EdgeNode(String id, String name, double xPos, double yPos, int cpuCapacity,
+                   int ramCapacity, int storageCapacity, int batteryCapacity,
+                   int maxConnections) {
+        super(id, DeviceType.EDGE_NODE, name, xPos, yPos, cpuCapacity, ramCapacity, storageCapacity, batteryCapacity);
+        this.networkBandwidth = 500; // Default 500 Mbps
+        this.networkLatency = 10; // Default 10ms latency
         this.maxConnections = maxConnections;
-        this.securityLevel = Math.max(0, Math.min(1, securityLevel)); // Ensure between 0 and 1
+        this.securityLevel = 0.7; // Default medium-high security level
         this.connectedDeviceIds = new ArrayList<>();
     }
     
@@ -233,5 +231,14 @@ public class EdgeNode extends Device {
     
     public void setSecurityLevel(double securityLevel) {
         this.securityLevel = Math.max(0, Math.min(1, securityLevel));
+    }
+    
+    /**
+     * Increments the count of connected devices
+     * This is a utility method used by the TopologyManager
+     */
+    public void incrementConnectedDevicesCount() {
+        // This method is intentionally left empty as the count is already managed by the connectedDeviceIds list
+        // The actual count can be retrieved using getConnectedDeviceCount()
     }
 }

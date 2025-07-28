@@ -1,6 +1,10 @@
 package com.nci.fogedge.topology;
 
-import com.nci.fogedge.devices.*;
+import com.nci.fogedge.devices.Device;
+import com.nci.fogedge.devices.DeviceType;
+import com.nci.fogedge.devices.EdgeNode;
+import com.nci.fogedge.devices.FogNode;
+import com.nci.fogedge.devices.CloudDatacenter;
 import com.nci.fogedge.model.SimulationConfig;
 import com.nci.fogedge.network.NetworkModel;
 

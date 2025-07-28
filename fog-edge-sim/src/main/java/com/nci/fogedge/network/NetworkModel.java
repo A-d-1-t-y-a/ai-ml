@@ -2,6 +2,7 @@ package com.nci.fogedge.network;
 
 import com.nci.fogedge.devices.*;
 import com.nci.fogedge.model.SimulationConfig;
+import com.nci.fogedge.model.SimulationResults;
 
 import java.util.*;
 
@@ -11,6 +12,7 @@ import java.util.*;
  */
 public class NetworkModel {
     private SimulationConfig config;
+    private SimulationResults results;
     private Map<String, Map<String, NetworkLink>> networkLinks; // Links between devices
     private Map<String, NetworkCondition> networkConditions; // Network conditions for each link
     private Random random;
@@ -19,9 +21,11 @@ public class NetworkModel {
      * Constructor for NetworkModel
      * 
      * @param config Simulation configuration
+     * @param results Simulation results collector
      */
-    public NetworkModel(SimulationConfig config) {
+    public NetworkModel(SimulationConfig config, SimulationResults results) {
         this.config = config;
+        this.results = results;
         this.networkLinks = new HashMap<>();
         this.networkConditions = new HashMap<>();
         this.random = new Random();

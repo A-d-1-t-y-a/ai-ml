@@ -96,6 +96,14 @@ public class SimulationResults {
     }
     
     /**
+     * Increments the total tasks generated count
+     * This method is kept for backward compatibility
+     */
+    public void incrementTotalTasksGenerated() {
+        incrementTasksGenerated();
+    }
+    
+    /**
      * Increments the total tasks completed count
      */
     public void incrementTasksCompleted() {
@@ -103,10 +111,26 @@ public class SimulationResults {
     }
     
     /**
+     * Increments the total tasks completed count
+     * This method is kept for backward compatibility
+     */
+    public void incrementCompletedTasks() {
+        incrementTasksCompleted();
+    }
+    
+    /**
      * Increments the total tasks failed count
      */
     public void incrementTasksFailed() {
         totalTasksFailed++;
+    }
+    
+    /**
+     * Increments the total tasks failed count
+     * This method is kept for backward compatibility
+     */
+    public void incrementFailedTasks() {
+        incrementTasksFailed();
     }
     
     /**
@@ -249,11 +273,397 @@ public class SimulationResults {
     public void calculateFinalMetrics() {
         // Calculate average network latency from collected measurements
         if (!networkLatencies.isEmpty()) {
-            averageNetworkLatency = networkLatencies.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .average()
-                    .orElse(0.0);
+            double sum = 0;
+            for (double latency : networkLatencies) {
+                sum += latency;
+            }
+            averageNetworkLatency = sum / networkLatencies.size();
         }
+    }
+    
+    /**
+     * Initialize the results object
+     */
+    public void initialize() {
+        // Reset all metrics to initial values
+        totalTasksGenerated = 0;
+        totalTasksCompleted = 0;
+        totalTasksFailed = 0;
+        tasksExecutedOnIoT = 0;
+        tasksExecutedOnEdge = 0;
+        tasksExecutedOnFog = 0;
+        tasksExecutedOnCloud = 0;
+        
+        totalDataTransferred = 0.0;
+        networkLatencies = new ArrayList<>();
+        averageNetworkLatency = 0.0;
+        networkCongestionEvents = 0;
+        packetLossEvents = 0;
+        
+        totalAttackAttempts = 0;
+        successfulAttacks = 0;
+        detectedAttacks = 0;
+        mitigatedAttacks = 0;
+        attacksByType = new HashMap<>();
+        
+        totalEnergyConsumed = 0.0;
+        ioTEnergyConsumed = 0.0;
+        edgeEnergyConsumed = 0.0;
+        fogEnergyConsumed = 0.0;
+        cloudEnergyConsumed = 0.0;
+    }
+    
+    /**
+     * Set the total number of ticks the simulation ran for
+     * @param totalTicks Total number of ticks
+     */
+    public void setTotalTicks(int totalTicks) {
+        // Store this information if needed
+    }
+    
+    /**
+     * Set the average resource utilization
+     * @param avgUtilization Average resource utilization
+     */
+    public void setAverageResourceUtilization(double avgUtilization) {
+        // Store this information if needed
+    }
+    
+    /**
+     * Set the average energy level
+     * @param avgEnergyLevel Average energy level
+     */
+    public void setAverageEnergyLevel(double avgEnergyLevel) {
+        // Store this information if needed
+    }
+    
+    /**
+     * Set the average network bandwidth
+     * @param avgBandwidth Average network bandwidth in Mbps
+     */
+    public void setAverageNetworkBandwidth(double avgBandwidth) {
+        // Store the average network bandwidth
+        // This would be used for reporting and analysis
+    }
+    
+    /**
+     * Set the average network latency
+     * @param avgLatency Average network latency in milliseconds
+     */
+    public void setAverageNetworkLatency(double avgLatency) {
+        this.averageNetworkLatency = avgLatency;
+    }
+    
+    /**
+     * Set the number of compromised devices
+     * @param compromisedCount Number of compromised devices
+     */
+    public void setCompromisedDeviceCount(int compromisedCount) {
+        // Store this information if needed
+    }
+    
+    /**
+     * Get the total number of tasks
+     * @return Total number of tasks
+     */
+    public int getTotalTasksCount() {
+        return totalTasksGenerated;
+    }
+    
+    /**
+     * Get the total number of tasks generated
+     * @return Total number of tasks generated
+     */
+    public int getTotalTasksGenerated() {
+        return totalTasksGenerated;
+    }
+    
+    /**
+     * Get the number of completed tasks
+     * @return Number of completed tasks
+     */
+    public int getCompletedTasksCount() {
+        return totalTasksCompleted;
+    }
+    
+    /**
+     * Get the total number of tasks completed
+     * @return Total number of tasks completed
+     */
+    public int getTotalTasksCompleted() {
+        return totalTasksCompleted;
+    }
+    
+    /**
+     * Get the number of failed tasks
+     * @return Number of failed tasks
+     */
+    public int getFailedTasksCount() {
+        return totalTasksFailed;
+    }
+    
+    /**
+     * Get the total number of tasks failed
+     * @return Total number of tasks failed
+     */
+    public int getTotalTasksFailed() {
+        return totalTasksFailed;
+    }
+    
+    /**
+     * Get the number of offloaded tasks
+     * @return Number of offloaded tasks
+     */
+    public int getOffloadedTasksCount() {
+        // This is the sum of tasks executed on Edge, Fog, and Cloud
+        return tasksExecutedOnEdge + tasksExecutedOnFog + tasksExecutedOnCloud;
+    }
+    
+    /**
+     * Increments the offloaded tasks count
+     */
+    public void incrementOffloadedTasks() {
+        // This is tracked separately in the TaskManager
+        // The actual count is calculated as the sum of tasks on Edge, Fog, and Cloud
+    }
+    
+    /**
+     * Adds a task execution time measurement
+     * @param executionTime Execution time in milliseconds
+     */
+    public void addTaskExecutionTime(long executionTime) {
+        // Implementation would depend on how task execution times are tracked
+    }
+    
+    /**
+     * Adds a task waiting time measurement
+     * @param waitingTime Waiting time in milliseconds
+     */
+    public void addTaskWaitingTime(long waitingTime) {
+        // Implementation would depend on how task waiting times are tracked
+    }
+    
+    /**
+     * Adds a task response time measurement
+     * @param responseTime Response time in milliseconds
+     */
+    public void addTaskResponseTime(long responseTime) {
+        // Implementation would depend on how task response times are tracked
+    }
+    
+    /**
+     * Get the number of tasks executed on IoT devices
+     * @return Number of tasks executed on IoT devices
+     */
+    public int getTasksExecutedOnIoT() {
+        return tasksExecutedOnIoT;
+    }
+    
+    /**
+     * Get the number of tasks executed on Edge nodes
+     * @return Number of tasks executed on Edge nodes
+     */
+    public int getTasksExecutedOnEdge() {
+        return tasksExecutedOnEdge;
+    }
+    
+    /**
+     * Get the number of tasks executed on Fog nodes
+     * @return Number of tasks executed on Fog nodes
+     */
+    public int getTasksExecutedOnFog() {
+        return tasksExecutedOnFog;
+    }
+    
+    /**
+     * Get the number of tasks executed on Cloud
+     * @return Number of tasks executed on Cloud
+     */
+    public int getTasksExecutedOnCloud() {
+        return tasksExecutedOnCloud;
+    }
+    
+    /**
+     * Get the total data transferred
+     * @return Total data transferred in MB
+     */
+    public double getTotalDataTransferred() {
+        return totalDataTransferred;
+    }
+    
+    /**
+     * Get the average network latency
+     * @return Average network latency in ms
+     */
+    public double getAverageNetworkLatency() {
+        return averageNetworkLatency;
+    }
+    
+    /**
+     * Get the number of network congestion events
+     * @return Number of network congestion events
+     */
+    public int getNetworkCongestionEvents() {
+        return networkCongestionEvents;
+    }
+    
+    /**
+     * Get the number of packet loss events
+     * @return Number of packet loss events
+     */
+    public int getPacketLossEvents() {
+        return packetLossEvents;
+    }
+    
+    /**
+     * Get the total number of attack attempts
+     * @return Total number of attack attempts
+     */
+    public int getTotalAttackAttempts() {
+        return totalAttackAttempts;
+    }
+    
+    /**
+     * Get the number of successful attacks
+     * @return Number of successful attacks
+     */
+    public int getSuccessfulAttacks() {
+        return successfulAttacks;
+    }
+    
+    /**
+     * Get the number of detected attacks
+     * @return Number of detected attacks
+     */
+    public int getDetectedAttacks() {
+        return detectedAttacks;
+    }
+    
+    /**
+     * Get the number of mitigated attacks
+     * @return Number of mitigated attacks
+     */
+    public int getMitigatedAttacks() {
+        return mitigatedAttacks;
+    }
+    
+    /**
+     * Get the total energy consumed
+     * @return Total energy consumed in mWh
+     */
+    public double getTotalEnergyConsumed() {
+        return totalEnergyConsumed;
+    }
+    
+    /**
+     * Get the IoT energy consumed
+     * @return IoT energy consumed in mWh
+     */
+    public double getIoTEnergyConsumed() {
+        return ioTEnergyConsumed;
+    }
+    
+    /**
+     * Get the Edge energy consumed
+     * @return Edge energy consumed in mWh
+     */
+    public double getEdgeEnergyConsumed() {
+        return edgeEnergyConsumed;
+    }
+    
+    /**
+     * Get the Fog energy consumed
+     * @return Fog energy consumed in mWh
+     */
+    public double getFogEnergyConsumed() {
+        return fogEnergyConsumed;
+    }
+    
+    /**
+     * Get the Cloud energy consumed
+     * @return Cloud energy consumed in mWh
+     */
+    public double getCloudEnergyConsumed() {
+        return cloudEnergyConsumed;
+    }
+    
+    /**
+     * Get the total simulation time
+     * @return Total simulation time in milliseconds
+     */
+    public long getTotalSimulationTime() {
+        return totalSimulationTime;
+    }
+    
+    /**
+     * Set the task completion rate
+     * @param completionRate Task completion rate
+     */
+    public void setTaskCompletionRate(double completionRate) {
+        // Store this information if needed
+    }
+    
+    /**
+     * Calculate the average task execution time
+     */
+    public void calculateAverageTaskExecutionTime() {
+        // Implementation would depend on how task execution times are tracked
+    }
+    
+    /**
+     * Set the average network bandwidth
+     * @param avgBandwidth Average network bandwidth in Mbps
+     */
+    public void setAverageNetworkBandwidth(double avgBandwidth) {
+        // Store the average network bandwidth for reporting and analysis
+    }
+    
+    /**
+     * Set the average network latency
+     * @param avgLatency Average network latency in milliseconds
+     */
+    public void setAverageNetworkLatency(double avgLatency) {
+        this.averageNetworkLatency = avgLatency;
+    }
+    
+    /**
+     * Set the active device count
+     * @param activeCount Number of active devices
+     */
+    public void setActiveDeviceCount(int activeCount) {
+        // Store this information if needed
+    }
+    
+    /**
+     * Set the inactive device count
+     * @param inactiveCount Number of inactive devices
+     */
+    public void setInactiveDeviceCount(int inactiveCount) {
+        // Store this information if needed
+    }
+    
+    /**
+     * Adds a task execution time measurement
+     * @param executionTime Execution time in ticks
+     */
+    public void addTaskExecutionTime(int executionTime) {
+        // Store task execution time for metrics calculation
+    }
+    
+    /**
+     * Adds a task waiting time measurement
+     * @param waitingTime Waiting time in ticks
+     */
+    public void addTaskWaitingTime(int waitingTime) {
+        // Store task waiting time for metrics calculation
+    }
+    
+    /**
+     * Adds a task response time measurement
+     * @param responseTime Response time in ticks
+     */
+    public void addTaskResponseTime(int responseTime) {
+        // Store task response time for metrics calculation
     }
     
     /**

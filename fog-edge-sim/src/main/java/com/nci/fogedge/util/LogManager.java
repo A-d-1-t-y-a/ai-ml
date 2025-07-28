@@ -32,8 +32,8 @@ public class LogManager {
     public LogManager(SimulationConfig config) {
         this.config = config;
         this.logEntries = new ArrayList<>();
-        this.consoleLoggingEnabled = config.getConsoleLoggingEnabled();
-        this.fileLoggingEnabled = config.getFileLoggingEnabled();
+        this.consoleLoggingEnabled = config.isConsoleLoggingEnabled();
+        this.fileLoggingEnabled = config.isFileLoggingEnabled();
         this.logFilePath = config.getLogFilePath();
         this.minLogLevel = config.getMinLogLevel();
         

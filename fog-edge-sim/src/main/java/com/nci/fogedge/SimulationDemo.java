@@ -24,14 +24,15 @@ public class SimulationDemo {
      * @param args Command line arguments (not used)
      */
     public static void main(String[] args) {
-        // Initialize the logger
-        logger = new LogManager(LogLevel.INFO, true, true, "logs/simulation_demo.log");
-        logger.info("Starting Fog and Edge Computing Simulation Demo");
+        // Initialize the logger with default settings
+        SimulationConfig defaultConfig = new SimulationConfig();
+        logger = new LogManager(defaultConfig);
+        logger.log(LogLevel.INFO, "Starting Fog and Edge Computing Simulation Demo");
         
         // Load configuration
         SimulationConfig config = loadConfiguration();
         if (config == null) {
-            logger.error("Failed to load configuration. Exiting.");
+            logger.log(LogLevel.ERROR, "Failed to load configuration. Exiting.");
             return;
         }
         
@@ -40,17 +41,17 @@ public class SimulationDemo {
         
         // Create and run the simulation
         FogEdgeSimulation simulation = new FogEdgeSimulation(config, logger);
-        logger.info("Initializing simulation...");
+        logger.log(LogLevel.INFO, "Initializing simulation...");
         simulation.initialize();
         
         // Run the simulation
-        logger.info("Running simulation for " + config.getSimulationDuration() + " ticks...");
-        SimulationResults results = simulation.run();
+        logger.log(LogLevel.INFO, "Running simulation for " + config.getSimulationDuration() + " ticks...");
+        SimulationResults results = simulation.run(config.getSimulationDuration());
         
         // Display results summary
         displayResultsSummary(results);
         
-        logger.info("Simulation demo completed successfully");
+        logger.log(LogLevel.INFO, "Simulation demo completed successfully");
     }
     
     /**
@@ -60,17 +61,17 @@ public class SimulationDemo {
     private static SimulationConfig loadConfiguration() {
         File configFile = new File(CONFIG_PATH);
         if (!configFile.exists()) {
-            logger.error("Configuration file not found: " + CONFIG_PATH);
+            logger.log(LogLevel.ERROR, "Configuration file not found: " + CONFIG_PATH);
             return null;
         }
         
         try {
-            logger.info("Loading configuration from: " + CONFIG_PATH);
+            logger.log(LogLevel.INFO, "Loading configuration from: " + CONFIG_PATH);
             SimulationConfig config = new SimulationConfig(CONFIG_PATH);
-            logger.info("Configuration loaded successfully");
+            logger.log(LogLevel.INFO, "Configuration loaded successfully");
             return config;
         } catch (Exception e) {
-            logger.error("Error loading configuration: " + e.getMessage());
+            logger.log(LogLevel.ERROR, "Error loading configuration: " + e.getMessage());
             return null;
         }
     }
@@ -80,57 +81,57 @@ public class SimulationDemo {
      * @param config SimulationConfig object
      */
     private static void displayConfigSummary(SimulationConfig config) {
-        logger.info("=== Simulation Configuration Summary ===");
-        logger.info("Simulation Duration: " + config.getSimulationDuration() + " ticks");
-        logger.info("Simulation Area Size: " + config.getSimulationAreaSize() + " x " + config.getSimulationAreaSize());
-        logger.info("Random Seed: " + config.getRandomSeed());
+        logger.log(LogLevel.INFO, "=== Simulation Configuration Summary ===");
+        logger.log(LogLevel.INFO, "Simulation Duration: " + config.getSimulationDuration() + " ticks");
+        logger.log(LogLevel.INFO, "Simulation Area Size: " + config.getSimulationAreaSize() + " x " + config.getSimulationAreaSize());
+        logger.log(LogLevel.INFO, "Random Seed: " + config.getRandomSeed());
         
         // Device counts
-        logger.info("\nDevice Counts:");
-        logger.info("IoT Devices: " + config.getIoTDeviceCount());
-        logger.info("Edge Nodes: " + config.getEdgeNodeCount());
-        logger.info("Fog Nodes: " + config.getFogNodeCount());
-        logger.info("Cloud Datacenters: " + config.getCloudDatacenterCount());
+        logger.log(LogLevel.INFO, "\nDevice Counts:");
+        logger.log(LogLevel.INFO, "IoT Devices: " + config.getIoTDeviceCount());
+        logger.log(LogLevel.INFO, "Edge Nodes: " + config.getEdgeNodeCount());
+        logger.log(LogLevel.INFO, "Fog Nodes: " + config.getFogNodeCount());
+        logger.log(LogLevel.INFO, "Cloud Datacenters: " + config.getCloudDatacenterCount());
         
         // IoT device parameters
-        logger.info("\nIoT Device Parameters:");
-        logger.info("Mobility Percentage: " + config.getIoTMobilityPercentage() + "%");
-        logger.info("Battery Capacity: " + config.getIoTBatteryCapacity() + " mAh");
-        logger.info("CPU Capacity: " + config.getIoTCpuCapacity() + " MIPS");
-        logger.info("RAM Capacity: " + config.getIoTRamCapacity() + " MB");
-        logger.info("Storage Capacity: " + config.getIoTStorageCapacity() + " MB");
-        logger.info("Task Generation Rate: " + config.getIoTTaskGenerationRate() + " tasks/tick");
-        logger.info("Wireless Types: " + String.join(", ", config.getIoTWirelessTypes()));
+        logger.log(LogLevel.INFO, "\nIoT Device Parameters:");
+        logger.log(LogLevel.INFO, "Mobility Percentage: " + config.getIoTMobilityPercentage() + "%");
+        logger.log(LogLevel.INFO, "Battery Capacity: " + config.getIoTBatteryCapacity() + " mAh");
+        logger.log(LogLevel.INFO, "CPU Capacity: " + config.getIoTCpuCapacity() + " MIPS");
+        logger.log(LogLevel.INFO, "RAM Capacity: " + config.getIoTRamCapacity() + " MB");
+        logger.log(LogLevel.INFO, "Storage Capacity: " + config.getIoTStorageCapacity() + " MB");
+        logger.log(LogLevel.INFO, "Task Generation Rate: " + config.getIoTTaskGenerationRate() + " tasks/tick");
+        logger.log(LogLevel.INFO, "Wireless Types: " + String.join(", ", config.getIoTWirelessTypes()));
         
         // Network parameters
-        logger.info("\nNetwork Parameters:");
-        logger.info("Base Bandwidth: " + config.getNetworkBaseBandwidth() + " Mbps");
-        logger.info("Base Latency: " + config.getNetworkBaseLatency() + " ms");
-        logger.info("Variability Factor: " + config.getNetworkVariabilityFactor());
-        logger.info("Congestion Probability: " + config.getNetworkCongestionProbability());
-        logger.info("Packet Loss Probability: " + config.getNetworkPacketLossProbability());
-        logger.info("IoT Mesh Network: " + (config.getIoTMeshNetworkEnabled() ? "Enabled" : "Disabled"));
-        logger.info("Edge Mesh Network: " + (config.getEdgeMeshNetworkEnabled() ? "Enabled" : "Disabled"));
-        logger.info("Fog Mesh Network: " + (config.getFogMeshNetworkEnabled() ? "Enabled" : "Disabled"));
+        logger.log(LogLevel.INFO, "\nNetwork Parameters:");
+        logger.log(LogLevel.INFO, "Base Bandwidth: " + config.getNetworkBaseBandwidth() + " Mbps");
+        logger.log(LogLevel.INFO, "Base Latency: " + config.getNetworkBaseLatency() + " ms");
+        logger.log(LogLevel.INFO, "Variability Factor: " + config.getNetworkVariabilityFactor());
+        logger.log(LogLevel.INFO, "Congestion Probability: " + config.getNetworkCongestionProbability());
+        logger.log(LogLevel.INFO, "Packet Loss Probability: " + config.getNetworkPacketLossProbability());
+        logger.log(LogLevel.INFO, "IoT Mesh Network: " + (config.getIoTMeshNetworkEnabled() ? "Enabled" : "Disabled"));
+        logger.log(LogLevel.INFO, "Edge Mesh Network: " + (config.getEdgeMeshNetworkEnabled() ? "Enabled" : "Disabled"));
+        logger.log(LogLevel.INFO, "Fog Mesh Network: " + (config.getFogMeshNetworkEnabled() ? "Enabled" : "Disabled"));
         
         // Security parameters
-        logger.info("\nSecurity Parameters:");
-        logger.info("Attacks Enabled: " + (config.isSecurityAttacksEnabled() ? "Yes" : "No"));
+        logger.log(LogLevel.INFO, "\nSecurity Parameters:");
+        logger.log(LogLevel.INFO, "Attacks Enabled: " + (config.isSecurityAttacksEnabled() ? "Yes" : "No"));
         if (config.isSecurityAttacksEnabled()) {
-            logger.info("Attack Probability: " + config.getSecurityAttackProbability());
-            logger.info("Detection Probability: " + config.getSecurityDetectionProbability());
-            logger.info("Mitigation Probability: " + config.getSecurityMitigationProbability());
+            logger.log(LogLevel.INFO, "Attack Probability: " + config.getSecurityAttackProbability());
+            logger.log(LogLevel.INFO, "Detection Probability: " + config.getSecurityDetectionProbability());
+            logger.log(LogLevel.INFO, "Mitigation Probability: " + config.getSecurityMitigationProbability());
             
             List<AttackType> attackTypes = config.getSecurityAttackTypes();
-            logger.info("Attack Types: " + (attackTypes.isEmpty() ? "None" : 
+            logger.log(LogLevel.INFO, "Attack Types: " + (attackTypes.isEmpty() ? "None" : 
                 attackTypes.stream().map(AttackType::name).reduce((a, b) -> a + ", " + b).orElse("None")));
             
             List<CountermeasureType> countermeasureTypes = config.getSecurityCountermeasureTypes();
-            logger.info("Countermeasure Types: " + (countermeasureTypes.isEmpty() ? "None" : 
+            logger.log(LogLevel.INFO, "Countermeasure Types: " + (countermeasureTypes.isEmpty() ? "None" : 
                 countermeasureTypes.stream().map(CountermeasureType::name).reduce((a, b) -> a + ", " + b).orElse("None")));
         }
         
-        logger.info("=== End of Configuration Summary ===\n");
+        logger.log(LogLevel.INFO, "=== End of Configuration Summary ===\n");
     }
     
     /**
@@ -138,37 +139,37 @@ public class SimulationDemo {
      * @param results SimulationResults object
      */
     private static void displayResultsSummary(SimulationResults results) {
-        logger.info("=== Simulation Results Summary ===");
-        logger.info("Total Simulation Time: " + results.getTotalSimulationTime() + " ms");
-        logger.info("Total Tasks Generated: " + results.getTotalTasksGenerated());
-        logger.info("Total Tasks Completed: " + results.getTotalTasksCompleted());
-        logger.info("Total Tasks Failed: " + results.getTotalTasksFailed());
+        logger.log(LogLevel.INFO, "=== Simulation Results Summary ===");
+        logger.log(LogLevel.INFO, "Total Simulation Time: " + results.getTotalSimulationTime() + " ms");
+        logger.log(LogLevel.INFO, "Total Tasks Generated: " + results.getTotalTasksGenerated());
+        logger.log(LogLevel.INFO, "Total Tasks Completed: " + results.getTotalTasksCompleted());
+        logger.log(LogLevel.INFO, "Total Tasks Failed: " + results.getTotalTasksFailed());
         
-        logger.info("\nTask Distribution:");
-        logger.info("Tasks Executed on IoT Devices: " + results.getTasksExecutedOnIoT());
-        logger.info("Tasks Executed on Edge Nodes: " + results.getTasksExecutedOnEdge());
-        logger.info("Tasks Executed on Fog Nodes: " + results.getTasksExecutedOnFog());
-        logger.info("Tasks Executed on Cloud: " + results.getTasksExecutedOnCloud());
+        logger.log(LogLevel.INFO, "\nTask Distribution:");
+        logger.log(LogLevel.INFO, "Tasks Executed on IoT Devices: " + results.getTasksExecutedOnIoT());
+        logger.log(LogLevel.INFO, "Tasks Executed on Edge Nodes: " + results.getTasksExecutedOnEdge());
+        logger.log(LogLevel.INFO, "Tasks Executed on Fog Nodes: " + results.getTasksExecutedOnFog());
+        logger.log(LogLevel.INFO, "Tasks Executed on Cloud: " + results.getTasksExecutedOnCloud());
         
-        logger.info("\nNetwork Statistics:");
-        logger.info("Total Data Transferred: " + results.getTotalDataTransferred() + " MB");
-        logger.info("Average Network Latency: " + results.getAverageNetworkLatency() + " ms");
-        logger.info("Network Congestion Events: " + results.getNetworkCongestionEvents());
-        logger.info("Packet Loss Events: " + results.getPacketLossEvents());
+        logger.log(LogLevel.INFO, "\nNetwork Statistics:");
+        logger.log(LogLevel.INFO, "Total Data Transferred: " + results.getTotalDataTransferred() + " MB");
+        logger.log(LogLevel.INFO, "Average Network Latency: " + results.getAverageNetworkLatency() + " ms");
+        logger.log(LogLevel.INFO, "Network Congestion Events: " + results.getNetworkCongestionEvents());
+        logger.log(LogLevel.INFO, "Packet Loss Events: " + results.getPacketLossEvents());
         
-        logger.info("\nSecurity Statistics:");
-        logger.info("Total Attack Attempts: " + results.getTotalAttackAttempts());
-        logger.info("Successful Attacks: " + results.getSuccessfulAttacks());
-        logger.info("Detected Attacks: " + results.getDetectedAttacks());
-        logger.info("Mitigated Attacks: " + results.getMitigatedAttacks());
+        logger.log(LogLevel.INFO, "\nSecurity Statistics:");
+        logger.log(LogLevel.INFO, "Total Attack Attempts: " + results.getTotalAttackAttempts());
+        logger.log(LogLevel.INFO, "Successful Attacks: " + results.getSuccessfulAttacks());
+        logger.log(LogLevel.INFO, "Detected Attacks: " + results.getDetectedAttacks());
+        logger.log(LogLevel.INFO, "Mitigated Attacks: " + results.getMitigatedAttacks());
         
-        logger.info("\nEnergy Consumption:");
-        logger.info("Total Energy Consumed: " + results.getTotalEnergyConsumed() + " mWh");
-        logger.info("IoT Energy Consumed: " + results.getIoTEnergyConsumed() + " mWh");
-        logger.info("Edge Energy Consumed: " + results.getEdgeEnergyConsumed() + " mWh");
-        logger.info("Fog Energy Consumed: " + results.getFogEnergyConsumed() + " mWh");
-        logger.info("Cloud Energy Consumed: " + results.getCloudEnergyConsumed() + " mWh");
+        logger.log(LogLevel.INFO, "\nEnergy Consumption:");
+        logger.log(LogLevel.INFO, "Total Energy Consumed: " + results.getTotalEnergyConsumed() + " mWh");
+        logger.log(LogLevel.INFO, "IoT Energy Consumed: " + results.getIoTEnergyConsumed() + " mWh");
+        logger.log(LogLevel.INFO, "Edge Energy Consumed: " + results.getEdgeEnergyConsumed() + " mWh");
+        logger.log(LogLevel.INFO, "Fog Energy Consumed: " + results.getFogEnergyConsumed() + " mWh");
+        logger.log(LogLevel.INFO, "Cloud Energy Consumed: " + results.getCloudEnergyConsumed() + " mWh");
         
-        logger.info("=== End of Results Summary ===");
+        logger.log(LogLevel.INFO, "=== End of Results Summary ===");
     }
 }

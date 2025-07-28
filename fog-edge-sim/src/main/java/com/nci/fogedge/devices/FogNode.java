@@ -25,28 +25,24 @@ public class FogNode extends Device {
      * Constructor for a Fog Node
      * 
      * @param id Unique identifier for the device
-     * @param processingPower Processing power in MIPS
-     * @param memory Memory in MB
-     * @param storage Storage in GB
-     * @param batteryCapacity Battery capacity in mAh (0 for always-on devices)
+     * @param name Human-readable name for the device
      * @param xPos Initial X position
      * @param yPos Initial Y position
-     * @param networkBandwidth Network bandwidth in Mbps
-     * @param networkLatency Network latency in ms
+     * @param cpuCapacity CPU capacity in MIPS
+     * @param ramCapacity RAM capacity in MB
+     * @param storageCapacity Storage capacity in GB
+     * @param batteryCapacity Battery capacity in mAh (0 for always-on devices)
      * @param maxConnections Maximum number of connected devices
-     * @param securityLevel Security level (0-1)
-     * @param hasBackupPower Whether the fog node has backup power
      */
-    public FogNode(String id, double processingPower, double memory, double storage,
-                  double batteryCapacity, double xPos, double yPos, double networkBandwidth,
-                  double networkLatency, int maxConnections, double securityLevel,
-                  boolean hasBackupPower) {
-        super(id, DeviceType.FOG_NODE, processingPower, memory, storage, batteryCapacity, xPos, yPos);
-        this.networkBandwidth = networkBandwidth;
-        this.networkLatency = networkLatency;
+    public FogNode(String id, String name, double xPos, double yPos, int cpuCapacity,
+                  int ramCapacity, int storageCapacity, int batteryCapacity,
+                  int maxConnections) {
+        super(id, DeviceType.FOG_NODE, name, xPos, yPos, cpuCapacity, ramCapacity, storageCapacity, batteryCapacity);
+        this.networkBandwidth = 1000; // Default 1 Gbps
+        this.networkLatency = 5; // Default 5ms latency
         this.maxConnections = maxConnections;
-        this.securityLevel = Math.max(0, Math.min(1, securityLevel)); // Ensure between 0 and 1
-        this.hasBackupPower = hasBackupPower;
+        this.securityLevel = 0.8; // Default high security level
+        this.hasBackupPower = true; // Default has backup power
         this.connectedEdgeNodeIds = new ArrayList<>();
         this.resourceAllocation = new HashMap<>();
     }
@@ -302,5 +298,14 @@ public class FogNode extends Device {
     
     public void setBackupPower(boolean hasBackupPower) {
         this.hasBackupPower = hasBackupPower;
+    }
+    
+    /**
+     * Increments the count of connected edge nodes
+     * This is a utility method used by the TopologyManager
+     */
+    public void incrementConnectedEdgeNodesCount() {
+        // This method is intentionally left empty as the count is already managed by the connectedEdgeNodeIds list
+        // The actual count can be retrieved using getConnectedEdgeNodeCount()
     }
 }

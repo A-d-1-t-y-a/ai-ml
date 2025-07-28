@@ -3,6 +3,8 @@ package com.nci.fogedge.tasks;
 import com.nci.fogedge.devices.*;
 import com.nci.fogedge.model.SimulationConfig;
 import com.nci.fogedge.model.SimulationResults;
+import com.nci.fogedge.network.NetworkModel;
+import com.nci.fogedge.security.SecurityManager;
 
 import java.util.*;
 
@@ -25,8 +27,10 @@ public class TaskManager {
      * 
      * @param config Simulation configuration
      * @param results Simulation results collector
+     * @param networkModel Network model for data transfer simulation
+     * @param securityManager Security manager for task security validation
      */
-    public TaskManager(SimulationConfig config, SimulationResults results) {
+    public TaskManager(SimulationConfig config, SimulationResults results, NetworkModel networkModel, SecurityManager securityManager) {
         this.config = config;
         this.results = results;
         this.tasks = new HashMap<>();

@@ -63,21 +63,21 @@ public class DeviceManager {
      * Creates IoT devices based on configuration
      */
     private void createIoTDevices() {
-        int numIoTDevices = config.getNumIoTDevices();
+        int numIoTDevices = config.getIoTDeviceCount();
         
         for (int i = 0; i < numIoTDevices; i++) {
             // Generate device ID
             String deviceId = "iot_" + i;
             
             // Generate random position within the simulation area
-            double xPos = random.nextDouble() * config.getSimulationAreaWidth();
-            double yPos = random.nextDouble() * config.getSimulationAreaHeight();
+            double xPos = random.nextDouble() * config.getSimulationAreaSize();
+            double yPos = random.nextDouble() * config.getSimulationAreaSize();
             
             // Select a random wireless type
             WirelessType wirelessType = getRandomWirelessType();
             
             // Determine if the device is mobile
-            boolean isMobile = random.nextDouble() < config.getIoTMobilityRate();
+            boolean isMobile = random.nextDouble() < (config.getIoTMobilityPercentage() / 100.0);
             
             // Create the IoT device
             IoTDevice device = new IoTDevice(
@@ -85,14 +85,14 @@ public class DeviceManager {
                 "IoT Device " + i,
                 xPos,
                 yPos,
-                config.getIoTDeviceCpuCapacity(),
-                config.getIoTDeviceRamCapacity(),
-                config.getIoTDeviceStorageCapacity(),
-                config.getIoTDeviceBatteryCapacity(),
+                config.getIoTCpuCapacity(),
+                config.getIoTRamCapacity(),
+                config.getIoTStorageCapacity(),
+                config.getIoTBatteryCapacity(),
                 wirelessType,
                 isMobile,
-                config.getIoTDeviceTaskGenerationRate(),
-                config.getIoTDeviceDataGenerationRate()
+                config.getIoTTaskGenerationRate(),
+                0.0 // Default data generation rate
             );
             
             // Add the device to the maps
@@ -105,23 +105,21 @@ public class DeviceManager {
      * Creates edge nodes based on configuration
      */
     private void createEdgeNodes() {
-        int numEdgeNodes = config.getNumEdgeNodes();
+        int numEdgeNodes = config.getEdgeNodeCount();
         
         for (int i = 0; i < numEdgeNodes; i++) {
             // Generate device ID
             String deviceId = "edge_" + i;
             
             // Generate position - edge nodes should be distributed across the simulation area
-            double xPos = (i % Math.sqrt(numEdgeNodes)) * (config.getSimulationAreaWidth() / Math.sqrt(numEdgeNodes));
-            double yPos = (i / Math.sqrt(numEdgeNodes)) * (config.getSimulationAreaHeight() / Math.sqrt(numEdgeNodes));
+            double areaSize = config.getSimulationAreaSize();
+            double gridSize = Math.sqrt(numEdgeNodes);
+            double xPos = (i % gridSize) * (areaSize / gridSize);
+            double yPos = (i / gridSize) * (areaSize / gridSize);
             
             // Add some randomness to the position
-            xPos += random.nextDouble() * 100 - 50;
-            yPos += random.nextDouble() * 100 - 50;
-            
-            // Ensure position is within the simulation area
-            xPos = Math.max(0, Math.min(xPos, config.getSimulationAreaWidth()));
-            yPos = Math.max(0, Math.min(yPos, config.getSimulationAreaHeight()));
+            xPos += random.nextDouble() * (areaSize / gridSize * 0.5);
+            yPos += random.nextDouble() * (areaSize / gridSize * 0.5);
             
             // Create the edge node
             EdgeNode device = new EdgeNode(
@@ -129,13 +127,11 @@ public class DeviceManager {
                 "Edge Node " + i,
                 xPos,
                 yPos,
-                config.getEdgeNodeCpuCapacity(),
-                config.getEdgeNodeRamCapacity(),
-                config.getEdgeNodeStorageCapacity(),
-                config.getEdgeNodeBatteryCapacity(),
-                config.getEdgeNodeNetworkBandwidth(),
-                config.getEdgeNodeNetworkLatency(),
-                config.getEdgeNodeSecurityLevel()
+                config.getEdgeCpuCapacity(),
+                config.getEdgeRamCapacity(),
+                config.getEdgeStorageCapacity(),
+                config.getEdgeBatteryCapacity(),
+                config.getEdgeMaxConnections()
             );
             
             // Add the device to the maps
@@ -148,24 +144,21 @@ public class DeviceManager {
      * Creates fog nodes based on configuration
      */
     private void createFogNodes() {
-        int numFogNodes = config.getNumFogNodes();
+        int numFogNodes = config.getFogNodeCount();
         
         for (int i = 0; i < numFogNodes; i++) {
             // Generate device ID
             String deviceId = "fog_" + i;
             
             // Generate position - fog nodes should be distributed across the simulation area
-            // but fewer than edge nodes
-            double xPos = (i % Math.sqrt(numFogNodes)) * (config.getSimulationAreaWidth() / Math.sqrt(numFogNodes));
-            double yPos = (i / Math.sqrt(numFogNodes)) * (config.getSimulationAreaHeight() / Math.sqrt(numFogNodes));
+            double areaSize = config.getSimulationAreaSize();
+            double gridSize = Math.sqrt(numFogNodes);
+            double xPos = (i % gridSize) * (areaSize / gridSize);
+            double yPos = (i / gridSize) * (areaSize / gridSize);
             
             // Add some randomness to the position
-            xPos += random.nextDouble() * 200 - 100;
-            yPos += random.nextDouble() * 200 - 100;
-            
-            // Ensure position is within the simulation area
-            xPos = Math.max(0, Math.min(xPos, config.getSimulationAreaWidth()));
-            yPos = Math.max(0, Math.min(yPos, config.getSimulationAreaHeight()));
+            xPos += random.nextDouble() * (areaSize / gridSize * 0.5);
+            yPos += random.nextDouble() * (areaSize / gridSize * 0.5);
             
             // Create the fog node
             FogNode device = new FogNode(
@@ -193,16 +186,35 @@ public class DeviceManager {
      * Creates cloud datacenters based on configuration
      */
     private void createCloudDatacenters() {
-        int numCloudDatacenters = config.getNumCloudDatacenters();
+        int numCloudDatacenters = config.getCloudDatacenterCount();
         
         for (int i = 0; i < numCloudDatacenters; i++) {
             // Generate device ID
             String deviceId = "cloud_" + i;
             
-            // Generate position - cloud datacenters are typically far from the edge
-            // We'll place them outside the main simulation area to represent their remote nature
-            double xPos = random.nextDouble() * config.getSimulationAreaWidth() * 2;
-            double yPos = random.nextDouble() * config.getSimulationAreaHeight() * 2;
+            // Generate position - cloud datacenters should be at the edges of the simulation area
+            double xPos = 0;
+            double yPos = 0;
+            double areaSize = config.getSimulationAreaSize();
+            
+            switch (i % 4) {
+                case 0: // Top left
+                    xPos = areaSize * 0.1;
+                    yPos = areaSize * 0.1;
+                    break;
+                case 1: // Top right
+                    xPos = areaSize * 0.9;
+                    yPos = areaSize * 0.1;
+                    break;
+                case 2: // Bottom right
+                    xPos = areaSize * 0.9;
+                    yPos = areaSize * 0.9;
+                    break;
+                case 3: // Bottom left
+                    xPos = areaSize * 0.1;
+                    yPos = areaSize * 0.9;
+                    break;
+            }
             
             // Create the cloud datacenter
             CloudDatacenter device = new CloudDatacenter(
@@ -210,17 +222,10 @@ public class DeviceManager {
                 "Cloud Datacenter " + i,
                 xPos,
                 yPos,
-                config.getCloudDatacenterCpuCapacity(),
-                config.getCloudDatacenterRamCapacity(),
-                config.getCloudDatacenterStorageCapacity(),
-                Double.MAX_VALUE, // Cloud datacenters have unlimited power
-                config.getCloudDatacenterNetworkBandwidth(),
-                config.getCloudDatacenterNetworkLatency(),
-                config.getCloudDatacenterSecurityLevel(),
-                config.getCloudDatacenterCostPerCpuCycle(),
-                config.getCloudDatacenterCostPerRamMb(),
-                config.getCloudDatacenterCostPerStorageGb(),
-                config.getCloudDatacenterCostPerNetworkMb()
+                config.getCloudCpuCapacity(),
+                config.getCloudRamCapacity(),
+                config.getCloudStorageCapacity(),
+                config.getCloudMaxConnections()
             );
             
             // Add the device to the maps

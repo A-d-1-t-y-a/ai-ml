@@ -28,35 +28,26 @@ public class CloudDatacenter extends Device {
      * Constructor for a Cloud Datacenter
      * 
      * @param id Unique identifier for the device
-     * @param processingPower Processing power in MIPS
-     * @param memory Memory in MB
-     * @param storage Storage in GB
+     * @param name Human-readable name for the device
      * @param xPos Initial X position
      * @param yPos Initial Y position
-     * @param networkBandwidth Network bandwidth in Mbps
-     * @param networkLatency Network latency in ms
+     * @param cpuCapacity CPU capacity in MIPS
+     * @param ramCapacity RAM capacity in MB
+     * @param storageCapacity Storage capacity in GB
      * @param maxConnections Maximum number of connected fog nodes
-     * @param securityLevel Security level (0-1)
-     * @param hasRedundancy Whether the cloud datacenter has redundancy
-     * @param costPerCpuHour Cost per CPU hour
-     * @param costPerGbStorage Cost per GB of storage per hour
-     * @param costPerGbNetwork Cost per GB of network transfer
      */
-    public CloudDatacenter(String id, double processingPower, double memory, double storage,
-                          double xPos, double yPos, double networkBandwidth,
-                          double networkLatency, int maxConnections, double securityLevel,
-                          boolean hasRedundancy, double costPerCpuHour, double costPerGbStorage,
-                          double costPerGbNetwork) {
+    public CloudDatacenter(String id, String name, double xPos, double yPos, int cpuCapacity,
+                          int ramCapacity, int storageCapacity, int maxConnections) {
         // Cloud datacenters don't have batteries, they're always connected to power
-        super(id, DeviceType.CLOUD_DATACENTER, processingPower, memory, storage, 0, xPos, yPos);
-        this.networkBandwidth = networkBandwidth;
-        this.networkLatency = networkLatency;
+        super(id, DeviceType.CLOUD_DATACENTER, name, xPos, yPos, cpuCapacity, ramCapacity, storageCapacity, 0);
+        this.networkBandwidth = 10000; // Default 10 Gbps
+        this.networkLatency = 100; // Default 100ms latency (higher due to distance)
         this.maxConnections = maxConnections;
-        this.securityLevel = Math.max(0, Math.min(1, securityLevel)); // Ensure between 0 and 1
-        this.hasRedundancy = hasRedundancy;
-        this.costPerCpuHour = costPerCpuHour;
-        this.costPerGbStorage = costPerGbStorage;
-        this.costPerGbNetwork = costPerGbNetwork;
+        this.securityLevel = 0.9; // Default very high security level
+        this.hasRedundancy = true; // Default has redundancy
+        this.costPerCpuHour = 0.05; // Default $0.05 per CPU hour
+        this.costPerGbStorage = 0.02; // Default $0.02 per GB storage per hour
+        this.costPerGbNetwork = 0.10; // Default $0.10 per GB network transfer
         this.connectedFogNodeIds = new ArrayList<>();
         this.resourceAllocation = new HashMap<>();
         
@@ -309,5 +300,14 @@ public class CloudDatacenter extends Device {
     
     public double getCostPerGbNetwork() {
         return costPerGbNetwork;
+    }
+    
+    /**
+     * Increments the count of connected fog nodes
+     * This is a utility method used by the TopologyManager
+     */
+    public void incrementConnectedFogNodesCount() {
+        // This method is intentionally left empty as the count is already managed by the connectedFogNodeIds list
+        // The actual count can be retrieved using getConnectedFogNodeCount()
     }
 }

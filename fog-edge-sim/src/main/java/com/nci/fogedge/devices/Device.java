@@ -10,6 +10,7 @@ public abstract class Device {
     // Device identification
     protected String id;
     protected DeviceType type;
+    protected String name;
     
     // Device capabilities
     protected double processingPower; // MIPS (Million Instructions Per Second)
@@ -32,17 +33,21 @@ public abstract class Device {
      * 
      * @param id Unique identifier for the device
      * @param type Type of the device
+     * @param name Human-readable name for the device
+     * @param xPos Initial X position
+     * @param yPos Initial Y position
      * @param processingPower Processing power in MIPS
      * @param memory Memory in MB
      * @param storage Storage in GB
      * @param batteryCapacity Battery capacity in mAh
-     * @param xPos Initial X position
-     * @param yPos Initial Y position
      */
-    public Device(String id, DeviceType type, double processingPower, double memory, 
-                  double storage, double batteryCapacity, double xPos, double yPos) {
+    public Device(String id, DeviceType type, String name, double xPos, double yPos,
+                  double processingPower, double memory, double storage, double batteryCapacity) {
         this.id = id;
         this.type = type;
+        this.name = name;
+        this.xPos = xPos;
+        this.yPos = yPos;
         this.processingPower = processingPower;
         this.memory = memory;
         this.storage = storage;
@@ -51,8 +56,6 @@ public abstract class Device {
         this.isActive = true;
         this.isCompromised = false;
         this.resourceUtilization = 0.0;
-        this.xPos = xPos;
-        this.yPos = yPos;
     }
     
     /**
@@ -178,5 +181,14 @@ public abstract class Device {
     
     public double getYPos() {
         return yPos;
+    }
+    
+    /**
+     * Gets the name of the device
+     * 
+     * @return The device name
+     */
+    public String getName() {
+        return name;
     }
 }

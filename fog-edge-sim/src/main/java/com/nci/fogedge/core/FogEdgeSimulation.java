@@ -37,7 +37,7 @@ public class FogEdgeSimulation {
         this.logManager = new LogManager(config.getLogLevel());
         this.networkModel = new NetworkModel(config);
         this.deviceManager = new DeviceManager(config, networkModel);
-        this.taskManager = new TaskManager(config, deviceManager);
+        this.taskManager = new TaskManager(config, results, networkModel, securityManager);
         this.securityManager = new SecurityManager(config);
         this.currentTick = 0;
         this.isRunning = false;

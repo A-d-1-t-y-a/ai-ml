@@ -67,6 +67,8 @@ public class SimulationConfig {
     private int taskMaxDuration;
     private boolean taskOffloadingEnabled;
     private double taskOffloadingThreshold;
+    private String taskSchedulingPolicy;
+    private int taskOutputSize; // Size of task output in KB
     
     // Network parameters
     private double networkBaseBandwidth;
@@ -184,14 +186,15 @@ public class SimulationConfig {
         // Task parameters
         taskMinCpu = 100;
         taskMaxCpu = 1000;
-        taskMinRam = 64;
-        taskMaxRam = 1024;
-        taskMinStorage = 128;
-        taskMaxStorage = 4096;
-        taskMinDuration = 5;
-        taskMaxDuration = 50;
+        taskMinRam = 10;
+        taskMaxRam = 100;
+        taskMinStorage = 5;
+        taskMaxStorage = 50;
+        taskMinDuration = 10;
+        taskMaxDuration = 100;
         taskOffloadingEnabled = true;
-        taskOffloadingThreshold = 0.8;
+        taskOffloadingThreshold = 0.7;
+        taskSchedulingPolicy = "FIFO";
         
         // Network parameters
         networkBaseBandwidth = 100;
@@ -287,17 +290,18 @@ public class SimulationConfig {
         cloudStorageCapacity = Integer.parseInt(properties.getProperty("cloud.storageCapacity", String.valueOf(cloudStorageCapacity)));
         cloudMaxConnections = Integer.parseInt(properties.getProperty("cloud.maxConnections", String.valueOf(cloudMaxConnections)));
         
-        // Load Task parameters
-        taskMinCpu = Integer.parseInt(properties.getProperty("task.minCpu", String.valueOf(taskMinCpu)));
-        taskMaxCpu = Integer.parseInt(properties.getProperty("task.maxCpu", String.valueOf(taskMaxCpu)));
-        taskMinRam = Integer.parseInt(properties.getProperty("task.minRam", String.valueOf(taskMinRam)));
-        taskMaxRam = Integer.parseInt(properties.getProperty("task.maxRam", String.valueOf(taskMaxRam)));
-        taskMinStorage = Integer.parseInt(properties.getProperty("task.minStorage", String.valueOf(taskMinStorage)));
-        taskMaxStorage = Integer.parseInt(properties.getProperty("task.maxStorage", String.valueOf(taskMaxStorage)));
-        taskMinDuration = Integer.parseInt(properties.getProperty("task.minDuration", String.valueOf(taskMinDuration)));
-        taskMaxDuration = Integer.parseInt(properties.getProperty("task.maxDuration", String.valueOf(taskMaxDuration)));
-        taskOffloadingEnabled = Boolean.parseBoolean(properties.getProperty("task.offloadingEnabled", String.valueOf(taskOffloadingEnabled)));
-        taskOffloadingThreshold = Double.parseDouble(properties.getProperty("task.offloadingThreshold", String.valueOf(taskOffloadingThreshold)));
+        // Task parameters
+        taskMinCpu = getIntProperty(properties, "task.min.cpu", taskMinCpu);
+        taskMaxCpu = getIntProperty(properties, "task.max.cpu", taskMaxCpu);
+        taskMinRam = getIntProperty(properties, "task.min.ram", taskMinRam);
+        taskMaxRam = getIntProperty(properties, "task.max.ram", taskMaxRam);
+        taskMinStorage = getIntProperty(properties, "task.min.storage", taskMinStorage);
+        taskMaxStorage = getIntProperty(properties, "task.max.storage", taskMaxStorage);
+        taskMinDuration = getIntProperty(properties, "task.min.duration", taskMinDuration);
+        taskMaxDuration = getIntProperty(properties, "task.max.duration", taskMaxDuration);
+        taskOffloadingEnabled = getBooleanProperty(properties, "task.offloading.enabled", taskOffloadingEnabled);
+        taskOffloadingThreshold = getDoubleProperty(properties, "task.offloading.threshold", taskOffloadingThreshold);
+        taskSchedulingPolicy = getStringProperty(properties, "task.scheduling.policy", taskSchedulingPolicy);
         
         // Load Network parameters
         networkBaseBandwidth = Double.parseDouble(properties.getProperty("network.baseBandwidth", String.valueOf(networkBaseBandwidth)));
@@ -357,6 +361,48 @@ public class SimulationConfig {
                 // Use default log level
             }
         }
+    }
+    
+    private double getDoubleProperty(Properties properties, String key, double defaultValue) {
+        String value = properties.getProperty(key);
+        if (value == null || value.isEmpty()) {
+            return defaultValue;
+        }
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid value for " + key + ": " + value + ". Using default: " + defaultValue);
+            return defaultValue;
+        }
+    }
+    
+    private String getStringProperty(Properties properties, String key, String defaultValue) {
+        String value = properties.getProperty(key);
+        if (value == null || value.isEmpty()) {
+            return defaultValue;
+        }
+        return value;
+    }
+    
+    private int getIntProperty(Properties properties, String key, int defaultValue) {
+        String value = properties.getProperty(key);
+        if (value == null || value.isEmpty()) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid value for " + key + ": " + value + ". Using default: " + defaultValue);
+            return defaultValue;
+        }
+    }
+    
+    private boolean getBooleanProperty(Properties properties, String key, boolean defaultValue) {
+        String value = properties.getProperty(key);
+        if (value == null || value.isEmpty()) {
+            return defaultValue;
+        }
+        return Boolean.parseBoolean(value);
     }
     
     // Getters for all configuration parameters
@@ -593,5 +639,21 @@ public class SimulationConfig {
     
     public LogLevel getMinLogLevel() {
         return minLogLevel;
+    }
+    
+    /**
+     * Gets the task scheduling policy
+     * @return Task scheduling policy (e.g., "FIFO", "PRIORITY", "DEADLINE")
+     */
+    public String getTaskSchedulingPolicy() {
+        return taskSchedulingPolicy;
+    }
+    
+    /**
+     * Get the task output size
+     * @return Task output size in KB
+     */
+    public int getTaskOutputSize() {
+        return taskOutputSize;
     }
 }

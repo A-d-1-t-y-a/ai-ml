@@ -19,22 +19,23 @@ public class IoTDevice extends Device {
      * Constructor for an IoT device
      * 
      * @param id Unique identifier for the device
-     * @param processingPower Processing power in MIPS
-     * @param memory Memory in MB
-     * @param storage Storage in GB
-     * @param batteryCapacity Battery capacity in mAh
+     * @param name Human-readable name for the device
      * @param xPos Initial X position
      * @param yPos Initial Y position
-     * @param mobilityFactor Mobility factor (0-1)
+     * @param cpuCapacity CPU capacity in MIPS
+     * @param ramCapacity RAM capacity in MB
+     * @param storageCapacity Storage capacity in GB
+     * @param batteryCapacity Battery capacity in mAh
+     * @param wirelessType Type of wireless connection
+     * @param isMobile Whether the device is mobile
      * @param taskGenerationRate Task generation rate (tasks per 100 ticks)
      * @param dataGenerationRate Data generation rate (KB per tick)
-     * @param wirelessType Type of wireless connection
      */
-    public IoTDevice(String id, double processingPower, double memory, double storage,
-                    double batteryCapacity, double xPos, double yPos, double mobilityFactor,
-                    double taskGenerationRate, double dataGenerationRate, WirelessType wirelessType) {
-        super(id, DeviceType.IOT_DEVICE, processingPower, memory, storage, batteryCapacity, xPos, yPos);
-        this.mobilityFactor = Math.max(0, Math.min(1, mobilityFactor)); // Ensure between 0 and 1
+    public IoTDevice(String id, String name, double xPos, double yPos, int cpuCapacity,
+                    int ramCapacity, int storageCapacity, int batteryCapacity, WirelessType wirelessType,
+                    boolean isMobile, double taskGenerationRate, double dataGenerationRate) {
+        super(id, DeviceType.IOT_DEVICE, name, xPos, yPos, cpuCapacity, ramCapacity, storageCapacity, batteryCapacity);
+        this.mobilityFactor = isMobile ? 0.5 : 0.0; // Set mobility factor based on isMobile flag
         this.taskGenerationRate = taskGenerationRate;
         this.dataGenerationRate = dataGenerationRate;
         this.wirelessType = wirelessType;
@@ -181,5 +182,14 @@ public class IoTDevice extends Device {
     
     public void setWirelessType(WirelessType wirelessType) {
         this.wirelessType = wirelessType;
+    }
+    
+    /**
+     * Checks if this IoT device is mobile
+     * 
+     * @return True if the device is mobile (mobility factor > 0), false otherwise
+     */
+    public boolean isMobile() {
+        return mobilityFactor > 0;
     }
 }
