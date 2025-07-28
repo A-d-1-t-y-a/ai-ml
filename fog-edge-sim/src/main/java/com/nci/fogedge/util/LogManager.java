@@ -179,56 +179,12 @@ public class LogManager {
         report.append("==========================================================\n\n");
         
         // Add timestamp
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        report.append("Report generated: ").append(sdf.format(new Date())).append("\n\n");
         
-        // Add simulation configuration
-        report.append("SIMULATION CONFIGURATION\n");
-        report.append("-------------------------\n");
-        report.append("Simulation duration: ").append(results.getTotalTicks()).append(" ticks\n");
-        report.append("IoT devices: ").append(config.getIoTDeviceCount()).append("\n");
-        report.append("Edge nodes: ").append(config.getEdgeNodeCount()).append("\n");
-        report.append("Fog nodes: ").append(config.getFogNodeCount()).append("\n");
-        report.append("Cloud datacenters: ").append(config.getCloudDatacenterCount()).append("\n");
-        report.append("Security attacks enabled: ").append(config.getSecurityAttacksEnabled()).append("\n");
-        report.append("Task offloading enabled: ").append(config.getTaskOffloadingEnabled()).append("\n\n");
-        
-        // Add device statistics
-        report.append("DEVICE STATISTICS\n");
-        report.append("----------------\n");
-        report.append("Active devices: ").append(results.getActiveDeviceCount()).append("\n");
-        report.append("Inactive devices: ").append(results.getInactiveDeviceCount()).append("\n");
-        report.append("Compromised devices: ").append(results.getCompromisedDeviceCount()).append("\n");
-        report.append("Average resource utilization: ").append(String.format("%.2f%%", results.getAverageResourceUtilization() * 100)).append("\n");
-        report.append("Average energy level: ").append(String.format("%.2f%%", results.getAverageEnergyLevel() * 100)).append("\n\n");
-        
-        // Add task statistics
-        report.append("TASK STATISTICS\n");
-        report.append("--------------\n");
-        report.append("Total tasks: ").append(results.getTotalTasksCount()).append("\n");
-        report.append("Completed tasks: ").append(results.getCompletedTasksCount()).append("\n");
-        report.append("Failed tasks: ").append(results.getFailedTasksCount()).append("\n");
-        report.append("Offloaded tasks: ").append(results.getOffloadedTasksCount()).append("\n");
-        report.append("Task completion rate: ").append(String.format("%.2f%%", results.getTaskCompletionRate() * 100)).append("\n");
-        report.append("Average task execution time: ").append(String.format("%.2f ticks", results.getAverageTaskExecutionTime())).append("\n\n");
-        
-        // Add network statistics
-        report.append("NETWORK STATISTICS\n");
-        report.append("-----------------\n");
-        report.append("Average network bandwidth: ").append(String.format("%.2f Mbps", results.getAverageNetworkBandwidth())).append("\n");
-        report.append("Average network latency: ").append(String.format("%.2f ms", results.getAverageNetworkLatency())).append("\n\n");
-        
-        // Add security statistics
-        report.append("SECURITY STATISTICS\n");
-        report.append("------------------\n");
-        report.append("Total attacks: ").append(results.getTotalAttacksCount()).append("\n");
-        report.append("Detected attacks: ").append(results.getDetectedAttacksCount()).append("\n");
-        report.append("Mitigated attacks: ").append(results.getMitigatedAttacksCount()).append("\n");
-        report.append("Attack detection rate: ").append(String.format("%.2f%%", results.getAttackDetectionRate() * 100)).append("\n");
-        report.append("Attack mitigation rate: ").append(String.format("%.2f%%", results.getAttackMitigationRate() * 100)).append("\n\n");
+        // Add simulation results using the toString method
+        report.append(results.toString());
         
         // Add footer
-        report.append("==========================================================\n");
+        report.append("\n==========================================================\n");
         report.append("                   END OF REPORT                          \n");
         report.append("==========================================================\n");
         

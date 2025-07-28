@@ -1,7 +1,14 @@
 package com.nci.fogedge.model;
 
+import com.nci.fogedge.security.AttackType;
+import com.nci.fogedge.security.CountermeasureType;
+import com.nci.fogedge.util.LogManager.LogLevel;
+
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -11,33 +18,95 @@ import java.util.Properties;
 public class SimulationConfig {
     // Simulation parameters
     private int simulationDuration;
-    private boolean mobilityEnabled;
-    private boolean securityEnabled;
-    private String logLevel;
+    private int simulationAreaSize;
+    private long randomSeed;
     
-    // Device parameters
-    private int numIoTDevices;
-    private int numEdgeNodes;
-    private int numFogNodes;
-    private int numCloudDatacenters;
+    // Device counts
+    private int ioTDeviceCount;
+    private int edgeNodeCount;
+    private int fogNodeCount;
+    private int cloudDatacenterCount;
     
-    // Network parameters
-    private double wanBandwidth;
-    private double lanBandwidth;
-    private double wanLatency;
-    private double lanLatency;
-    private double wirelessRange;
+    // IoT device parameters
+    private int ioTMobilityPercentage;
+    private int ioTBatteryCapacity;
+    private int ioTCpuCapacity;
+    private int ioTRamCapacity;
+    private int ioTStorageCapacity;
+    private double ioTTaskGenerationRate;
+    private List<String> ioTWirelessTypes;
+    
+    // Edge node parameters
+    private int edgeCpuCapacity;
+    private int edgeRamCapacity;
+    private int edgeStorageCapacity;
+    private int edgeBatteryCapacity;
+    private int edgeMaxConnections;
+    
+    // Fog node parameters
+    private int fogCpuCapacity;
+    private int fogRamCapacity;
+    private int fogStorageCapacity;
+    private int fogBatteryCapacity;
+    private int fogMaxConnections;
+    
+    // Cloud datacenter parameters
+    private int cloudCpuCapacity;
+    private int cloudRamCapacity;
+    private int cloudStorageCapacity;
+    private int cloudMaxConnections;
     
     // Task parameters
-    private int taskGenerationRate;
-    private int taskLength;
-    private int taskInputSize;
-    private int taskOutputSize;
+    private int taskMinCpu;
+    private int taskMaxCpu;
+    private int taskMinRam;
+    private int taskMaxRam;
+    private int taskMinStorage;
+    private int taskMaxStorage;
+    private int taskMinDuration;
+    private int taskMaxDuration;
+    private boolean taskOffloadingEnabled;
+    private double taskOffloadingThreshold;
+    
+    // Network parameters
+    private double networkBaseBandwidth;
+    private double networkBaseLatency;
+    private double networkVariabilityFactor;
+    private double networkCongestionProbability;
+    private double networkPacketLossProbability;
+    private boolean ioTMeshNetworkEnabled;
+    private boolean edgeMeshNetworkEnabled;
+    private boolean fogMeshNetworkEnabled;
     
     // Security parameters
-    private double attackProbability;
-    private double detectionRate;
-    private double securityOverhead;
+    private boolean securityAttacksEnabled;
+    private double securityAttackProbability;
+    private double securityDetectionProbability;
+    private double securityMitigationProbability;
+    private List<AttackType> securityAttackTypes;
+    private List<CountermeasureType> securityCountermeasureTypes;
+    
+    // Logging parameters
+    private boolean consoleLoggingEnabled;
+    private boolean fileLoggingEnabled;
+    private String logFilePath;
+    private LogLevel minLogLevel;
+    
+    /**
+     * Default constructor that loads default configuration values
+     */
+    public SimulationConfig() {
+        loadDefaults();
+    }
+    
+    /**
+     * Constructor that loads configuration from properties
+     * @param properties Properties object containing configuration values
+     */
+    public SimulationConfig(Properties properties) {
+        loadDefaults();
+        loadFromProperties(properties);
+    }
     
     /**
      * Constructor that loads configuration from a file
@@ -45,7 +114,6 @@ public class SimulationConfig {
      */
     public SimulationConfig(String configFilePath) {
         loadDefaults();
-        
         if (configFilePath != null && !configFilePath.isEmpty()) {
             try {
                 loadFromFile(configFilePath);
@@ -57,41 +125,6 @@ public class SimulationConfig {
     }
     
     /**
-     * Loads default configuration values
-     */
-    private void loadDefaults() {
-        // Simulation defaults
-        simulationDuration = 1000; // simulation ticks
-        mobilityEnabled = true;
-        securityEnabled = true;
-        logLevel = "INFO";
-        
-        // Device defaults
-        numIoTDevices = 100;
-        numEdgeNodes = 10;
-        numFogNodes = 5;
-        numCloudDatacenters = 1;
-        
-        // Network defaults
-        wanBandwidth = 100.0; // Mbps
-        lanBandwidth = 1000.0; // Mbps
-        wanLatency = 100.0; // ms
-        lanLatency = 5.0; // ms
-        wirelessRange = 100.0; // meters
-        
-        // Task defaults
-        taskGenerationRate = 5; // tasks per device per 100 ticks
-        taskLength = 1000; // MI (Million Instructions)
-        taskInputSize = 1000; // KB
-        taskOutputSize = 100; // KB
-        
-        // Security defaults
-        attackProbability = 0.01; // 1% chance of attack per tick
-        detectionRate = 0.8; // 80% detection rate
-        securityOverhead = 0.1; // 10% overhead
-    }
-    
-    /**
      * Loads configuration from a file
      * @param configFilePath Path to the configuration file
      * @throws IOException If there is an error reading the file
@@ -100,118 +133,465 @@ public class SimulationConfig {
         Properties properties = new Properties();
         try (FileInputStream fis = new FileInputStream(configFilePath)) {
             properties.load(fis);
-            
-            // Load simulation parameters
-            simulationDuration = Integer.parseInt(properties.getProperty("simulation.duration", String.valueOf(simulationDuration)));
-            mobilityEnabled = Boolean.parseBoolean(properties.getProperty("simulation.mobility.enabled", String.valueOf(mobilityEnabled)));
-            securityEnabled = Boolean.parseBoolean(properties.getProperty("simulation.security.enabled", String.valueOf(securityEnabled)));
-            logLevel = properties.getProperty("simulation.log.level", logLevel);
-            
-            // Load device parameters
-            numIoTDevices = Integer.parseInt(properties.getProperty("devices.iot.count", String.valueOf(numIoTDevices)));
-            numEdgeNodes = Integer.parseInt(properties.getProperty("devices.edge.count", String.valueOf(numEdgeNodes)));
-            numFogNodes = Integer.parseInt(properties.getProperty("devices.fog.count", String.valueOf(numFogNodes)));
-            numCloudDatacenters = Integer.parseInt(properties.getProperty("devices.cloud.count", String.valueOf(numCloudDatacenters)));
-            
-            // Load network parameters
-            wanBandwidth = Double.parseDouble(properties.getProperty("network.wan.bandwidth", String.valueOf(wanBandwidth)));
-            lanBandwidth = Double.parseDouble(properties.getProperty("network.lan.bandwidth", String.valueOf(lanBandwidth)));
-            wanLatency = Double.parseDouble(properties.getProperty("network.wan.latency", String.valueOf(wanLatency)));
-            lanLatency = Double.parseDouble(properties.getProperty("network.lan.latency", String.valueOf(lanLatency)));
-            wirelessRange = Double.parseDouble(properties.getProperty("network.wireless.range", String.valueOf(wirelessRange)));
-            
-            // Load task parameters
-            taskGenerationRate = Integer.parseInt(properties.getProperty("tasks.generation.rate", String.valueOf(taskGenerationRate)));
-            taskLength = Integer.parseInt(properties.getProperty("tasks.length", String.valueOf(taskLength)));
-            taskInputSize = Integer.parseInt(properties.getProperty("tasks.input.size", String.valueOf(taskInputSize)));
-            taskOutputSize = Integer.parseInt(properties.getProperty("tasks.output.size", String.valueOf(taskOutputSize)));
-            
-            // Load security parameters
-            attackProbability = Double.parseDouble(properties.getProperty("security.attack.probability", String.valueOf(attackProbability)));
-            detectionRate = Double.parseDouble(properties.getProperty("security.detection.rate", String.valueOf(detectionRate)));
-            securityOverhead = Double.parseDouble(properties.getProperty("security.overhead", String.valueOf(securityOverhead)));
+            loadFromProperties(properties);
         }
     }
     
-    // Getters and setters for all configuration parameters
+    /**
+     * Loads default configuration values
+     */
+    private void loadDefaults() {
+        // Simulation defaults
+        simulationDuration = 1000;
+        simulationAreaSize = 1000;
+        randomSeed = 12345;
+        
+        // Device counts
+        ioTDeviceCount = 100;
+        edgeNodeCount = 10;
+        fogNodeCount = 5;
+        cloudDatacenterCount = 1;
+        
+        // IoT device parameters
+        ioTMobilityPercentage = 30;
+        ioTBatteryCapacity = 5000;
+        ioTCpuCapacity = 1000;
+        ioTRamCapacity = 512;
+        ioTStorageCapacity = 1024;
+        ioTTaskGenerationRate = 0.2;
+        ioTWirelessTypes = Arrays.asList("BLUETOOTH", "WIFI", "CELLULAR", "ZIGBEE", "LORA");
+        
+        // Edge node parameters
+        edgeCpuCapacity = 5000;
+        edgeRamCapacity = 8192;
+        edgeStorageCapacity = 51200;
+        edgeBatteryCapacity = 20000;
+        edgeMaxConnections = 20;
+        
+        // Fog node parameters
+        fogCpuCapacity = 10000;
+        fogRamCapacity = 32768;
+        fogStorageCapacity = 102400;
+        fogBatteryCapacity = 50000;
+        fogMaxConnections = 50;
+        
+        // Cloud datacenter parameters
+        cloudCpuCapacity = 100000;
+        cloudRamCapacity = 1048576;
+        cloudStorageCapacity = 10485760;
+        cloudMaxConnections = 1000;
+        
+        // Task parameters
+        taskMinCpu = 100;
+        taskMaxCpu = 1000;
+        taskMinRam = 64;
+        taskMaxRam = 1024;
+        taskMinStorage = 128;
+        taskMaxStorage = 4096;
+        taskMinDuration = 5;
+        taskMaxDuration = 50;
+        taskOffloadingEnabled = true;
+        taskOffloadingThreshold = 0.8;
+        
+        // Network parameters
+        networkBaseBandwidth = 100;
+        networkBaseLatency = 10;
+        networkVariabilityFactor = 0.2;
+        networkCongestionProbability = 0.1;
+        networkPacketLossProbability = 0.05;
+        ioTMeshNetworkEnabled = true;
+        edgeMeshNetworkEnabled = true;
+        fogMeshNetworkEnabled = true;
+        
+        // Security parameters
+        securityAttacksEnabled = true;
+        securityAttackProbability = 0.05;
+        securityDetectionProbability = 0.7;
+        securityMitigationProbability = 0.6;
+        securityAttackTypes = Arrays.asList(
+            AttackType.DDOS,
+            AttackType.DATA_THEFT,
+            AttackType.EAVESDROPPING,
+            AttackType.MAN_IN_THE_MIDDLE,
+            AttackType.MALWARE,
+            AttackType.PHYSICAL_TAMPERING
+        );
+        securityCountermeasureTypes = Arrays.asList(
+            CountermeasureType.TRAFFIC_FILTERING,
+            CountermeasureType.ENCRYPTION,
+            CountermeasureType.SECURE_COMMUNICATION,
+            CountermeasureType.AUTHENTICATION,
+            CountermeasureType.MALWARE_SCANNING,
+            CountermeasureType.PHYSICAL_SECURITY,
+            CountermeasureType.INTRUSION_DETECTION
+        );
+        
+        // Logging parameters
+        consoleLoggingEnabled = true;
+        fileLoggingEnabled = true;
+        logFilePath = "logs/simulation.log";
+        minLogLevel = LogLevel.INFO;
+    }
     
+    /**
+     * Loads configuration from a Properties object
+     * @param properties Properties object containing configuration values
+     */
+    private void loadFromProperties(Properties properties) {
+        if (properties == null) {
+            return;
+        }
+        
+        // Load simulation parameters
+        simulationDuration = Integer.parseInt(properties.getProperty("simulation.duration", String.valueOf(simulationDuration)));
+        simulationAreaSize = Integer.parseInt(properties.getProperty("simulation.areaSize", String.valueOf(simulationAreaSize)));
+        randomSeed = Long.parseLong(properties.getProperty("simulation.randomSeed", String.valueOf(randomSeed)));
+        
+        // Load device counts
+        ioTDeviceCount = Integer.parseInt(properties.getProperty("device.iotCount", String.valueOf(ioTDeviceCount)));
+        edgeNodeCount = Integer.parseInt(properties.getProperty("device.edgeCount", String.valueOf(edgeNodeCount)));
+        fogNodeCount = Integer.parseInt(properties.getProperty("device.fogCount", String.valueOf(fogNodeCount)));
+        cloudDatacenterCount = Integer.parseInt(properties.getProperty("device.cloudCount", String.valueOf(cloudDatacenterCount)));
+        
+        // Load IoT device parameters
+        ioTMobilityPercentage = Integer.parseInt(properties.getProperty("iot.mobilityPercentage", String.valueOf(ioTMobilityPercentage)));
+        ioTBatteryCapacity = Integer.parseInt(properties.getProperty("iot.batteryCapacity", String.valueOf(ioTBatteryCapacity)));
+        ioTCpuCapacity = Integer.parseInt(properties.getProperty("iot.cpuCapacity", String.valueOf(ioTCpuCapacity)));
+        ioTRamCapacity = Integer.parseInt(properties.getProperty("iot.ramCapacity", String.valueOf(ioTRamCapacity)));
+        ioTStorageCapacity = Integer.parseInt(properties.getProperty("iot.storageCapacity", String.valueOf(ioTStorageCapacity)));
+        ioTTaskGenerationRate = Double.parseDouble(properties.getProperty("iot.taskGenerationRate", String.valueOf(ioTTaskGenerationRate)));
+        
+        // Load IoT wireless types
+        String wirelessTypesStr = properties.getProperty("iot.wirelessTypes");
+        if (wirelessTypesStr != null && !wirelessTypesStr.isEmpty()) {
+            ioTWirelessTypes = Arrays.asList(wirelessTypesStr.split(","));
+        }
+        
+        // Load Edge node parameters
+        edgeCpuCapacity = Integer.parseInt(properties.getProperty("edge.cpuCapacity", String.valueOf(edgeCpuCapacity)));
+        edgeRamCapacity = Integer.parseInt(properties.getProperty("edge.ramCapacity", String.valueOf(edgeRamCapacity)));
+        edgeStorageCapacity = Integer.parseInt(properties.getProperty("edge.storageCapacity", String.valueOf(edgeStorageCapacity)));
+        edgeBatteryCapacity = Integer.parseInt(properties.getProperty("edge.batteryCapacity", String.valueOf(edgeBatteryCapacity)));
+        edgeMaxConnections = Integer.parseInt(properties.getProperty("edge.maxConnections", String.valueOf(edgeMaxConnections)));
+        
+        // Load Fog node parameters
+        fogCpuCapacity = Integer.parseInt(properties.getProperty("fog.cpuCapacity", String.valueOf(fogCpuCapacity)));
+        fogRamCapacity = Integer.parseInt(properties.getProperty("fog.ramCapacity", String.valueOf(fogRamCapacity)));
+        fogStorageCapacity = Integer.parseInt(properties.getProperty("fog.storageCapacity", String.valueOf(fogStorageCapacity)));
+        fogBatteryCapacity = Integer.parseInt(properties.getProperty("fog.batteryCapacity", String.valueOf(fogBatteryCapacity)));
+        fogMaxConnections = Integer.parseInt(properties.getProperty("fog.maxConnections", String.valueOf(fogMaxConnections)));
+        
+        // Load Cloud datacenter parameters
+        cloudCpuCapacity = Integer.parseInt(properties.getProperty("cloud.cpuCapacity", String.valueOf(cloudCpuCapacity)));
+        cloudRamCapacity = Integer.parseInt(properties.getProperty("cloud.ramCapacity", String.valueOf(cloudRamCapacity)));
+        cloudStorageCapacity = Integer.parseInt(properties.getProperty("cloud.storageCapacity", String.valueOf(cloudStorageCapacity)));
+        cloudMaxConnections = Integer.parseInt(properties.getProperty("cloud.maxConnections", String.valueOf(cloudMaxConnections)));
+        
+        // Load Task parameters
+        taskMinCpu = Integer.parseInt(properties.getProperty("task.minCpu", String.valueOf(taskMinCpu)));
+        taskMaxCpu = Integer.parseInt(properties.getProperty("task.maxCpu", String.valueOf(taskMaxCpu)));
+        taskMinRam = Integer.parseInt(properties.getProperty("task.minRam", String.valueOf(taskMinRam)));
+        taskMaxRam = Integer.parseInt(properties.getProperty("task.maxRam", String.valueOf(taskMaxRam)));
+        taskMinStorage = Integer.parseInt(properties.getProperty("task.minStorage", String.valueOf(taskMinStorage)));
+        taskMaxStorage = Integer.parseInt(properties.getProperty("task.maxStorage", String.valueOf(taskMaxStorage)));
+        taskMinDuration = Integer.parseInt(properties.getProperty("task.minDuration", String.valueOf(taskMinDuration)));
+        taskMaxDuration = Integer.parseInt(properties.getProperty("task.maxDuration", String.valueOf(taskMaxDuration)));
+        taskOffloadingEnabled = Boolean.parseBoolean(properties.getProperty("task.offloadingEnabled", String.valueOf(taskOffloadingEnabled)));
+        taskOffloadingThreshold = Double.parseDouble(properties.getProperty("task.offloadingThreshold", String.valueOf(taskOffloadingThreshold)));
+        
+        // Load Network parameters
+        networkBaseBandwidth = Double.parseDouble(properties.getProperty("network.baseBandwidth", String.valueOf(networkBaseBandwidth)));
+        networkBaseLatency = Double.parseDouble(properties.getProperty("network.baseLatency", String.valueOf(networkBaseLatency)));
+        networkVariabilityFactor = Double.parseDouble(properties.getProperty("network.variabilityFactor", String.valueOf(networkVariabilityFactor)));
+        networkCongestionProbability = Double.parseDouble(properties.getProperty("network.congestionProbability", String.valueOf(networkCongestionProbability)));
+        networkPacketLossProbability = Double.parseDouble(properties.getProperty("network.packetLossProbability", String.valueOf(networkPacketLossProbability)));
+        ioTMeshNetworkEnabled = Boolean.parseBoolean(properties.getProperty("network.iotMeshEnabled", String.valueOf(ioTMeshNetworkEnabled)));
+        edgeMeshNetworkEnabled = Boolean.parseBoolean(properties.getProperty("network.edgeMeshEnabled", String.valueOf(edgeMeshNetworkEnabled)));
+        fogMeshNetworkEnabled = Boolean.parseBoolean(properties.getProperty("network.fogMeshEnabled", String.valueOf(fogMeshNetworkEnabled)));
+        
+        // Load Security parameters
+        securityAttacksEnabled = Boolean.parseBoolean(properties.getProperty("security.attacksEnabled", String.valueOf(securityAttacksEnabled)));
+        securityAttackProbability = Double.parseDouble(properties.getProperty("security.attackProbability", String.valueOf(securityAttackProbability)));
+        securityDetectionProbability = Double.parseDouble(properties.getProperty("security.detectionProbability", String.valueOf(securityDetectionProbability)));
+        securityMitigationProbability = Double.parseDouble(properties.getProperty("security.mitigationProbability", String.valueOf(securityMitigationProbability)));
+        
+        // Load attack types
+        String attackTypesStr = properties.getProperty("security.attackTypes");
+        if (attackTypesStr != null && !attackTypesStr.isEmpty()) {
+            securityAttackTypes = new ArrayList<>();
+            String[] attackTypeNames = attackTypesStr.split(",");
+            for (String name : attackTypeNames) {
+                try {
+                    securityAttackTypes.add(AttackType.valueOf(name.trim()));
+                } catch (IllegalArgumentException e) {
+                    // Skip invalid attack type
+                }
+            }
+        }
+        
+        // Load countermeasure types
+        String countermeasureTypesStr = properties.getProperty("security.countermeasureTypes");
+        if (countermeasureTypesStr != null && !countermeasureTypesStr.isEmpty()) {
+            securityCountermeasureTypes = new ArrayList<>();
+            String[] countermeasureTypeNames = countermeasureTypesStr.split(",");
+            for (String name : countermeasureTypeNames) {
+                try {
+                    securityCountermeasureTypes.add(CountermeasureType.valueOf(name.trim()));
+                } catch (IllegalArgumentException e) {
+                    // Skip invalid countermeasure type
+                }
+            }
+        }
+        
+        // Load Logging parameters
+        consoleLoggingEnabled = Boolean.parseBoolean(properties.getProperty("logging.consoleEnabled", String.valueOf(consoleLoggingEnabled)));
+        fileLoggingEnabled = Boolean.parseBoolean(properties.getProperty("logging.fileEnabled", String.valueOf(fileLoggingEnabled)));
+        logFilePath = properties.getProperty("logging.filePath", logFilePath);
+        
+        // Load log level
+        String logLevelStr = properties.getProperty("logging.minLevel");
+        if (logLevelStr != null && !logLevelStr.isEmpty()) {
+            try {
+                minLogLevel = LogLevel.valueOf(logLevelStr.trim());
+            } catch (IllegalArgumentException e) {
+                // Use default log level
+            }
+        }
+    }
+    
+    // Getters for all configuration parameters
+    
+    // Simulation parameters
     public int getSimulationDuration() {
         return simulationDuration;
     }
-
-    public boolean isMobilityEnabled() {
-        return mobilityEnabled;
+    
+    public int getSimulationAreaSize() {
+        return simulationAreaSize;
     }
-
-    public boolean isSecurityEnabled() {
-        return securityEnabled;
+    
+    public long getRandomSeed() {
+        return randomSeed;
     }
-
-    public String getLogLevel() {
-        return logLevel;
+    
+    // Device counts
+    public int getIoTDeviceCount() {
+        return ioTDeviceCount;
     }
-
-    public int getNumIoTDevices() {
-        return numIoTDevices;
+    
+    public int getEdgeNodeCount() {
+        return edgeNodeCount;
     }
-
-    public int getNumEdgeNodes() {
-        return numEdgeNodes;
+    
+    public int getFogNodeCount() {
+        return fogNodeCount;
     }
-
-    public int getNumFogNodes() {
-        return numFogNodes;
+    
+    public int getCloudDatacenterCount() {
+        return cloudDatacenterCount;
     }
-
-    public int getNumCloudDatacenters() {
-        return numCloudDatacenters;
+    
+    // IoT device parameters
+    public int getIoTMobilityPercentage() {
+        return ioTMobilityPercentage;
     }
-
-    public double getWanBandwidth() {
-        return wanBandwidth;
+    
+    public int getIoTBatteryCapacity() {
+        return ioTBatteryCapacity;
     }
-
-    public double getLanBandwidth() {
-        return lanBandwidth;
+    
+    public int getIoTCpuCapacity() {
+        return ioTCpuCapacity;
     }
-
-    public double getWanLatency() {
-        return wanLatency;
+    
+    public int getIoTRamCapacity() {
+        return ioTRamCapacity;
     }
-
-    public double getLanLatency() {
-        return lanLatency;
+    
+    public int getIoTStorageCapacity() {
+        return ioTStorageCapacity;
     }
-
-    public double getWirelessRange() {
-        return wirelessRange;
+    
+    public double getIoTTaskGenerationRate() {
+        return ioTTaskGenerationRate;
     }
-
-    public int getTaskGenerationRate() {
-        return taskGenerationRate;
+    
+    public List<String> getIoTWirelessTypes() {
+        return new ArrayList<>(ioTWirelessTypes);
     }
-
-    public int getTaskLength() {
-        return taskLength;
+    
+    // Edge node parameters
+    public int getEdgeCpuCapacity() {
+        return edgeCpuCapacity;
     }
-
-    public int getTaskInputSize() {
-        return taskInputSize;
+    
+    public int getEdgeRamCapacity() {
+        return edgeRamCapacity;
     }
-
-    public int getTaskOutputSize() {
-        return taskOutputSize;
+    
+    public int getEdgeStorageCapacity() {
+        return edgeStorageCapacity;
     }
-
-    public double getAttackProbability() {
-        return attackProbability;
+    
+    public int getEdgeBatteryCapacity() {
+        return edgeBatteryCapacity;
     }
-
-    public double getDetectionRate() {
-        return detectionRate;
+    
+    public int getEdgeMaxConnections() {
+        return edgeMaxConnections;
     }
-
-    public double getSecurityOverhead() {
-        return securityOverhead;
+    
+    // Fog node parameters
+    public int getFogCpuCapacity() {
+        return fogCpuCapacity;
+    }
+    
+    public int getFogRamCapacity() {
+        return fogRamCapacity;
+    }
+    
+    public int getFogStorageCapacity() {
+        return fogStorageCapacity;
+    }
+    
+    public int getFogBatteryCapacity() {
+        return fogBatteryCapacity;
+    }
+    
+    public int getFogMaxConnections() {
+        return fogMaxConnections;
+    }
+    
+    // Cloud datacenter parameters
+    public int getCloudCpuCapacity() {
+        return cloudCpuCapacity;
+    }
+    
+    public int getCloudRamCapacity() {
+        return cloudRamCapacity;
+    }
+    
+    public int getCloudStorageCapacity() {
+        return cloudStorageCapacity;
+    }
+    
+    public int getCloudMaxConnections() {
+        return cloudMaxConnections;
+    }
+    
+    // Task parameters
+    public int getTaskMinCpu() {
+        return taskMinCpu;
+    }
+    
+    public int getTaskMaxCpu() {
+        return taskMaxCpu;
+    }
+    
+    public int getTaskMinRam() {
+        return taskMinRam;
+    }
+    
+    public int getTaskMaxRam() {
+        return taskMaxRam;
+    }
+    
+    public int getTaskMinStorage() {
+        return taskMinStorage;
+    }
+    
+    public int getTaskMaxStorage() {
+        return taskMaxStorage;
+    }
+    
+    public int getTaskMinDuration() {
+        return taskMinDuration;
+    }
+    
+    public int getTaskMaxDuration() {
+        return taskMaxDuration;
+    }
+    
+    public boolean isTaskOffloadingEnabled() {
+        return taskOffloadingEnabled;
+    }
+    
+    public double getTaskOffloadingThreshold() {
+        return taskOffloadingThreshold;
+    }
+    
+    // Network parameters
+    public double getNetworkBaseBandwidth() {
+        return networkBaseBandwidth;
+    }
+    
+    public double getNetworkBaseLatency() {
+        return networkBaseLatency;
+    }
+    
+    public double getNetworkVariabilityFactor() {
+        return networkVariabilityFactor;
+    }
+    
+    public double getNetworkCongestionProbability() {
+        return networkCongestionProbability;
+    }
+    
+    public double getNetworkPacketLossProbability() {
+        return networkPacketLossProbability;
+    }
+    
+    public boolean getIoTMeshNetworkEnabled() {
+        return ioTMeshNetworkEnabled;
+    }
+    
+    public boolean getEdgeMeshNetworkEnabled() {
+        return edgeMeshNetworkEnabled;
+    }
+    
+    public boolean getFogMeshNetworkEnabled() {
+        return fogMeshNetworkEnabled;
+    }
+    
+    // Security parameters
+    public boolean isSecurityAttacksEnabled() {
+        return securityAttacksEnabled;
+    }
+    
+    public double getSecurityAttackProbability() {
+        return securityAttackProbability;
+    }
+    
+    public double getSecurityDetectionProbability() {
+        return securityDetectionProbability;
+    }
+    
+    public double getSecurityMitigationProbability() {
+        return securityMitigationProbability;
+    }
+    
+    public List<AttackType> getSecurityAttackTypes() {
+        return new ArrayList<>(securityAttackTypes);
+    }
+    
+    public List<CountermeasureType> getSecurityCountermeasureTypes() {
+        return new ArrayList<>(securityCountermeasureTypes);
+    }
+    
+    // Logging parameters
+    public boolean isConsoleLoggingEnabled() {
+        return consoleLoggingEnabled;
+    }
+    
+    public boolean isFileLoggingEnabled() {
+        return fileLoggingEnabled;
+    }
+    
+    public String getLogFilePath() {
+        return logFilePath;
+    }
+    
+    public LogLevel getMinLogLevel() {
+        return minLogLevel;
     }
 }
