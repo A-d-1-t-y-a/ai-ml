@@ -1,128 +1,142 @@
 @echo off
+setlocal EnableDelayedExpansion
+
 echo ========================================================================
-echo Fog and Edge Computing Simulation - End-to-End Test Script (Windows)
-echo Based on PureEdgeSim framework
+echo [INFO] Fog and Edge Computing Simulation - Complete Test Script (Windows)
+echo [INFO] Based on PureEdgeSim framework
 echo ========================================================================
 echo.
 
 REM Set environment variables
-set PROJECT_DIR=%~dp0
-set JAVA_OPTS=-Xmx2g
+set "PROJECT_DIR=%~dp0"
+set "JAVA_OPTS=-Xmx2g"
 
-REM Check if Java is installed
-java -version >nul 2>&1
+REM Create timestamp using simple format
+set "TIMESTAMP=sim_%date:~-4%%date:~-7,2%%date:~-10,2%_%time:~0,2%%time:~3,2%%time:~6,2%"
+set "TIMESTAMP=%TIMESTAMP: =0%"
+set "TIMESTAMP=%TIMESTAMP:/=-%"
+set "TIMESTAMP=%TIMESTAMP::=-%"
+set "TIMESTAMP=%TIMESTAMP:.=-%"
+
+REM Create directories
+set "RESULTS_DIR=%PROJECT_DIR%simulation_results\%TIMESTAMP%"
+set "LOG_DIR=%PROJECT_DIR%logs"
+set "LOG_FILE=%LOG_DIR%\%TIMESTAMP%_simulation.log"
+set "CONFIG_BACKUP_DIR=%RESULTS_DIR%\configs"
+
+if not exist "%RESULTS_DIR%" mkdir "%RESULTS_DIR%"
+if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
+if not exist "%CONFIG_BACKUP_DIR%" mkdir "%CONFIG_BACKUP_DIR%"
+
+REM Start logging
+echo [INFO] Simulation started at %date% %time% > "%LOG_FILE%"
+echo [INFO] Results will be saved to: %RESULTS_DIR% >> "%LOG_FILE%"
+
+echo [INFO] Simulation started at %date% %time%
+echo [INFO] Timestamp: %TIMESTAMP%
+echo [INFO] Results directory: %PROJECT_DIR%simulation_results\%TIMESTAMP%
+echo.
+
+REM Check Java installation
+echo [INFO] Checking Java installation...
+java -version > "%RESULTS_DIR%\java_version.txt" 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Java is not installed or not in PATH. Please install Java 11 or higher.
     exit /b 1
 )
+echo [INFO] Java is installed.
+type "%RESULTS_DIR%\java_version.txt"
+echo.
 
-REM Check if Maven is installed
-mvn -v >nul 2>&1
+REM Check Maven installation
+echo [INFO] Checking Maven installation...
+mvn -v > "%RESULTS_DIR%\maven_version.txt" 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Maven is not installed or not in PATH. Please install Maven.
     exit /b 1
 )
+echo [INFO] Maven is installed.
+echo.
 
+REM Check for required configuration files
 echo [INFO] Checking for required configuration files...
-if not exist "%PROJECT_DIR%src\main\resources\simulation_parameters.properties" (
-    echo [ERROR] Missing simulation_parameters.properties file.
-    exit /b 1
-)
-if not exist "%PROJECT_DIR%src\main\resources\applications.xml" (
-    echo [ERROR] Missing applications.xml file.
-    exit /b 1
-)
-if not exist "%PROJECT_DIR%src\main\resources\edge_devices.xml" (
-    echo [ERROR] Missing edge_devices.xml file.
-    exit /b 1
-)
-if not exist "%PROJECT_DIR%src\main\resources\edge_datacenters.xml" (
-    echo [ERROR] Missing edge_datacenters.xml file.
-    exit /b 1
-)
-if not exist "%PROJECT_DIR%src\main\resources\cloud.xml" (
-    echo [ERROR] Missing cloud.xml file.
-    exit /b 1
+set "CONFIG_FILES=simulation_parameters.properties applications.xml edge_devices.xml edge_datacenters.xml cloud_datacenters.xml"
+
+for %%F in (%CONFIG_FILES%) do (
+    if not exist "%PROJECT_DIR%src\main\resources\%%F" (
+        echo [ERROR] Missing %%F file.
+        exit /b 1
+    )
+    echo [INFO]   Found %%F
+    copy "%PROJECT_DIR%src\main\resources\%%F" "%CONFIG_BACKUP_DIR%\" >nul 2>&1
 )
 
-echo [INFO] All configuration files found.
+echo [INFO] All required configuration files found and copied to results directory.
 echo.
 
-echo [INFO] Cleaning and building the project with Maven...
-call mvn clean package -DskipTests
+REM Build the project
+echo [INFO] Building project with Maven - this may take a few minutes...
+call mvn clean package -DskipTests > "%RESULTS_DIR%\maven_build.log" 2>&1
 if %ERRORLEVEL% NEQ 0 (
-    echo [ERROR] Maven build failed.
+    echo [ERROR] Maven build failed. See log file for details: %RESULTS_DIR%\maven_build.log
     exit /b 1
 )
-echo [INFO] Build successful.
-echo.
 
-REM Create timestamp for this run
-for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set dt=%%a
-set TIMESTAMP=%dt:~0,4%-%dt:~4,2%-%dt:~6,2%_%dt:~8,2%-%dt:~10,2%-%dt:~12,2%
-set RESULTS_DIR=%PROJECT_DIR%simulation_results\%TIMESTAMP%
+REM Check if the JAR file was created
+if not exist "%PROJECT_DIR%target\fog-edge-computing-project-1.0-SNAPSHOT-jar-with-dependencies.jar" (
+    echo [ERROR] JAR file was not created properly.
+    exit /b 1
+)
 
-echo [INFO] Creating results directory: %RESULTS_DIR%
-mkdir "%RESULTS_DIR%" 2>nul
-
-echo [INFO] Running simulation with default orchestrator...
-echo [INFO] Timestamp: %TIMESTAMP%
-echo [INFO] Results will be saved to: %RESULTS_DIR%
+for %%F in ("%PROJECT_DIR%target\fog-edge-computing-project-1.0-SNAPSHOT-jar-with-dependencies.jar") do set JAR_SIZE=%%~zF
+echo [INFO] JAR file created successfully (Size: !JAR_SIZE! bytes)
 echo.
 
 REM Run the simulation
 echo [INFO] Starting simulation execution...
-java %JAVA_OPTS% -jar "%PROJECT_DIR%target\fog-edge-computing-project-1.0-SNAPSHOT-jar-with-dependencies.jar"
-if %ERRORLEVEL% NEQ 0 (
-    echo [ERROR] Simulation execution failed.
+echo ========== SIMULATION OUTPUT START ==========
+
+java %JAVA_OPTS% -jar "%PROJECT_DIR%target\fog-edge-computing-project-1.0-SNAPSHOT-jar-with-dependencies.jar" > "%RESULTS_DIR%\simulation_output.txt" 2>&1
+set SIMULATION_RESULT=%ERRORLEVEL%
+
+echo ========== SIMULATION OUTPUT END ==========
+echo.
+
+if %SIMULATION_RESULT% NEQ 0 (
+    echo [ERROR] Simulation execution failed with exit code: %SIMULATION_RESULT%
     exit /b 1
 )
 
-echo.
-echo [INFO] Simulation completed successfully.
-echo [INFO] Results are available in: %RESULTS_DIR%
+echo [INFO] Simulation execution completed successfully.
 echo.
 
-REM Run analysis on results
+REM Copy simulation results
+if exist "%PROJECT_DIR%output" (
+    xcopy "%PROJECT_DIR%output\*.*" "%RESULTS_DIR%\" /Y /I /Q >nul 2>&1
+    echo [INFO] Output files copied to results directory.
+)
+
+REM Generate summary report
 echo [INFO] Generating summary report...
 echo ------------------------------------------ > "%RESULTS_DIR%\summary_report.txt"
 echo SIMULATION SUMMARY REPORT >> "%RESULTS_DIR%\summary_report.txt"
 echo Timestamp: %TIMESTAMP% >> "%RESULTS_DIR%\summary_report.txt"
 echo ------------------------------------------ >> "%RESULTS_DIR%\summary_report.txt"
-echo. >> "%RESULTS_DIR%\summary_report.txt"
 
-REM Check if result files exist and add to summary
-if exist "%RESULTS_DIR%\task_execution_summary.csv" (
-    echo Task Execution Results: Available >> "%RESULTS_DIR%\summary_report.txt"
-    
-    REM Calculate average execution time from CSV (simplified)
-    echo   - Analysis will be performed by the Java application >> "%RESULTS_DIR%\summary_report.txt"
-) else (
-    echo Task Execution Results: Not available >> "%RESULTS_DIR%\summary_report.txt"
+REM Check for specific result files
+for %%F in ("%RESULTS_DIR%\*.csv") do (
+    echo File: %%~nxF >> "%RESULTS_DIR%\summary_report.txt"
 )
 
-if exist "%RESULTS_DIR%\energy_consumption.csv" (
-    echo Energy Consumption Results: Available >> "%RESULTS_DIR%\summary_report.txt"
-    echo   - Analysis will be performed by the Java application >> "%RESULTS_DIR%\summary_report.txt"
-) else (
-    echo Energy Consumption Results: Not available >> "%RESULTS_DIR%\summary_report.txt"
-)
-
-if exist "%RESULTS_DIR%\network_usage.csv" (
-    echo Network Usage Results: Available >> "%RESULTS_DIR%\summary_report.txt"
-    echo   - Analysis will be performed by the Java application >> "%RESULTS_DIR%\summary_report.txt"
-) else (
-    echo Network Usage Results: Not available >> "%RESULTS_DIR%\summary_report.txt"
-)
-
-echo. >> "%RESULTS_DIR%\summary_report.txt"
 echo ------------------------------------------ >> "%RESULTS_DIR%\summary_report.txt"
 echo End of Summary Report >> "%RESULTS_DIR%\summary_report.txt"
 echo ------------------------------------------ >> "%RESULTS_DIR%\summary_report.txt"
 
-echo [INFO] Summary report generated: %RESULTS_DIR%\summary_report.txt
-echo.
+REM Copy log file to results directory
+copy "%LOG_FILE%" "%RESULTS_DIR%\full_execution.log" >nul 2>&1
+
 echo [INFO] End-to-End test completed successfully.
+echo [INFO] Results are available in: %RESULTS_DIR%
 echo ========================================================================
 
 exit /b 0
