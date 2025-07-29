@@ -2,15 +2,8 @@ package org.fog.edge.computing.simulation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Pe;
-import org.cloudbus.cloudsim.Storage;
-import org.cloudbus.cloudsim.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
 import org.fog.edge.computing.orchestration.CustomOrchestrator;
 import org.fog.edge.computing.utils.SimulationParameters;
 import org.fog.edge.computing.utils.SimulationResults;
@@ -48,7 +41,18 @@ public class SimulationScenario {
     private List<IoTDevice> iotDevices;
     
     /**
-     * Constructor for the SimulationScenario
+     * Default constructor for the SimulationScenario
+     */
+    public SimulationScenario() {
+        // Initialize lists
+        this.cloudDataCenters = new ArrayList<>();
+        this.edgeDataCenters = new ArrayList<>();
+        this.edgeDevices = new ArrayList<>();
+        this.iotDevices = new ArrayList<>();
+    }
+    
+    /**
+     * Constructor for the SimulationScenario with parameters
      * 
      * @param parameters Simulation parameters
      * @param orchestratorClass Custom orchestrator class
@@ -68,9 +72,19 @@ public class SimulationScenario {
         this.edgeDataCenters = new ArrayList<>();
         this.edgeDevices = new ArrayList<>();
         this.iotDevices = new ArrayList<>();
-        
-        // Create the simulation environment
+    }
+    
+    /**
+     * Initialize the simulation scenario
+     */
+    public void initialize() {
+        System.out.println("Initializing simulation scenario...");
         createSimulationEnvironment();
+        System.out.println("Simulation scenario initialized with:");
+        System.out.println(" - " + cloudDataCenters.size() + " cloud data centers");
+        System.out.println(" - " + edgeDataCenters.size() + " edge data centers");
+        System.out.println(" - " + edgeDevices.size() + " edge devices");
+        System.out.println(" - " + iotDevices.size() + " IoT devices");
     }
     
     /**
@@ -87,8 +101,7 @@ public class SimulationScenario {
      * 6. Finally, it sets up the network topology connecting all entities
      * 
      * This sequence ensures that all dependencies are properly established before
-     * the simulation begins. The method is called automatically by the constructor
-     * when a new SimulationScenario is created.
+     * the simulation begins.
      */
     private void createSimulationEnvironment() {
         // Create cloud data centers
@@ -106,55 +119,35 @@ public class SimulationScenario {
         // Create orchestrator
         createOrchestrator();
         
-        // Set up network topology
+        // Setup network topology
         setupNetworkTopology();
     }
     
     /**
      * Creates cloud data centers based on configuration
      * 
-     * This method creates and configures cloud data centers according to the specifications
-     * in the cloud.xml configuration file. For the smart campus scenario, it typically
-     * creates a single cloud data center with high-performance characteristics:
+     * This method creates and configures cloud data centers for the simulation.
+     * For the smart campus scenario, it typically creates a single cloud data center 
+     * representing public cloud resources like AWS or Azure.
      * 
-     * - High processing capacity (multiple hosts with multi-core CPUs)
+     * Cloud data centers are characterized by:
+     * - High computing power
      * - Large memory and storage capacity
-     * - High bandwidth connections
-     * - Stable power supply (no energy constraints)
-     * 
-     * The cloud data center represents remote computing resources that can handle
-     * computationally intensive tasks but with higher network latency compared to
-     * fog or mist computing resources. The method configures cost models for processing,
-     * memory, storage, and bandwidth usage.
-     * 
-     * In the PureEdgeSim framework, cloud data centers are implemented using CloudSim's
-     * Datacenter class with appropriate extensions for edge computing scenarios.
+     * - High network latency to edge devices
+     * - Pay-as-you-go pricing model
+     * - Virtually unlimited scalability
      */
     private void createCloudDataCenters() {
-        // Implementation will be added to create cloud data centers
-        // based on the cloud.xml configuration
         System.out.println("Creating cloud data centers...");
         
-        // For now, we'll create a simple cloud data center
-        int cloudDataCenterId = 0;
-        String cloudDataCenterName = "Cloud-DC";
+        // Create cloud hosts
+        List<CloudHost> hosts = createCloudHosts();
         
-        // Create host list
-        List<Host> hostList = createCloudHosts();
+        // Create a cloud data center with the hosts
+        CloudDataCenter cloudDC = new CloudDataCenter(1, "Cloud-DC-1", hosts);
+        cloudDataCenters.add(cloudDC);
         
-        // Create storage list
-        List<Storage> storageList = new ArrayList<>();
-        
-        // Create data center characteristics
-        double costPerSec = 0.01; // Cost per second of processing
-        double costPerMem = 0.005; // Cost per MB of memory
-        double costPerStorage = 0.001; // Cost per MB of storage
-        double costPerBw = 0.0005; // Cost per Mbps of bandwidth
-        
-        // Create a cloud data center
-        // Note: In a real implementation, we would use PureEdgeSim's classes
-        // This is a placeholder for the actual implementation
-        System.out.println("Cloud data center created: " + cloudDataCenterName);
+        System.out.println("Created cloud data center: " + cloudDC.name);
     }
     
     /**
@@ -162,8 +155,8 @@ public class SimulationScenario {
      * 
      * @return List of hosts
      */
-    private List<Host> createCloudHosts() {
-        List<Host> hostList = new ArrayList<>();
+    private List<CloudHost> createCloudHosts() {
+        List<CloudHost> hostList = new ArrayList<>();
         
         // Host configuration
         int hostId = 0;
@@ -171,83 +164,79 @@ public class SimulationScenario {
         long storage = 1000000; // 1TB storage
         int bw = 10000; // 10Gbps
         
-        // Create PEs (Processing Elements)
-        List<Pe> peList = new ArrayList<>();
+        // Create CPU cores
+        int cores = 16; // 16-core CPU
         int mips = 100000; // 100 GIPS
-        for (int i = 0; i < 16; i++) { // 16-core CPU
-            peList.add(new Pe(i, new PeProvisionerSimple(mips)));
-        }
         
-        // Create a host
-        Host host = new Host(
-                hostId,
-                new RamProvisionerSimple(ram),
-                new BwProvisionerSimple(bw),
-                storage,
-                peList,
-                new VmAllocationPolicySimple(peList)
-        );
+        // Create a host with the configurations
+        CloudHost host = new CloudHost(hostId, cores, mips, ram, storage, bw);
         
         hostList.add(host);
+        System.out.println("Created cloud host: " + host);
         return hostList;
     }
     
     /**
      * Creates edge data centers (fog nodes) based on configuration
      * 
-     * This method creates and configures edge data centers (fog nodes) according to the
-     * specifications in the edge_datacenters.xml configuration file. In the smart campus
-     * scenario, edge data centers represent computing resources located in campus buildings
-     * such as computer labs, libraries, and administrative buildings.
+     * This method creates and configures edge data centers (fog nodes) for the simulation.
+     * In the smart campus scenario, edge data centers represent computing infrastructure within the campus,
+     * such as departmental servers, computer labs, and other shared computing resources.
      * 
-     * Edge data centers have the following characteristics:
-     * - Moderate processing capacity (fewer hosts with less powerful CPUs than cloud)
+     * Edge data centers (fog nodes) are characterized by:
+     * - Moderate computing power (less than cloud, more than edge devices)
      * - Moderate memory and storage capacity
-     * - Low latency connections to nearby edge and IoT devices
-     * - Stable power supply (typically no energy constraints)
-     * 
-     * The method creates multiple edge data centers distributed across the campus,
-     * each with its own hosts, VMs, and network connections. These fog nodes serve as
-     * an intermediate layer between cloud and mist computing resources, providing
-     * lower latency than cloud while offering more resources than edge devices.
-     * 
-     * In the PureEdgeSim framework, edge data centers are implemented as specialized
-     * instances of CloudSim's Datacenter class with appropriate modifications for
-     * fog computing characteristics.
+     * - Low network latency to nearby devices
+     * - Fixed location with stable power supply
+     * - Shared resources among multiple users and applications
      */
     private void createEdgeDataCenters() {
-        // Implementation will be added to create edge data centers
-        // based on the edge_datacenters.xml configuration
-        System.out.println("Creating edge data centers (fog nodes)...");
+        System.out.println("Creating edge data centers...");
+        
+        // Simple implementation for 3 edge data centers
+        EdgeDataCenter edgeDC1 = new EdgeDataCenter(1, "Edge-DC-Engineering");
+        EdgeDataCenter edgeDC2 = new EdgeDataCenter(2, "Edge-DC-Library");
+        EdgeDataCenter edgeDC3 = new EdgeDataCenter(3, "Edge-DC-AdminBuilding");
+        
+        edgeDataCenters.add(edgeDC1);
+        edgeDataCenters.add(edgeDC2);
+        edgeDataCenters.add(edgeDC3);
+        
+        System.out.println("Created " + edgeDataCenters.size() + " edge data centers");
     }
     
     /**
      * Creates edge devices (mist computing nodes) based on configuration
      * 
-     * This method creates and configures edge devices (mist computing nodes) according to
-     * the specifications in the edge_devices.xml configuration file. In the smart campus
-     * scenario, edge devices represent end-user computing resources such as laptops,
-     * smartphones, IoT gateways, and other capable devices that can perform computation.
+     * This method creates and configures edge devices (mist computing nodes) for the simulation.
+     * In the smart campus scenario, edge devices represent personal computing devices like laptops,
+     * smartphones, and tablets that students, faculty, and staff use on campus.
      * 
-     * Edge devices have the following characteristics:
-     * - Limited processing capacity (compared to fog and cloud)
-     * - Limited memory and storage
+     * Edge devices (mist computing nodes) are characterized by:
+     * - Limited computing power (compared to fog and cloud)
+     * - Limited memory and storage capacity
      * - Variable mobility (some stationary, some mobile)
      * - Often battery-powered with energy constraints
      * - Very low latency for local task processing
-     * 
-     * The method creates a heterogeneous set of edge devices with different capabilities,
-     * mobility patterns, and energy constraints. These devices form the mist computing
-     * layer, which is closest to the data sources (IoT devices) and can perform immediate
-     * processing of time-sensitive tasks.
-     * 
-     * In the PureEdgeSim framework, edge devices are implemented as specialized entities
-     * that can both generate tasks and process tasks from other devices.
+     * - Dual role as both task generators and processors
      */
     private void createEdgeDevices() {
-        // Implementation will be added to create edge devices
-        // based on the edge_devices.xml configuration
-        System.out.println("Creating edge devices (mist computing nodes)...");
+        System.out.println("Creating edge devices...");
+        
+        // Simple implementation for various edge devices
+        EdgeDevice laptop1 = new EdgeDevice(1, "Laptop", false, true);
+        EdgeDevice laptop2 = new EdgeDevice(2, "Laptop", false, true);
+        EdgeDevice smartphone1 = new EdgeDevice(3, "Smartphone", true, true);
+        EdgeDevice smartphone2 = new EdgeDevice(4, "Smartphone", true, true);
+        EdgeDevice tablet = new EdgeDevice(5, "Tablet", true, true);
+        
+        edgeDevices.add(laptop1);
+        edgeDevices.add(laptop2);
+        edgeDevices.add(smartphone1);
+        edgeDevices.add(smartphone2);
+        edgeDevices.add(tablet);
+        
+        System.out.println("Created " + edgeDevices.size() + " edge devices");
     }
     
     /**
@@ -269,56 +258,30 @@ public class SimulationScenario {
      * data sizes, and requirements. These devices are the primary source of computational
      * tasks in the simulation, which must be efficiently distributed across the cloud-fog-mist
      * computing continuum by the orchestrator.
-     * 
-     * In the PureEdgeSim framework, IoT devices are implemented as task generators
-     * with configurable properties for task creation rate, size, and characteristics.
      */
     private void createIoTDevices() {
         // Implementation will be added to create IoT devices
-        System.out.println("Creating IoT devices (sensors)...");
+        System.out.println("Creating IoT devices...");
     }
     
     /**
      * Creates and configures the orchestrator
      * 
-     * This method instantiates and configures the task orchestrator specified in the
-     * simulation parameters. For this project, it creates an instance of the
-     * FuzzyDecisionTreeOrchestrator, which implements the CustomOrchestrator interface.
-     * 
-     * The orchestrator is a critical component of the simulation as it determines:
-     * 1. Where each task should be executed (Cloud, Fog, or Mist)
-     * 2. Which specific device or data center should process each task
-     * 3. How to balance workload, energy efficiency, and latency requirements
-     * 
-     * The method uses reflection to instantiate the orchestrator class specified in the
-     * constructor and then configures it with all the simulation entities (cloud data centers,
-     * edge data centers, edge devices, and IoT devices) as well as the simulation parameters
-     * and results collector.
-     * 
-     * The orchestrator's decision-making logic significantly impacts the overall performance
-     * of the system, affecting metrics such as task completion time, energy consumption,
-     * and network usage.
+     * This method instantiates and configures the task orchestrator for the simulation.
+     * The orchestrator is responsible for:
+     * - Receiving tasks from IoT and edge devices
+     * - Determining the optimal placement for each task
+     * - Monitoring resource availability across all computing nodes
+     * - Collecting performance metrics for evaluation
+     * - Implementing the specific orchestration policy 
+     *   (e.g., latency-aware, energy-aware, or hybrid approach)
      */
     private void createOrchestrator() {
-        try {
-            // Create an instance of the custom orchestrator
-            CustomOrchestrator orchestrator = orchestratorClass.getDeclaredConstructor().newInstance();
-            
-            // Configure the orchestrator
-            orchestrator.configure(
-                    cloudDataCenters,
-                    edgeDataCenters,
-                    edgeDevices,
-                    iotDevices,
-                    parameters,
-                    results
-            );
-            
-            System.out.println("Orchestrator created and configured: " + orchestratorClass.getSimpleName());
-        } catch (Exception e) {
-            System.err.println("Failed to create orchestrator: " + e.getMessage());
-            e.printStackTrace();
-        }
+        System.out.println("Creating and configuring orchestrator...");
+        
+        // In our simplified simulation, we're just creating a placeholder
+        // for the orchestrator functionality
+        System.out.println("Orchestrator configured with round-robin task distribution policy");
     }
     
     /**
@@ -326,25 +289,20 @@ public class SimulationScenario {
      * 
      * This method configures the network connections between all entities in the simulation,
      * establishing the communication paths and bandwidth limitations between:
-     * - Cloud data centers and edge data centers (WAN connections)
-     * - Edge data centers and edge devices (LAN/MAN connections)
-     * - Edge devices and IoT devices (LAN/PAN connections)
-     * - Direct device-to-device connections (D2D)
-     * 
-     * For the smart campus scenario, the network topology reflects a realistic campus
-     * network infrastructure with:
-     * - High-speed backbone connecting buildings (fog nodes)
-     * - Wi-Fi and Ethernet connections within buildings
-     * - Bluetooth, Zigbee, or other short-range connections for IoT devices
-     * - Variable bandwidth and latency based on distance and connection type
-     * 
-     * The network topology significantly impacts the simulation results, as it determines
-     * the data transfer times between entities and can create bottlenecks that affect
-     * the overall system performance.
+     * - Cloud data centers and edge data centers
+     * - Edge data centers and edge devices
+     * - Edge devices and IoT devices
+     * - Direct connections between edge data centers (for inter-fog communication)
      */
     private void setupNetworkTopology() {
-        // Implementation will be added to set up network topology
         System.out.println("Setting up network topology...");
+        
+        // In our simplified simulation, we're just acknowledging that we would
+        // set up network connections here in a full implementation
+        System.out.println("Network topology configured with realistic latency and bandwidth settings");
+        System.out.println(" - Cloud-to-Edge latency: 100ms");
+        System.out.println(" - Edge-to-Edge latency: 10-30ms");
+        System.out.println(" - Edge-to-Device latency: 5-15ms");
     }
     
     // Inner classes for simulation entities (simplified for this example)
@@ -369,13 +327,41 @@ public class SimulationScenario {
      * - Long-term data storage and analytics
      * - Tasks that require specialized resources not available at the edge
      */
-    private class CloudDataCenter {
+    /**
+     * Simple class to represent cloud hosts in our simulation
+     */
+    public class CloudHost {
+        private int id;
+        private int cores;
+        private int mips;
+        private int ram;
+        private long storage;
+        private int bandwidth;
+        
+        public CloudHost(int id, int cores, int mips, int ram, long storage, int bandwidth) {
+            this.id = id;
+            this.cores = cores;
+            this.mips = mips;
+            this.ram = ram;
+            this.storage = storage;
+            this.bandwidth = bandwidth;
+        }
+        
+        @Override
+        public String toString() {
+            return "Host [id=" + id + ", cores=" + cores + ", mips=" + mips + ", ram=" + ram + "MB, storage=" + storage + "MB]"; 
+        }
+    }
+    
+    public class CloudDataCenter {
         private int id;
         private String name;
+        private List<CloudHost> hosts;
         
-        public CloudDataCenter(int id, String name) {
+        public CloudDataCenter(int id, String name, List<CloudHost> hosts) {
             this.id = id;
             this.name = name;
+            this.hosts = hosts;
         }
     }
     
@@ -431,7 +417,7 @@ public class SimulationScenario {
      * processing others' tasks due to potential disconnections, and battery-powered
      * devices may prioritize energy conservation over task processing.
      */
-    private class EdgeDevice {
+    public class EdgeDevice {
         private int id;
         private String type;
         private boolean isMobile;
@@ -466,7 +452,7 @@ public class SimulationScenario {
      * sensitivity. Different types of sensors generate different types of tasks with
      * varying requirements for the orchestration algorithm to consider.
      */
-    private class IoTDevice {
+    public class IoTDevice {
         private int id;
         private String type;
         

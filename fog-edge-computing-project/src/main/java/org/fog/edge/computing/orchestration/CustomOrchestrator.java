@@ -2,10 +2,7 @@ package org.fog.edge.computing.orchestration;
 
 import java.util.List;
 
-import org.fog.edge.computing.simulation.SimulationScenario.CloudDataCenter;
-import org.fog.edge.computing.simulation.SimulationScenario.EdgeDataCenter;
-import org.fog.edge.computing.simulation.SimulationScenario.EdgeDevice;
-import org.fog.edge.computing.simulation.SimulationScenario.IoTDevice;
+import org.fog.edge.computing.simulation.SimulationScenario;
 import org.fog.edge.computing.utils.SimulationParameters;
 import org.fog.edge.computing.utils.SimulationResults;
 
@@ -32,18 +29,12 @@ public interface CustomOrchestrator {
     /**
      * Configures the orchestrator with simulation entities and parameters
      * 
-     * @param cloudDataCenters List of cloud data centers
-     * @param edgeDataCenters List of edge data centers (fog nodes)
-     * @param edgeDevices List of edge devices (mist computing nodes)
-     * @param iotDevices List of IoT devices (sensors)
+     * @param scenario The simulation scenario containing all simulation entities
      * @param parameters Simulation parameters
      * @param results Results collector
      */
     void configure(
-            List<?> cloudDataCenters,
-            List<?> edgeDataCenters,
-            List<?> edgeDevices,
-            List<?> iotDevices,
+            SimulationScenario scenario,
             SimulationParameters parameters,
             SimulationResults results);
     
