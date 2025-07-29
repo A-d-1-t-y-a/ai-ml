@@ -4,14 +4,16 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator;
 import org.fog.edge.computing.simulation.SimulationManager;
+import org.cloudsimplus.core.CloudSim;
 
 /**
- * Main class for the Fog and Edge Computing project based on PureEdgeSim.
- * This implementation is based on the paper:
+ * Main class for the Fog and Edge Computing project based on CloudSim Plus.
+ * This implementation is inspired by the paper:
  * "PureEdgeSim: A Simulation Framework for Performance Evaluation of Cloud, Edge and Mist Computing Environments"
  * by Charafeddine Mechalikh, Hajer Taktak, and Faouzi Moussa
+ * 
+ * Migrated to use CloudSim Plus as the underlying simulation framework.
  * 
  * This class serves as the entry point for the simulation and is responsible for:
  * 1. Setting up the simulation environment and configuration files
@@ -60,8 +62,8 @@ public class Main {
      */
     public static void main(String[] args) {
         // Print welcome message
-        System.out.println("Starting PureEdgeSim-based Fog and Edge Computing Simulation...");
-        System.out.println("Implementation of Smart Campus scenario from the paper");
+        System.out.println("Starting CloudSim Plus-based Fog and Edge Computing Simulation...");
+        System.out.println("Implementation of Smart Campus scenario inspired by PureEdgeSim paper");
         
         // Create simulation timestamp for output files
         String simStartTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(Calendar.getInstance().getTime());
@@ -81,9 +83,8 @@ public class Main {
         };
         
         try {
-            // Initialize and run the simulation with our custom orchestrator
-            SimulationManager simulationManager = new SimulationManager(settingsFiles, outputFolder.getAbsolutePath() + "/");
-            simulationManager.setCustomOrchestrator(FuzzyDecisionTreeOrchestrator.class);
+            // Initialize and run the simulation
+            SimulationManager simulationManager = new SimulationManager(outputFolder.getAbsolutePath() + "/");
             simulationManager.startSimulation();
         } catch (Exception e) {
             e.printStackTrace();

@@ -50,12 +50,13 @@ echo.
 
 REM Check Maven installation
 echo [INFO] Checking Maven installation...
-mvn -v > "%RESULTS_DIR%\maven_version.txt" 2>&1
+call mvn -v > "%RESULTS_DIR%\maven_version.txt" 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Maven is not installed or not in PATH. Please install Maven.
     exit /b 1
 )
 echo [INFO] Maven is installed.
+type "%RESULTS_DIR%\maven_version.txt"
 echo.
 
 REM Check for required configuration files
@@ -79,6 +80,7 @@ echo [INFO] Building project with Maven - this may take a few minutes...
 call mvn clean package -DskipTests > "%RESULTS_DIR%\maven_build.log" 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Maven build failed. See log file for details: %RESULTS_DIR%\maven_build.log
+    type "%RESULTS_DIR%\maven_build.log"
     exit /b 1
 )
 
@@ -96,8 +98,12 @@ REM Run the simulation
 echo [INFO] Starting simulation execution...
 echo ========== SIMULATION OUTPUT START ==========
 
-java %JAVA_OPTS% -jar "%PROJECT_DIR%target\fog-edge-computing-project-1.0-SNAPSHOT-jar-with-dependencies.jar" > "%RESULTS_DIR%\simulation_output.txt" 2>&1
+call java %JAVA_OPTS% -jar "%PROJECT_DIR%target\fog-edge-computing-project-1.0-SNAPSHOT-jar-with-dependencies.jar" > "%RESULTS_DIR%\simulation_output.txt" 2>&1
 set SIMULATION_RESULT=%ERRORLEVEL%
+
+REM Show a portion of the simulation output
+echo [INFO] Simulation output excerpt:
+powershell -Command "Get-Content \"%RESULTS_DIR%\simulation_output.txt\" -Head 20"
 
 echo ========== SIMULATION OUTPUT END ==========
 echo.

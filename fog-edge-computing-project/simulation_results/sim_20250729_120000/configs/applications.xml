@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<applications>
+    <!-- E-Health Application -->
+    <application>
+        <usage_percentage>20</usage_percentage>
+        <latency_sensitivity>high</latency_sensitivity>
+        <delay_tolerance>0.1</delay_tolerance>
+        <task_length>2000</task_length>
+        <required_core>2</required_core>
+        <rate>6</rate>
+        <container_size>20</container_size>
+        <request_size>50</request_size>
+        <results_size>20</results_size>
+    </application>
+    
+    <!-- Augmented Reality Application -->
+    <application>
+        <usage_percentage>15</usage_percentage>
+        <latency_sensitivity>high</latency_sensitivity>
+        <delay_tolerance>0.05</delay_tolerance>
+        <task_length>3000</task_length>
+        <required_core>4</required_core>
+        <rate>10</rate>
+        <container_size>50</container_size>
+        <request_size>100</request_size>
+        <results_size>500</results_size>
+    </application>
+    
+    <!-- Smart Classroom Application -->
+    <application>
+        <usage_percentage>25</usage_percentage>
+        <latency_sensitivity>medium</latency_sensitivity>
+        <delay_tolerance>0.5</delay_tolerance>
+        <task_length>1500</task_length>
+        <required_core>2</required_core>
+        <rate>4</rate>
+        <container_size>15</container_size>
+        <request_size>30</request_size>
+        <results_size>15</results_size>
+    </application>
+    
+    <!-- Environmental Monitoring Application -->
+    <application>
+        <usage_percentage>30</usage_percentage>
+        <latency_sensitivity>low</latency_sensitivity>
+        <delay_tolerance>2.0</delay_tolerance>
+        <task_length>800</task_length>
+        <required_core>1</required_core>
+        <rate>2</rate>
+        <container_size>10</container_size>
+        <request_size>20</request_size>
+        <results_size>10</results_size>
+    </application>
+    
+    <!-- Video Analytics Application -->
+    <application>
+        <usage_percentage>10</usage_percentage>
+        <latency_sensitivity>high</latency_sensitivity>
+        <delay_tolerance>0.2</delay_tolerance>
+        <task_length>5000</task_length>
+        <required_core>8</required_core>
+        <rate>8</rate>
+        <container_size>100</container_size>
+        <request_size>2000</request_size>
+        <results_size>50</results_size>
+    </application>
+</applications>

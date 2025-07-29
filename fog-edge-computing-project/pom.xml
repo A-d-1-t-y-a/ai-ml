@@ -18,15 +18,22 @@
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
         </repository>
     </repositories>
 
     <dependencies>
-        <!-- PureEdgeSim dependency -->
+        <!-- CloudSim Plus dependency (underlying framework for PureEdgeSim) -->
         <dependency>
-            <groupId>com.github.CharafeddineMechalikh</groupId>
-            <artifactId>PureEdgeSim</artifactId>
-            <version>5.0.0</version>
+            <groupId>org.cloudsimplus</groupId>
+            <artifactId>cloudsim-plus</artifactId>
+            <version>7.3.0</version>
         </dependency>
         
         <!-- JUnit for testing -->
@@ -56,6 +63,13 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.36</version>
+        </dependency>
+        
+        <!-- JFreeChart for graph generation -->
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.3</version>
         </dependency>
     </dependencies>
 

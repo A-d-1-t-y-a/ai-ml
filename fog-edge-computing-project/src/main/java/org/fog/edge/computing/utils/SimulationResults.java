@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.cloudbus.cloudsim.Log;
 
 /**
  * SimulationResults class for the Fog and Edge Computing project.
@@ -135,7 +136,17 @@ public class SimulationResults {
         calculateResourceEfficiency();
         calculateNetworkEfficiency();
         
-        saveResultsToFile();
+        try {
+            saveResultsToFile();
+            
+            // Generate graphs from the saved CSV files
+            Log.printLine("Generating graphs from simulation results...");
+            GraphGenerator graphGenerator = new GraphGenerator(outputFolder);
+            graphGenerator.generateAllGraphs();
+            Log.printLine("Graph generation completed.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     /**
