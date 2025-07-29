@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.cloudbus.cloudsim.Log;
+import java.util.logging.Logger;
 
 /**
  * SimulationResults class for the Fog and Edge Computing project.
@@ -26,6 +26,9 @@ import org.cloudbus.cloudsim.Log;
  * @version 1.0
  */
 public class SimulationResults {
+    // Logger for this class
+    private static final Logger LOGGER = Logger.getLogger(SimulationResults.class.getName());
+    
     // Output folder path
     private String outputFolder;
     
@@ -140,10 +143,10 @@ public class SimulationResults {
             saveResultsToFile();
             
             // Generate graphs from the saved CSV files
-            Log.printLine("Generating graphs from simulation results...");
+            LOGGER.info("Generating graphs from simulation results...");
             GraphGenerator graphGenerator = new GraphGenerator(outputFolder);
             graphGenerator.generateAllGraphs();
-            Log.printLine("Graph generation completed.");
+            LOGGER.info("Graph generation completed.");
         } catch (IOException e) {
             e.printStackTrace();
         }

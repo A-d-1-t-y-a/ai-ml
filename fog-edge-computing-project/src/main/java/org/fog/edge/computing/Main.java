@@ -1,11 +1,11 @@
 package org.fog.edge.computing;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.fog.edge.computing.simulation.SimulationManager;
-import org.cloudsimplus.core.CloudSim;
 
 /**
  * Main class for the Fog and Edge Computing project based on CloudSim Plus.
@@ -40,54 +40,63 @@ public class Main {
      * 
      * This method performs the following steps to set up and execute the simulation:
      * 
-     * 1. Displays welcome and information messages about the simulation
-     * 2. Creates a timestamp-based directory structure for organizing simulation results
-     *    (each simulation run gets its own directory with date and time)
-     * 3. Defines the paths to all configuration files needed for the simulation:
-     *    - simulation_parameters.properties: General simulation settings
-     *    - applications.xml: Task types and characteristics
-     *    - edge_devices.xml: Edge device specifications (mist computing nodes)
-     *    - edge_datacenters.xml: Fog node specifications
-     *    - cloud.xml: Cloud data center specifications
-     * 4. Initializes the SimulationManager with these configuration files
-     * 5. Sets the FuzzyDecisionTreeOrchestrator as the custom orchestration algorithm
-     * 6. Starts the simulation and handles any exceptions that might occur
-     * 
-     * After successful execution, the simulation results will be available in the
-     * created output directory, including metrics on task execution times, energy
-     * consumption, network usage, and resource utilization across the Cloud-Fog-Mist
-     * computing continuum.
-     * 
-     * @param args command line arguments (not used)
      */
-    public static void main(String[] args) {
-        // Print welcome message
-        System.out.println("Starting CloudSim Plus-based Fog and Edge Computing Simulation...");
-        System.out.println("Implementation of Smart Campus scenario inspired by PureEdgeSim paper");
+    public static void main(String[] args) throws Exception {
+        // Create output directories if they don't exist
+        createOutputDirectories();
         
-        // Create simulation timestamp for output files
-        String simStartTime = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(Calendar.getInstance().getTime());
+        // Set up configuration file paths
+        setupConfigurationPaths();
         
-        // Create output directory if it doesn't exist
-        File outputFolder = new File("simulation_results/" + simStartTime);
-        if (!outputFolder.exists())
-            outputFolder.mkdirs();
-        
-        // Define simulation settings files
-        String[] settingsFiles = {
-            "d:/projects/ai-ml/fog-edge-computing-project/src/main/resources/simulation_parameters.properties",
-            "d:/projects/ai-ml/fog-edge-computing-project/src/main/resources/applications.xml",
-            "d:/projects/ai-ml/fog-edge-computing-project/src/main/resources/edge_devices.xml",
-            "d:/projects/ai-ml/fog-edge-computing-project/src/main/resources/edge_datacenters.xml",
-            "d:/projects/ai-ml/fog-edge-computing-project/src/main/resources/cloud.xml"
-        };
-        
-        try {
-            // Initialize and run the simulation
-            SimulationManager simulationManager = new SimulationManager(outputFolder.getAbsolutePath() + "/");
-            simulationManager.startSimulation();
-        } catch (Exception e) {
-            e.printStackTrace();
+        // Start the simulation
+        startSimulation();
+    }
+    
+    /**
+     * Creates necessary output directories for simulation results
+     */
+    private static void createOutputDirectories() {
+        String outputPath = "./output";
+        File outputDir = new File(outputPath);
+        if (!outputDir.exists()) {
+            outputDir.mkdir();
+            System.out.println("Created output directory: " + outputDir.getAbsolutePath());
         }
+    }
+    
+    /**
+     * Sets up configuration file paths
+     */
+    private static void setupConfigurationPaths() {
+        // Configuration files are now located in the ./config directory
+        String configPath = "./config";
+        File configDir = new File(configPath);
+        
+        // Create config directory if it doesn't exist
+        if (!configDir.exists()) {
+            configDir.mkdir();
+            System.out.println("Created configuration directory: " + configDir.getAbsolutePath());
+        }
+    }
+    
+    /**
+     * Starts the simulation process
+     * 
+     * @throws Exception if there's an error during simulation
+     */
+    private static void startSimulation() throws Exception {
+        System.out.println("Starting fog and edge computing simulation...");
+        
+        // Define output folder for results
+        String outputFolder = Paths.get(".", "output").toString();
+        System.out.println("Results will be saved to: " + new File(outputFolder).getAbsolutePath());
+        
+        // Create and initialize the simulation manager
+        SimulationManager simulationManager = new SimulationManager(outputFolder);
+        
+        // Start the simulation
+        simulationManager.startSimulation();
+        
+        System.out.println("Simulation completed successfully.");
     }
 }
