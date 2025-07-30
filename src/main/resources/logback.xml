@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    
+    <!-- Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- File Appender -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/fog-edge-system.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/fog-edge-system.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Performance Metrics Appender -->
+    <appender name="METRICS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/performance-metrics.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/performance-metrics.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Network Appender -->
+    <appender name="NETWORK" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/network.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/network.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Logger configurations -->
+    
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+    
+    <!-- Application specific loggers -->
+    <logger name="com.nci.fogedge" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+    <!-- Performance metrics logger -->
+    <logger name="com.nci.fogedge.utils.MetricsCollector" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="METRICS" />
+    </logger>
+    
+    <!-- Network logger -->
+    <logger name="com.nci.fogedge.network" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="NETWORK" />
+    </logger>
+    
+    <!-- IoT devices logger -->
+    <logger name="com.nci.fogedge.iot" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+    <!-- Edge nodes logger -->
+    <logger name="com.nci.fogedge.edge" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+    <!-- Cloud services logger -->
+    <logger name="com.nci.fogedge.cloud" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+    <!-- Configuration logger -->
+    <logger name="com.nci.fogedge.utils.ConfigurationManager" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+    <!-- Data export logger -->
+    <logger name="com.nci.fogedge.utils.DataExporter" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+    <!-- Debug level for development -->
+    <logger name="com.nci.fogedge" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+</configuration> 
