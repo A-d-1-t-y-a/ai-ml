@@ -1,8 +1,11 @@
 package com.nci.fogedge.iot.devices;
 
 import com.nci.fogedge.iot.BaseIoTDevice;
+import com.nci.fogedge.iot.IoTDevice;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +87,7 @@ public class HumiditySensor extends BaseIoTDevice {
     }
     
     @Override
-    public Object generateData() {
+    public String collectData() {
         try {
             // Generate realistic humidity reading with environmental variations
             double environmentalVariation = Math.sin(System.currentTimeMillis() / 15000.0) * humidityVariation;
@@ -102,20 +105,20 @@ public class HumiditySensor extends BaseIoTDevice {
             double measuredHumidity = currentHumidity + measurementNoise;
             measuredHumidity = Math.max(0.0, Math.min(100.0, measuredHumidity));
             
-            // Create humidity data object
-            Map<String, Object> humidityData = new HashMap<>();
-            humidityData.put("deviceId", deviceId);
-            humidityData.put("deviceType", "HUMIDITY_SENSOR");
-            humidityData.put("timestamp", System.currentTimeMillis());
-            humidityData.put("humidity", Math.round(measuredHumidity * 10.0) / 10.0); // Round to 1 decimal
-            humidityData.put("unit", "percent");
-            humidityData.put("accuracy", accuracy);
-            humidityData.put("batteryLevel", batteryLevel);
-            humidityData.put("signalStrength", signalStrength);
-            humidityData.put("status", status);
+            // Create humidity data JSON string
+            String humidityData = String.format(
+                "{\"deviceId\":\"%s\",\"deviceType\":\"HUMIDITY_SENSOR\",\"timestamp\":%d,\"humidity\":%.1f,\"unit\":\"percent\",\"accuracy\":%.1f,\"batteryLevel\":%.1f,\"signalStrength\":%.1f,\"status\":\"%s\"}",
+                deviceId,
+                System.currentTimeMillis(),
+                Math.round(measuredHumidity * 10.0) / 10.0,
+                accuracy,
+                batteryLevel,
+                signalStrength,
+                status
+            );
             
             // Update total data generated
-            totalDataGenerated.addAndGet(humidityData.toString().getBytes().length);
+            totalDataGenerated.addAndGet(humidityData.getBytes().length);
             
             logger.debug("Humidity sensor {} generated reading: {}%", deviceId, measuredHumidity);
             
@@ -125,6 +128,91 @@ public class HumiditySensor extends BaseIoTDevice {
             logger.error("Error generating humidity data for device: {}", deviceId, e);
             return null;
         }
+    }
+    
+    @Override
+    public boolean transmitData(String data) {
+        try {
+            if (data != null && !data.isEmpty()) {
+                boolean success = networkManager.transmitData(deviceId, data);
+                if (success) {
+                    successfulTransmissions.incrementAndGet();
+                    logger.debug("Humidity sensor {} transmitted data successfully", deviceId);
+                } else {
+                    failedTransmissions.incrementAndGet();
+                    logger.warn("Humidity sensor {} failed to transmit data", deviceId);
+                }
+                return success;
+            }
+            return false;
+        } catch (Exception e) {
+            failedTransmissions.incrementAndGet();
+            logger.error("Error transmitting data from humidity sensor: {}", deviceId, e);
+            return false;
+        }
+    }
+    
+    @Override
+    public PerformanceMetrics getMetrics() {
+        PerformanceMetrics metrics = new PerformanceMetrics(deviceId, "HUMIDITY_SENSOR");
+        
+        metrics.addMetric("batteryLevel", batteryLevel);
+        metrics.addMetric("signalStrength", signalStrength);
+        metrics.addMetric("transmissionRate", getTransmissionRate());
+        metrics.addMetric("errorCount", getErrorCount());
+        metrics.addMetric("currentHumidity", currentHumidity);
+        metrics.addMetric("baseHumidity", baseHumidity);
+        metrics.addMetric("accuracy", accuracy);
+        metrics.addMetric("calibrationOffset", calibrationOffset);
+        metrics.addMetric("humidityVariation", humidityVariation);
+        metrics.addMetric("isHealthy", isHealthy());
+        metrics.addMetric("isRunning", isRunning());
+        
+        return metrics;
+    }
+    
+    @Override
+    public void updateConfiguration(Map<String, Object> config) {
+        if (config != null) {
+            configuration.putAll(config);
+            logger.debug("Humidity sensor {} configuration updated", deviceId);
+        }
+    }
+    
+    @Override
+    public double getBatteryLevel() {
+        return batteryLevel;
+    }
+    
+    @Override
+    public double getSignalStrength() {
+        return signalStrength;
+    }
+    
+    @Override
+    public double getTransmissionRate() {
+        long total = successfulTransmissions.get() + failedTransmissions.get();
+        return total > 0 ? (double) successfulTransmissions.get() / total : 0.0;
+    }
+    
+    @Override
+    public int getErrorCount() {
+        return failedTransmissions.get();
+    }
+    
+    @Override
+    public void resetErrorCount() {
+        failedTransmissions.set(0);
+    }
+    
+    @Override
+    public long getLastDataCollectionTime() {
+        return System.currentTimeMillis();
+    }
+    
+    @Override
+    public long getLastTransmissionTime() {
+        return System.currentTimeMillis();
     }
     
     /**
@@ -211,26 +299,10 @@ public class HumiditySensor extends BaseIoTDevice {
     }
     
     @Override
-    public Map<String, Object> getPerformanceMetrics() {
-        Map<String, Object> metrics = super.getPerformanceMetrics();
-        
-        // Add humidity-specific metrics
-        metrics.put("currentHumidity", currentHumidity);
-        metrics.put("baseHumidity", baseHumidity);
-        metrics.put("accuracy", accuracy);
-        metrics.put("calibrationOffset", calibrationOffset);
-        metrics.put("humidityVariation", humidityVariation);
-        
-        return metrics;
-    }
-    
-    @Override
-    public IoTDevice.DiagnosticResult performDiagnostic() {
-        IoTDevice.DiagnosticResult baseResult = super.performDiagnostic();
-        
-        Map<String, Object> details = new HashMap<>(baseResult.getDetails());
-        boolean passed = baseResult.isPassed();
-        String message = baseResult.getMessage();
+    public DiagnosticResult performDiagnostic() {
+        Map<String, Object> details = new HashMap<>();
+        boolean passed = true;
+        String message = "Humidity sensor diagnostic passed";
         
         // Add humidity-specific diagnostic checks
         if (currentHumidity < 0.0 || currentHumidity > 100.0) {
@@ -246,6 +318,10 @@ public class HumiditySensor extends BaseIoTDevice {
         }
         details.put("calibrationOffset", calibrationOffset);
         
-        return new IoTDevice.DiagnosticResult(passed, message, details);
+        details.put("batteryLevel", batteryLevel);
+        details.put("signalStrength", signalStrength);
+        details.put("status", status);
+        
+        return passed ? DiagnosticResult.success(message, details) : DiagnosticResult.failure(message, details);
     }
 } 

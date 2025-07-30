@@ -1,8 +1,11 @@
 package com.nci.fogedge.iot.devices;
 
 import com.nci.fogedge.iot.BaseIoTDevice;
+import com.nci.fogedge.iot.IoTDevice;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +87,7 @@ public class PressureSensor extends BaseIoTDevice {
     }
     
     @Override
-    public Object generateData() {
+    public String collectData() {
         try {
             // Generate realistic pressure reading with environmental variations
             double environmentalVariation = Math.sin(System.currentTimeMillis() / 20000.0) * pressureVariation;
@@ -101,20 +104,20 @@ public class PressureSensor extends BaseIoTDevice {
             double measurementNoise = (random.nextDouble() - 0.5) * accuracy;
             double measuredPressure = currentPressure + measurementNoise;
             
-            // Create pressure data object
-            Map<String, Object> pressureData = new HashMap<>();
-            pressureData.put("deviceId", deviceId);
-            pressureData.put("deviceType", "PRESSURE_SENSOR");
-            pressureData.put("timestamp", System.currentTimeMillis());
-            pressureData.put("pressure", Math.round(measuredPressure * 100.0) / 100.0); // Round to 2 decimals
-            pressureData.put("unit", "hPa");
-            pressureData.put("accuracy", accuracy);
-            pressureData.put("batteryLevel", batteryLevel);
-            pressureData.put("signalStrength", signalStrength);
-            pressureData.put("status", status);
+            // Create pressure data JSON string
+            String pressureData = String.format(
+                "{\"deviceId\":\"%s\",\"deviceType\":\"PRESSURE_SENSOR\",\"timestamp\":%d,\"pressure\":%.2f,\"unit\":\"hPa\",\"accuracy\":%.1f,\"batteryLevel\":%.1f,\"signalStrength\":%.1f,\"status\":\"%s\"}",
+                deviceId,
+                System.currentTimeMillis(),
+                Math.round(measuredPressure * 100.0) / 100.0,
+                accuracy,
+                batteryLevel,
+                signalStrength,
+                status
+            );
             
             // Update total data generated
-            totalDataGenerated.addAndGet(pressureData.toString().getBytes().length);
+            totalDataGenerated.addAndGet(pressureData.getBytes().length);
             
             logger.debug("Pressure sensor {} generated reading: {} hPa", deviceId, measuredPressure);
             
@@ -124,6 +127,91 @@ public class PressureSensor extends BaseIoTDevice {
             logger.error("Error generating pressure data for device: {}", deviceId, e);
             return null;
         }
+    }
+    
+    @Override
+    public boolean transmitData(String data) {
+        try {
+            if (data != null && !data.isEmpty()) {
+                boolean success = networkManager.transmitData(deviceId, data);
+                if (success) {
+                    successfulTransmissions.incrementAndGet();
+                    logger.debug("Pressure sensor {} transmitted data successfully", deviceId);
+                } else {
+                    failedTransmissions.incrementAndGet();
+                    logger.warn("Pressure sensor {} failed to transmit data", deviceId);
+                }
+                return success;
+            }
+            return false;
+        } catch (Exception e) {
+            failedTransmissions.incrementAndGet();
+            logger.error("Error transmitting data from pressure sensor: {}", deviceId, e);
+            return false;
+        }
+    }
+    
+    @Override
+    public PerformanceMetrics getMetrics() {
+        PerformanceMetrics metrics = new PerformanceMetrics(deviceId, "PRESSURE_SENSOR");
+        
+        metrics.addMetric("batteryLevel", batteryLevel);
+        metrics.addMetric("signalStrength", signalStrength);
+        metrics.addMetric("transmissionRate", getTransmissionRate());
+        metrics.addMetric("errorCount", getErrorCount());
+        metrics.addMetric("currentPressure", currentPressure);
+        metrics.addMetric("basePressure", basePressure);
+        metrics.addMetric("accuracy", accuracy);
+        metrics.addMetric("calibrationOffset", calibrationOffset);
+        metrics.addMetric("pressureVariation", pressureVariation);
+        metrics.addMetric("isHealthy", isHealthy());
+        metrics.addMetric("isRunning", isRunning());
+        
+        return metrics;
+    }
+    
+    @Override
+    public void updateConfiguration(Map<String, Object> config) {
+        if (config != null) {
+            configuration.putAll(config);
+            logger.debug("Pressure sensor {} configuration updated", deviceId);
+        }
+    }
+    
+    @Override
+    public double getBatteryLevel() {
+        return batteryLevel;
+    }
+    
+    @Override
+    public double getSignalStrength() {
+        return signalStrength;
+    }
+    
+    @Override
+    public double getTransmissionRate() {
+        long total = successfulTransmissions.get() + failedTransmissions.get();
+        return total > 0 ? (double) successfulTransmissions.get() / total : 0.0;
+    }
+    
+    @Override
+    public int getErrorCount() {
+        return failedTransmissions.get();
+    }
+    
+    @Override
+    public void resetErrorCount() {
+        failedTransmissions.set(0);
+    }
+    
+    @Override
+    public long getLastDataCollectionTime() {
+        return System.currentTimeMillis();
+    }
+    
+    @Override
+    public long getLastTransmissionTime() {
+        return System.currentTimeMillis();
     }
     
     /**
@@ -210,26 +298,10 @@ public class PressureSensor extends BaseIoTDevice {
     }
     
     @Override
-    public Map<String, Object> getPerformanceMetrics() {
-        Map<String, Object> metrics = super.getPerformanceMetrics();
-        
-        // Add pressure-specific metrics
-        metrics.put("currentPressure", currentPressure);
-        metrics.put("basePressure", basePressure);
-        metrics.put("accuracy", accuracy);
-        metrics.put("calibrationOffset", calibrationOffset);
-        metrics.put("pressureVariation", pressureVariation);
-        
-        return metrics;
-    }
-    
-    @Override
-    public IoTDevice.DiagnosticResult performDiagnostic() {
-        IoTDevice.DiagnosticResult baseResult = super.performDiagnostic();
-        
-        Map<String, Object> details = new HashMap<>(baseResult.getDetails());
-        boolean passed = baseResult.isPassed();
-        String message = baseResult.getMessage();
+    public DiagnosticResult performDiagnostic() {
+        Map<String, Object> details = new HashMap<>();
+        boolean passed = true;
+        String message = "Pressure sensor diagnostic passed";
         
         // Add pressure-specific diagnostic checks
         if (currentPressure < 300.0 || currentPressure > 1100.0) {
@@ -245,6 +317,10 @@ public class PressureSensor extends BaseIoTDevice {
         }
         details.put("calibrationOffset", calibrationOffset);
         
-        return new IoTDevice.DiagnosticResult(passed, message, details);
+        details.put("batteryLevel", batteryLevel);
+        details.put("signalStrength", signalStrength);
+        details.put("status", status);
+        
+        return passed ? DiagnosticResult.success(message, details) : DiagnosticResult.failure(message, details);
     }
 } 

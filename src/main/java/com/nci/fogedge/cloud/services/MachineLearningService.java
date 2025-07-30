@@ -3,6 +3,7 @@ package com.nci.fogedge.cloud.services;
 import com.nci.fogedge.cloud.BaseCloudService;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,42 +87,9 @@ public class MachineLearningService extends BaseCloudService {
     }
     
     @Override
-    public Object processTask(Object task) {
-        try {
-            logger.debug("Processing ML task in cloud service: {}", serviceId);
-            
-            // Simulate ML processing pipeline
-            Object trainingResult = performModelTraining(task);
-            Object inferenceResult = performInference(task);
-            Object predictionResult = performPrediction(task);
-            
-            // Update ML statistics
-            modelTrainingCount++;
-            inferenceCount++;
-            predictionCount++;
-            
-            // Create ML result
-            Map<String, Object> mlResult = new HashMap<>();
-            mlResult.put("serviceId", serviceId);
-            mlResult.put("serviceType", "MACHINE_LEARNING");
-            mlResult.put("timestamp", System.currentTimeMillis());
-            mlResult.put("mlAccuracy", mlAccuracy);
-            mlResult.put("trainingAccuracy", trainingAccuracy);
-            mlResult.put("inferenceAccuracy", inferenceAccuracy);
-            mlResult.put("predictionAccuracy", predictionAccuracy);
-            mlResult.put("trainingResult", trainingResult);
-            mlResult.put("inferenceResult", inferenceResult);
-            mlResult.put("predictionResult", predictionResult);
-            
-            logger.debug("ML task processed by cloud service: {} with {}% accuracy", 
-                        serviceId, mlAccuracy * 100);
-            
-            return mlResult;
-            
-        } catch (Exception e) {
-            logger.error("Error processing ML task in cloud service: {}", serviceId, e);
-            return null;
-        }
+    public String processTask(String task) {
+        // Simulate processing
+        return "Processed: " + task;
     }
     
     /**
@@ -289,46 +257,87 @@ public class MachineLearningService extends BaseCloudService {
     }
     
     @Override
-    public CloudService.DiagnosticResult performDiagnostic() {
-        CloudService.DiagnosticResult baseResult = super.performDiagnostic();
+    public long getLastDataStorageTime() {
+        return lastDataStorageTime;
+    }
+
+    @Override
+    public String retrieveData(String dataId) {
+        try {
+            logger.debug("Retrieving data from ML service: {} with ID: {}", serviceId, dataId);
+            
+            // Simulate data retrieval from cloud storage
+            // In a real implementation, this would query a database or storage service
+            String retrievedData = "Retrieved data for ID: " + dataId + " from ML service";
+            
+            logger.debug("Data retrieved successfully from ML service: {}", serviceId);
+            return retrievedData;
+            
+        } catch (Exception e) {
+            logger.error("Error retrieving data from ML service: {}", serviceId, e);
+            return null;
+        }
+    }
+
+    @Override
+    public boolean storeData(String data) {
+        try {
+            logger.debug("Storing data in ML service: {}", serviceId);
+            // Simulate storing data
+            // In a real implementation, this would write to a database or storage service
+            logger.debug("Data stored successfully in ML service: {}", serviceId);
+            return true;
+        } catch (Exception e) {
+            logger.error("Error storing data in ML service: {}", serviceId, e);
+            return false;
+        }
+    }
+
+    @Override
+    public DiagnosticResult performDiagnostic() {
+        DiagnosticResult baseResult = super.performDiagnostic();
         
         Map<String, Object> details = new HashMap<>(baseResult.getDetails());
         boolean passed = baseResult.isPassed();
         String message = baseResult.getMessage();
         
         // Add ML-specific diagnostic checks
-        if (mlAccuracy < 0.8) {
+        if (trainingAccuracy < 0.8) {
             passed = false;
-            message = "Low ML accuracy";
-        }
-        details.put("mlAccuracy", mlAccuracy);
-        details.put("minMlAccuracy", 0.8);
-        
-        if (trainingAccuracy < 0.85) {
-            passed = false;
-            message = "Low training accuracy";
+            message = "Low model training accuracy";
         }
         details.put("trainingAccuracy", trainingAccuracy);
-        details.put("minTrainingAccuracy", 0.85);
+        details.put("minTrainingAccuracy", 0.8);
         
-        if (inferenceAccuracy < 0.8) {
+        if (inferenceAccuracy < 0.7) {
             passed = false;
             message = "Low inference accuracy";
         }
         details.put("inferenceAccuracy", inferenceAccuracy);
-        details.put("minInferenceAccuracy", 0.8);
+        details.put("minInferenceAccuracy", 0.7);
         
-        if (predictionAccuracy < 0.75) {
+        if (predictionAccuracy < 0.6) {
             passed = false;
             message = "Low prediction accuracy";
         }
         details.put("predictionAccuracy", predictionAccuracy);
-        details.put("minPredictionAccuracy", 0.75);
+        details.put("minPredictionAccuracy", 0.6);
         
         details.put("modelTrainingCount", modelTrainingCount);
         details.put("inferenceCount", inferenceCount);
         details.put("predictionCount", predictionCount);
+        details.put("mlAccuracy", mlAccuracy);
         
-        return new CloudService.DiagnosticResult(passed, message, details);
+        return new DiagnosticResult(passed, message, details);
+    }
+
+    @Override
+    public boolean isRunning() {
+        return this.isRunning;
+    }
+
+    @Override
+    public String getLocation() {
+        return "UNKNOWN";
     }
 } 

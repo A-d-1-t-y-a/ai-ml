@@ -1,12 +1,13 @@
 package com.nci.fogedge.utils;
 
-import java.time.Instant;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Performance Metrics for Fog and Edge Computing System
  * 
- * This class represents performance metrics for IoT devices and edge nodes.
- * It tracks latency, throughput, energy consumption, and other key performance indicators.
+ * This class represents performance metrics for various system components
+ * including IoT devices, edge nodes, and cloud services.
  * 
  * @author National College of Ireland - Fog and Edge Computing Project
  * @version 1.0.0
@@ -14,100 +15,78 @@ import java.time.Instant;
  */
 public class PerformanceMetrics {
     
-    private final String entityId;
-    private final String entityType;
-    private final Instant timestamp;
-    private final double latency;
-    private final double throughput;
-    private final double energyConsumption;
-    private final double cpuUsage;
-    private final double memoryUsage;
-    private final long dataProcessed;
-    private final int activeConnections;
-    private final double healthScore;
+    private final String componentId;
+    private final String componentType;
+    private final long timestamp;
+    private final Map<String, Object> metrics;
     
     /**
      * Constructor for PerformanceMetrics
      * 
-     * @param entityId Entity identifier
-     * @param entityType Entity type (DEVICE, NODE, SERVICE)
-     * @param latency Latency in milliseconds
-     * @param throughput Throughput in Mbps
-     * @param energyConsumption Energy consumption in watts
-     * @param cpuUsage CPU usage percentage
-     * @param memoryUsage Memory usage percentage
-     * @param dataProcessed Data processed in bytes
-     * @param activeConnections Number of active connections
-     * @param healthScore Health score (0-100)
+     * @param componentId Component identifier
+     * @param componentType Component type
      */
-    public PerformanceMetrics(String entityId, String entityType, double latency, double throughput,
-                            double energyConsumption, double cpuUsage, double memoryUsage,
-                            long dataProcessed, int activeConnections, double healthScore) {
-        this.entityId = entityId;
-        this.entityType = entityType;
-        this.timestamp = Instant.now();
-        this.latency = latency;
-        this.throughput = throughput;
-        this.energyConsumption = energyConsumption;
-        this.cpuUsage = cpuUsage;
-        this.memoryUsage = memoryUsage;
-        this.dataProcessed = dataProcessed;
-        this.activeConnections = activeConnections;
-        this.healthScore = healthScore;
+    public PerformanceMetrics(String componentId, String componentType) {
+        this.componentId = componentId;
+        this.componentType = componentType;
+        this.timestamp = System.currentTimeMillis();
+        this.metrics = new HashMap<>();
     }
     
     /**
-     * Get entity identifier
+     * Get component ID
      * 
-     * @return Entity ID
+     * @return Component identifier
      */
-    public String getEntityId() {
-        return entityId;
+    public String getComponentId() {
+        return componentId;
     }
     
     /**
-     * Get entity type
+     * Get component type
      * 
-     * @return Entity type
+     * @return Component type
      */
-    public String getEntityType() {
-        return entityType;
+    public String getComponentType() {
+        return componentType;
     }
     
     /**
      * Get timestamp
      * 
-     * @return Timestamp
+     * @return Timestamp when metrics were collected
      */
-    public Instant getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
     
     /**
-     * Get latency
+     * Add a metric
      * 
-     * @return Latency in milliseconds
+     * @param key Metric key
+     * @param value Metric value
      */
-    public double getLatency() {
-        return latency;
+    public void addMetric(String key, Object value) {
+        metrics.put(key, value);
     }
     
     /**
-     * Get throughput
+     * Get a metric value
      * 
-     * @return Throughput in Mbps
+     * @param key Metric key
+     * @return Metric value
      */
-    public double getThroughput() {
-        return throughput;
+    public Object getMetric(String key) {
+        return metrics.get(key);
     }
     
     /**
-     * Get energy consumption
+     * Get all metrics
      * 
-     * @return Energy consumption in watts
+     * @return Map of all metrics
      */
-    public double getEnergyConsumption() {
-        return energyConsumption;
+    public Map<String, Object> getAllMetrics() {
+        return new HashMap<>(metrics);
     }
     
     /**
@@ -116,7 +95,8 @@ public class PerformanceMetrics {
      * @return CPU usage percentage
      */
     public double getCpuUsage() {
-        return cpuUsage;
+        Object value = metrics.get("cpu_usage");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
     }
     
     /**
@@ -125,7 +105,78 @@ public class PerformanceMetrics {
      * @return Memory usage percentage
      */
     public double getMemoryUsage() {
-        return memoryUsage;
+        Object value = metrics.get("memory_usage");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
+    }
+    
+    /**
+     * Get storage usage
+     * 
+     * @return Storage usage percentage
+     */
+    public double getStorageUsage() {
+        Object value = metrics.get("storage_usage");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
+    }
+    
+    /**
+     * Get bandwidth usage
+     * 
+     * @return Bandwidth usage in Mbps
+     */
+    public double getBandwidthUsage() {
+        Object value = metrics.get("bandwidth_usage");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
+    }
+    
+    /**
+     * Get energy consumption
+     * 
+     * @return Energy consumption in watts
+     */
+    public double getEnergyConsumption() {
+        Object value = metrics.get("energy_consumption");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
+    }
+    
+    /**
+     * Get latency
+     * 
+     * @return Latency in milliseconds
+     */
+    public double getLatency() {
+        Object value = metrics.get("latency");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
+    }
+    
+    /**
+     * Get throughput
+     * 
+     * @return Throughput in Mbps
+     */
+    public double getThroughput() {
+        Object value = metrics.get("throughput");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
+    }
+    
+    /**
+     * Get error count
+     * 
+     * @return Number of errors
+     */
+    public int getErrorCount() {
+        Object value = metrics.get("error_count");
+        return value instanceof Number ? ((Number) value).intValue() : 0;
+    }
+    
+    /**
+     * Get success rate
+     * 
+     * @return Success rate percentage
+     */
+    public double getSuccessRate() {
+        Object value = metrics.get("success_rate");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
     }
     
     /**
@@ -134,16 +185,58 @@ public class PerformanceMetrics {
      * @return Data processed in bytes
      */
     public long getDataProcessed() {
-        return dataProcessed;
+        Object value = metrics.get("data_processed");
+        return value instanceof Number ? ((Number) value).longValue() : 0L;
     }
     
     /**
-     * Get active connections
+     * Get tasks processed
      * 
-     * @return Number of active connections
+     * @return Number of tasks processed
      */
-    public int getActiveConnections() {
-        return activeConnections;
+    public int getTasksProcessed() {
+        Object value = metrics.get("tasks_processed");
+        return value instanceof Number ? ((Number) value).intValue() : 0;
+    }
+    
+    /**
+     * Get battery level
+     * 
+     * @return Battery level percentage
+     */
+    public double getBatteryLevel() {
+        Object value = metrics.get("battery_level");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
+    }
+    
+    /**
+     * Get signal strength
+     * 
+     * @return Signal strength in dBm
+     */
+    public double getSignalStrength() {
+        Object value = metrics.get("signal_strength");
+        return value instanceof Number ? ((Number) value).doubleValue() : 0.0;
+    }
+    
+    /**
+     * Check if component is healthy
+     * 
+     * @return True if component is healthy
+     */
+    public boolean isHealthy() {
+        Object value = metrics.get("healthy");
+        return value instanceof Boolean ? (Boolean) value : false;
+    }
+    
+    /**
+     * Check if component is running
+     * 
+     * @return True if component is running
+     */
+    public boolean isRunning() {
+        Object value = metrics.get("running");
+        return value instanceof Boolean ? (Boolean) value : false;
     }
     
     /**
@@ -152,20 +245,8 @@ public class PerformanceMetrics {
      * @return Health score (0-100)
      */
     public double getHealthScore() {
-        return healthScore;
-    }
-    
-    /**
-     * Check if performance is good
-     * 
-     * @return True if performance is good
-     */
-    public boolean isPerformanceGood() {
-        return latency < 100.0 && // Less than 100ms latency
-               throughput > 10.0 && // More than 10 Mbps throughput
-               cpuUsage < 80.0 && // Less than 80% CPU usage
-               memoryUsage < 80.0 && // Less than 80% memory usage
-               healthScore > 70.0; // Health score above 70%
+        Object value = metrics.get("health_score");
+        return value instanceof Number ? ((Number) value).doubleValue() : 100.0;
     }
     
     /**
@@ -174,31 +255,63 @@ public class PerformanceMetrics {
      * @return Performance score (0-100)
      */
     public double getPerformanceScore() {
-        double latencyScore = Math.max(0.0, 100.0 - latency / 2.0); // Normalize latency
-        double throughputScore = Math.min(100.0, throughput / 2.0); // Normalize throughput
-        double resourceScore = (100.0 - cpuUsage + 100.0 - memoryUsage) / 2.0; // Resource efficiency
-        double healthScore = this.healthScore;
+        // Calculate performance score based on metrics
+        double score = 100.0;
         
-        return (latencyScore + throughputScore + resourceScore + healthScore) / 4.0;
+        // Deduct points for high latency
+        double latency = getLatency();
+        if (latency > 200.0) {
+            score -= 30.0;
+        } else if (latency > 100.0) {
+            score -= 15.0;
+        }
+        
+        // Deduct points for low throughput
+        double throughput = getThroughput();
+        if (throughput < 10.0) {
+            score -= 25.0;
+        } else if (throughput < 50.0) {
+            score -= 10.0;
+        }
+        
+        // Deduct points for high resource usage
+        double cpuUsage = getCpuUsage();
+        if (cpuUsage > 90.0) {
+            score -= 20.0;
+        } else if (cpuUsage > 80.0) {
+            score -= 10.0;
+        }
+        
+        double memoryUsage = getMemoryUsage();
+        if (memoryUsage > 90.0) {
+            score -= 20.0;
+        } else if (memoryUsage > 80.0) {
+            score -= 10.0;
+        }
+        
+        // Deduct points for errors
+        int errorCount = getErrorCount();
+        score -= errorCount * 2.0;
+        
+        return Math.max(0.0, score);
     }
     
     /**
-     * Get energy efficiency
+     * Check if performance is good
      * 
-     * @return Energy efficiency score (0-100)
+     * @return True if performance is good
      */
-    public double getEnergyEfficiency() {
-        // Calculate energy efficiency based on throughput vs energy consumption
-        if (energyConsumption > 0) {
-            double efficiency = (throughput / energyConsumption) * 10.0; // Normalize
-            return Math.min(100.0, Math.max(0.0, efficiency));
-        }
-        return 0.0;
+    public boolean isPerformanceGood() {
+        return getPerformanceScore() >= 70.0 && 
+               getLatency() < 100.0 && 
+               getThroughput() > 10.0 && 
+               getCpuUsage() < 80.0 && 
+               getMemoryUsage() < 80.0;
     }
     
     @Override
     public String toString() {
-        return String.format("PerformanceMetrics{entity=%s, type=%s, latency=%.2fms, throughput=%.2fMbps, health=%.1f}",
-            entityId, entityType, latency, throughput, healthScore);
+        return String.format("PerformanceMetrics{componentId='%s', componentType='%s', timestamp=%d, metrics=%s}",
+            componentId, componentType, timestamp, metrics);
     }
 } 

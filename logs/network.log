@@ -1,0 +1,47 @@
+2025-07-30 15:02:03.002 [main] INFO  c.nci.fogedge.network.NetworkManager - NetworkManager initialized
+2025-07-30 15:02:03.035 [pool-6-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.036 [pool-7-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.037 [pool-10-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.035 [pool-8-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.035 [pool-5-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.036 [pool-9-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.040 [pool-11-thread-2] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.043 [pool-12-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.044 [pool-13-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.045 [pool-14-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.046 [pool-15-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.047 [pool-16-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.048 [pool-17-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.049 [pool-18-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.050 [pool-19-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.051 [pool-20-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.056 [pool-21-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.058 [pool-22-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.059 [pool-23-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.059 [pool-24-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.060 [pool-25-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.061 [pool-26-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.062 [pool-27-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.063 [pool-28-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.068 [pool-34-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.069 [pool-35-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.073 [pool-37-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.075 [pool-36-thread-2] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.075 [pool-38-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.076 [pool-39-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.077 [pool-40-thread-1] WARN  c.nci.fogedge.network.NetworkManager - NetworkManager is not running, cannot transmit data
+2025-07-30 15:02:03.112 [main] INFO  c.nci.fogedge.network.NetworkManager - Starting NetworkManager...
+2025-07-30 15:02:03.113 [Thread-0] INFO  c.nci.fogedge.network.NetworkManager - Packet processor started
+2025-07-30 15:02:03.114 [Thread-0] INFO  c.nci.fogedge.network.NetworkManager - Packet processor stopped
+2025-07-30 15:02:03.114 [main] INFO  c.nci.fogedge.network.NetworkManager - NetworkManager started successfully
+2025-07-30 15:02:33.124 [pool-56-thread-1] INFO  c.nci.fogedge.network.NetworkManager - Network Health - Packets: 15/30, Bytes: 2714/6298, Latency: {:.2f}ms, Loss: {:.2f}%
+2025-07-30 15:03:03.114 [pool-56-thread-2] INFO  c.nci.fogedge.network.NetworkManager - Network Health - Packets: 42/56, Bytes: 8438/11629, Latency: {:.2f}ms, Loss: {:.2f}%
+2025-07-30 15:03:33.115 [pool-56-thread-1] INFO  c.nci.fogedge.network.NetworkManager - Network Health - Packets: 77/87, Bytes: 15504/18134, Latency: {:.2f}ms, Loss: {:.2f}%
+2025-07-30 15:04:03.114 [pool-56-thread-4] INFO  c.nci.fogedge.network.NetworkManager - Network Health - Packets: 104/117, Bytes: 21239/24355, Latency: {:.2f}ms, Loss: {:.2f}%
+2025-07-30 15:04:33.115 [pool-56-thread-2] INFO  c.nci.fogedge.network.NetworkManager - Network Health - Packets: 137/148, Bytes: 28150/30869, Latency: {:.2f}ms, Loss: {:.2f}%
+2025-07-30 15:05:03.114 [pool-56-thread-2] INFO  c.nci.fogedge.network.NetworkManager - Network Health - Packets: 165/177, Bytes: 34075/36996, Latency: {:.2f}ms, Loss: {:.2f}%
+2025-07-30 15:05:33.115 [pool-56-thread-4] INFO  c.nci.fogedge.network.NetworkManager - Network Health - Packets: 201/207, Bytes: 41562/43324, Latency: {:.2f}ms, Loss: {:.2f}%
+2025-07-30 15:06:10.601 [pool-56-thread-4] INFO  c.nci.fogedge.network.NetworkManager - Network Health - Packets: 222/235, Bytes: 46155/49262, Latency: {:.2f}ms, Loss: {:.2f}%
+2025-07-30 15:06:33.118 [pool-56-thread-4] INFO  c.nci.fogedge.network.NetworkManager - Network Health - Packets: 263/264, Bytes: 54598/55282, Latency: {:.2f}ms, Loss: {:.2f}%
+2025-07-30 15:06:42.862 [Thread-1] INFO  c.nci.fogedge.network.NetworkManager - Stopping NetworkManager...
+2025-07-30 15:06:42.863 [Thread-1] INFO  c.nci.fogedge.network.NetworkManager - NetworkManager stopped successfully

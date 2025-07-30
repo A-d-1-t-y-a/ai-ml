@@ -2,6 +2,8 @@ package com.nci.fogedge.edge;
 
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,10 @@ public abstract class BaseEdgeNode implements EdgeNode {
     protected final AtomicInteger tasksOffloaded;
     protected final AtomicInteger processingTimeTotal;
     protected final AtomicInteger processingCount;
+    protected final AtomicInteger errorCount;
+    protected volatile long lastDataProcessingTime;
+    protected volatile long lastTaskOffloadingTime;
+    protected volatile long startTime;
     
     // Resource utilization
     protected volatile double cpuUtilization;
@@ -79,6 +85,10 @@ public abstract class BaseEdgeNode implements EdgeNode {
         this.tasksOffloaded = new AtomicInteger(0);
         this.processingTimeTotal = new AtomicInteger(0);
         this.processingCount = new AtomicInteger(0);
+        this.errorCount = new AtomicInteger(0);
+        this.lastDataProcessingTime = 0;
+        this.lastTaskOffloadingTime = 0;
+        this.startTime = System.currentTimeMillis();
         
         this.cpuUtilization = 20.0; // Start with low utilization
         this.memoryUtilization = 30.0; // Start with moderate memory usage
@@ -221,44 +231,36 @@ public abstract class BaseEdgeNode implements EdgeNode {
         }
     }
     
-    @Override
     public double getCpuUtilization() {
         return cpuUtilization;
     }
     
-    @Override
     public double getMemoryUtilization() {
         return memoryUtilization;
     }
     
-    @Override
     public double getBandwidthUtilization() {
         return bandwidthUtilization;
     }
     
-    @Override
     public long getTotalDataProcessed() {
         return totalDataProcessed.get();
     }
     
-    @Override
     public int getTasksOffloaded() {
         return tasksOffloaded.get();
     }
     
-    @Override
     public double getAverageProcessingTime() {
         int count = processingCount.get();
         return count > 0 ? (double) processingTimeTotal.get() / count : 0;
     }
     
-    @Override
     public double getOffloadingRate() {
         int total = processingCount.get();
         return total > 0 ? (double) tasksOffloaded.get() / total * 100 : 0;
     }
     
-    @Override
     public Map<String, Object> getConfiguration() {
         return new HashMap<>(configuration);
     }
@@ -269,7 +271,6 @@ public abstract class BaseEdgeNode implements EdgeNode {
         logger.info("Configuration updated for edge node: {}", nodeId);
     }
     
-    @Override
     public Map<String, Object> getPerformanceMetrics() {
         Map<String, Object> metrics = new HashMap<>();
         metrics.put("nodeId", nodeId);
@@ -286,7 +287,6 @@ public abstract class BaseEdgeNode implements EdgeNode {
         return metrics;
     }
     
-    @Override
     public void resetStatistics() {
         totalDataProcessed.set(0);
         tasksOffloaded.set(0);
@@ -296,7 +296,6 @@ public abstract class BaseEdgeNode implements EdgeNode {
         logger.info("Statistics reset for edge node: {}", nodeId);
     }
     
-    @Override
     public DiagnosticResult performDiagnostic() {
         logger.debug("Performing diagnostic for edge node: {}", nodeId);
         
@@ -332,7 +331,6 @@ public abstract class BaseEdgeNode implements EdgeNode {
         return new DiagnosticResult(passed, message, details);
     }
     
-    @Override
     public boolean shouldOffloadTask(Object task) {
         // Implement intelligent offloading decision based on:
         // 1. Current resource utilization
@@ -358,7 +356,6 @@ public abstract class BaseEdgeNode implements EdgeNode {
         return false;
     }
     
-    @Override
     public boolean offloadTask(Object task) {
         try {
             logger.debug("Offloading task from edge node: {}", nodeId);
@@ -386,31 +383,22 @@ public abstract class BaseEdgeNode implements EdgeNode {
      */
     protected void processIncomingData() {
         try {
-            // Simulate receiving data from IoT devices
             Object incomingData = networkManager.receiveDataFromIoT();
-            
             if (incomingData != null) {
                 long startTime = System.currentTimeMillis();
-                
-                // Decide whether to process locally or offload
                 if (shouldOffloadTask(incomingData)) {
                     offloadTask(incomingData);
                 } else {
                     // Process data locally
-                    Object result = processData(incomingData);
-                    
-                    // Update statistics
+                    String dataString = incomingData.toString();
+                    Object result = processData(dataString);
                     long processingTime = System.currentTimeMillis() - startTime;
                     processingTimeTotal.addAndGet((int) processingTime);
                     processingCount.incrementAndGet();
-                    
-                    // Update total data processed
-                    totalDataProcessed.addAndGet(incomingData.toString().getBytes().length);
-                    
+                    totalDataProcessed.addAndGet(dataString.getBytes().length);
                     logger.debug("Data processed locally by edge node: {} in {}ms", nodeId, processingTime);
                 }
             }
-            
         } catch (Exception e) {
             logger.error("Error processing incoming data for edge node: {}", nodeId, e);
         }
@@ -474,4 +462,75 @@ public abstract class BaseEdgeNode implements EdgeNode {
      * Cleanup node-specific resources
      */
     protected abstract void cleanupNode();
+
+    @Override
+    public double getProcessingCapacity() {
+        return 100.0; // MB/s - typical edge node capacity
+    }
+
+    @Override
+    public double getStorageCapacity() {
+        return 1000.0; // MB - typical edge node storage
+    }
+
+    public double getCpuUsage() {
+        return cpuUtilization;
+    }
+
+    public double getMemoryUsage() {
+        return memoryUtilization;
+    }
+
+    public double getStorageUsage() {
+        return 0.0; // Edge nodes typically don't have persistent storage
+    }
+
+    public double getBandwidthUsage() {
+        return bandwidthUtilization;
+    }
+
+    public double getEnergyConsumption() {
+        // Estimate energy consumption based on CPU and memory usage
+        return cpuUtilization * 0.5 + memoryUtilization * 0.3;
+    }
+
+    public double getTaskProcessingRate() {
+        if (processingCount.get() == 0) return 0.0;
+        return processingCount.get() / (System.currentTimeMillis() - startTime) * 1000.0;
+    }
+
+    public double getTaskOffloadingRate() {
+        if (tasksOffloaded.get() == 0) return 0.0;
+        return tasksOffloaded.get() / (System.currentTimeMillis() - startTime) * 1000.0;
+    }
+
+    public int getErrorCount() {
+        return errorCount.get();
+    }
+
+    public void resetErrorCount() {
+        errorCount.set(0);
+    }
+
+    public long getLastDataProcessingTime() {
+        return lastDataProcessingTime;
+    }
+
+    public long getLastTaskOffloadingTime() {
+        return lastTaskOffloadingTime;
+    }
+
+    @Override
+    public PerformanceMetrics getMetrics() {
+        PerformanceMetrics metrics = new PerformanceMetrics(nodeId, nodeType);
+        metrics.addMetric("cpu_usage", cpuUtilization);
+        metrics.addMetric("memory_usage", memoryUtilization);
+        metrics.addMetric("bandwidth_usage", bandwidthUtilization);
+        metrics.addMetric("task_processing_rate", getTaskProcessingRate());
+        metrics.addMetric("task_offloading_rate", getTaskOffloadingRate());
+        metrics.addMetric("error_count", errorCount.get());
+        metrics.addMetric("healthy", isHealthy());
+        metrics.addMetric("running", isRunning());
+        return metrics;
+    }
 } 

@@ -134,9 +134,9 @@ public class NetworkManager {
     }
     
     /**
-     * Transmit data from a device to the network
+     * Transmit data to the network
      * 
-     * @param sourceId Source device/node ID
+     * @param sourceId Source device/node identifier
      * @param data Data to transmit
      */
     public void transmitData(String sourceId, byte[] data) {
@@ -156,6 +156,36 @@ public class NetworkManager {
             
         } catch (Exception e) {
             logger.error("Error transmitting data from {}", sourceId, e);
+        }
+    }
+    
+    /**
+     * Transmit string data to the network
+     * 
+     * @param sourceId Source device/node identifier
+     * @param data String data to transmit
+     * @return True if transmission was successful
+     */
+    public boolean transmitData(String sourceId, String data) {
+        if (!isRunning) {
+            logger.warn("NetworkManager is not running, cannot transmit data");
+            return false;
+        }
+        
+        try {
+            byte[] dataBytes = data.getBytes();
+            NetworkPacket packet = new NetworkPacket(sourceId, dataBytes);
+            packetQueue.offer(packet);
+            
+            totalPacketsTransmitted++;
+            totalBytesTransmitted += dataBytes.length;
+            
+            logger.debug("String data queued for transmission from {}: {} bytes", sourceId, dataBytes.length);
+            return true;
+            
+        } catch (Exception e) {
+            logger.error("Error transmitting string data from {}", sourceId, e);
+            return false;
         }
     }
     
@@ -466,5 +496,85 @@ public class NetworkManager {
      */
     public int getActiveConnectionCount() {
         return connections.size();
+    }
+    
+    /**
+     * Offload task to cloud services
+     * 
+     * @param taskId Task identifier
+     * @param taskData Task data
+     * @return True if offloading successful
+     */
+    public boolean offloadTaskToCloud(String taskId, Object taskData) {
+        try {
+            // Simulate task offloading to cloud
+            logger.debug("Offloading task {} to cloud", taskId);
+            
+            // Create network packet for task offloading
+            byte[] taskBytes = taskData.toString().getBytes();
+            NetworkPacket packet = new NetworkPacket(taskId, taskBytes);
+            packetQueue.offer(packet);
+            
+            totalPacketsTransmitted++;
+            totalBytesTransmitted += taskBytes.length;
+            
+            return true;
+            
+        } catch (Exception e) {
+            logger.error("Error offloading task {} to cloud", taskId, e);
+            return false;
+        }
+    }
+    
+    /**
+     * Receive data from IoT devices
+     * 
+     * @return Received data or null if no data available
+     */
+    public String receiveDataFromIoT() {
+        try {
+            // Simulate receiving data from IoT devices
+            NetworkPacket packet = packetQueue.poll();
+            if (packet != null) {
+                totalPacketsReceived++;
+                totalBytesReceived += packet.getData().length;
+                
+                String data = new String(packet.getData());
+                logger.debug("Received data from IoT: {} bytes", packet.getData().length);
+                return data;
+            }
+            
+            return null;
+            
+        } catch (Exception e) {
+            logger.error("Error receiving data from IoT", e);
+            return null;
+        }
+    }
+    
+    /**
+     * Receive task from edge nodes
+     * 
+     * @return Received task or null if no task available
+     */
+    public String receiveTaskFromEdge() {
+        try {
+            // Simulate receiving task from edge nodes
+            NetworkPacket packet = packetQueue.poll();
+            if (packet != null) {
+                totalPacketsReceived++;
+                totalBytesReceived += packet.getData().length;
+                
+                String task = new String(packet.getData());
+                logger.debug("Received task from edge: {} bytes", packet.getData().length);
+                return task;
+            }
+            
+            return null;
+            
+        } catch (Exception e) {
+            logger.error("Error receiving task from edge", e);
+            return null;
+        }
     }
 } 

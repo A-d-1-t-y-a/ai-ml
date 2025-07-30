@@ -2,13 +2,13 @@ package com.nci.fogedge.edge;
 
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 /**
- * Base interface for all Edge Nodes in the Fog and Edge Computing System
+ * Edge Node Interface for the Fog and Edge Computing System
  * 
- * This interface defines the contract that all edge computing nodes must implement,
- * including data processing, analytics, and gateway nodes. It provides methods for
- * node lifecycle management, data processing, and task offloading decisions.
+ * This interface defines the contract for all edge nodes in the system.
+ * It provides methods for node lifecycle management, data processing, and communication.
  * 
  * @author National College of Ireland - Fog and Edge Computing Project
  * @version 1.0.0
@@ -17,173 +17,173 @@ import com.nci.fogedge.utils.MetricsCollector;
 public interface EdgeNode {
     
     /**
-     * Get the unique identifier for this edge node
+     * Get the unique node identifier
      * 
-     * @return Node ID string
+     * @return Node ID
      */
     String getNodeId();
     
     /**
-     * Get the type of this edge node
+     * Get the node type
      * 
-     * @return Node type (e.g., "DATA_PROCESSING", "ANALYTICS", "GATEWAY")
+     * @return Node type
      */
     String getNodeType();
     
     /**
-     * Get the current status of the node
+     * Get the node location
      * 
-     * @return Node status (e.g., "ACTIVE", "INACTIVE", "OVERLOADED", "ERROR")
+     * @return Node location
      */
-    String getStatus();
+    String getLocation();
     
     /**
-     * Check if the node is healthy and functioning properly
-     * 
-     * @return true if node is healthy, false otherwise
-     */
-    boolean isHealthy();
-    
-    /**
-     * Start the edge node and begin data processing
+     * Start the edge node
      */
     void start();
     
     /**
-     * Stop the edge node and cease all operations
+     * Stop the edge node
      */
     void stop();
     
     /**
-     * Process incoming data from IoT devices
+     * Check if the node is running
+     * 
+     * @return True if node is running
+     */
+    boolean isRunning();
+    
+    /**
+     * Check if the node is healthy
+     * 
+     * @return True if node is healthy
+     */
+    boolean isHealthy();
+    
+    /**
+     * Process data received from IoT devices
      * 
      * @param data Data to process
-     * @return Processing result
+     * @return Processed data
      */
-    Object processData(Object data);
+    String processData(String data);
     
     /**
-     * Get the current CPU utilization of the node
+     * Offload task to cloud services
      * 
-     * @return CPU utilization as percentage (0-100)
+     * @param task Task to offload
+     * @return True if offloading successful
      */
-    double getCpuUtilization();
+    boolean offloadTaskToCloud(String task);
     
     /**
-     * Get the current memory utilization of the node
+     * Get node status
      * 
-     * @return Memory utilization as percentage (0-100)
+     * @return Node status information
      */
-    double getMemoryUtilization();
+    String getStatus();
     
     /**
-     * Get the current network bandwidth utilization
+     * Get node metrics
      * 
-     * @return Bandwidth utilization as percentage (0-100)
+     * @return Node performance metrics
      */
-    double getBandwidthUtilization();
-    
-    /**
-     * Get the total data processed by this node
-     * 
-     * @return Total data in bytes
-     */
-    long getTotalDataProcessed();
-    
-    /**
-     * Get the number of tasks offloaded to cloud
-     * 
-     * @return Count of offloaded tasks
-     */
-    int getTasksOffloaded();
-    
-    /**
-     * Get the average processing time
-     * 
-     * @return Average processing time in milliseconds
-     */
-    double getAverageProcessingTime();
-    
-    /**
-     * Get the task offloading rate
-     * 
-     * @return Offloading rate as percentage (0-100)
-     */
-    double getOffloadingRate();
-    
-    /**
-     * Get node configuration parameters
-     * 
-     * @return Map of configuration parameters
-     */
-    java.util.Map<String, Object> getConfiguration();
+    PerformanceMetrics getMetrics();
     
     /**
      * Update node configuration
      * 
-     * @param config New configuration parameters
+     * @param config Configuration parameters
      */
     void updateConfiguration(java.util.Map<String, Object> config);
     
     /**
-     * Get node performance metrics
+     * Get processing capacity
      * 
-     * @return Map containing performance metrics
+     * @return Processing capacity in MB/s
      */
-    java.util.Map<String, Object> getPerformanceMetrics();
+    double getProcessingCapacity();
     
     /**
-     * Reset node statistics and counters
-     */
-    void resetStatistics();
-    
-    /**
-     * Perform node self-diagnostic
+     * Get storage capacity
      * 
-     * @return Diagnostic result
+     * @return Storage capacity in MB
      */
-    DiagnosticResult performDiagnostic();
+    double getStorageCapacity();
     
     /**
-     * Decide whether to offload a task to the cloud
+     * Get current CPU usage
      * 
-     * @param task Task to evaluate for offloading
-     * @return true if task should be offloaded, false otherwise
+     * @return CPU usage percentage (0-100)
      */
-    boolean shouldOffloadTask(Object task);
+    double getCpuUsage();
     
     /**
-     * Offload a task to the cloud layer
+     * Get current memory usage
      * 
-     * @param task Task to offload
-     * @return true if offloading successful, false otherwise
+     * @return Memory usage percentage (0-100)
      */
-    boolean offloadTask(Object task);
+    double getMemoryUsage();
     
     /**
-     * Result of node diagnostic operation
+     * Get current storage usage
+     * 
+     * @return Storage usage percentage (0-100)
      */
-    class DiagnosticResult {
-        private final boolean passed;
-        private final String message;
-        private final java.util.Map<String, Object> details;
-        
-        public DiagnosticResult(boolean passed, String message, java.util.Map<String, Object> details) {
-            this.passed = passed;
-            this.message = message;
-            this.details = details;
-        }
-        
-        public boolean isPassed() {
-            return passed;
-        }
-        
-        public String getMessage() {
-            return message;
-        }
-        
-        public java.util.Map<String, Object> getDetails() {
-            return details;
-        }
-    }
+    double getStorageUsage();
+    
+    /**
+     * Get network bandwidth usage
+     * 
+     * @return Bandwidth usage in Mbps
+     */
+    double getBandwidthUsage();
+    
+    /**
+     * Get energy consumption
+     * 
+     * @return Energy consumption in watts
+     */
+    double getEnergyConsumption();
+    
+    /**
+     * Get task processing rate
+     * 
+     * @return Tasks processed per second
+     */
+    double getTaskProcessingRate();
+    
+    /**
+     * Get task offloading rate
+     * 
+     * @return Tasks offloaded per second
+     */
+    double getTaskOffloadingRate();
+    
+    /**
+     * Get error count
+     * 
+     * @return Number of errors encountered
+     */
+    int getErrorCount();
+    
+    /**
+     * Reset node error count
+     */
+    void resetErrorCount();
+    
+    /**
+     * Get last data processing timestamp
+     * 
+     * @return Timestamp of last data processing
+     */
+    long getLastDataProcessingTime();
+    
+    /**
+     * Get last task offloading timestamp
+     * 
+     * @return Timestamp of last task offloading
+     */
+    long getLastTaskOffloadingTime();
 } 

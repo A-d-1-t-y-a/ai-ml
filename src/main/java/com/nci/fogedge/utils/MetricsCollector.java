@@ -337,4 +337,85 @@ public class MetricsCollector {
     public long getTotalDataProcessed() {
         return totalDataProcessed.get();
     }
+    
+    /**
+     * Update edge node metrics
+     * 
+     * @param nodeId Node identifier
+     * @param metrics Node metrics
+     */
+    public void updateEdgeNodeMetrics(String nodeId, Map<String, Object> metrics) {
+        NodeMetrics nodeMetrics = this.nodeMetrics.computeIfAbsent(nodeId, 
+            k -> new NodeMetrics(nodeId));
+        nodeMetrics.updateMetrics(new PerformanceMetrics(nodeId, "EDGE_NODE"));
+        logger.debug("Updated edge node metrics for: {}", nodeId);
+    }
+    
+    /**
+     * Update cloud service metrics
+     * 
+     * @param serviceId Service identifier
+     * @param metrics Service metrics
+     */
+    public void updateCloudServiceMetrics(String serviceId, Map<String, Object> metrics) {
+        // Create a new performance metrics object for cloud service
+        PerformanceMetrics performanceMetrics = new PerformanceMetrics(serviceId, "CLOUD_SERVICE");
+        for (Map.Entry<String, Object> entry : metrics.entrySet()) {
+            performanceMetrics.addMetric(entry.getKey(), entry.getValue());
+        }
+        logger.debug("Updated cloud service metrics for: {}", serviceId);
+    }
+    
+    /**
+     * Update cloud health
+     * 
+     * @param healthPercentage Health percentage
+     */
+    public void updateCloudHealth(double healthPercentage) {
+        logger.debug("Cloud health updated: {}%", healthPercentage);
+    }
+    
+    /**
+     * Update cloud processing stats
+     * 
+     * @param tasksProcessed Number of tasks processed
+     * @param processingTime Processing time in milliseconds
+     */
+    public void updateCloudProcessingStats(int tasksProcessed, double processingTime) {
+        logger.debug("Cloud processing stats: {} tasks, {}ms", tasksProcessed, processingTime);
+    }
+    
+    /**
+     * Update task reception stats
+     * 
+     * @param tasksReceived Number of tasks received
+     * @param tasksProcessed Number of tasks processed
+     * @param successRate Success rate percentage
+     */
+    public void updateTaskReceptionStats(int tasksReceived, int tasksProcessed, double successRate) {
+        logger.debug("Task reception stats: {} received, {} processed, {}% success", 
+            tasksReceived, tasksProcessed, successRate);
+    }
+    
+    /**
+     * Update processing stats
+     * 
+     * @param dataProcessed Data processed in bytes
+     * @param processingTime Processing time in milliseconds
+     */
+    public void updateProcessingStats(int dataProcessed, double processingTime) {
+        logger.debug("Processing stats: {} bytes, {}ms", dataProcessed, processingTime);
+    }
+    
+    /**
+     * Update offloading stats
+     * 
+     * @param tasksOffloaded Number of tasks offloaded
+     * @param totalTasks Total number of tasks
+     * @param offloadingRate Offloading rate percentage
+     */
+    public void updateOffloadingStats(int tasksOffloaded, int totalTasks, double offloadingRate) {
+        logger.debug("Offloading stats: {} offloaded, {} total, {}% rate", 
+            tasksOffloaded, totalTasks, offloadingRate);
+    }
 } 

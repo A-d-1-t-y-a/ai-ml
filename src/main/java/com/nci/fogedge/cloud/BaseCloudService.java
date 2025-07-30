@@ -2,6 +2,8 @@ package com.nci.fogedge.cloud;
 
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,10 @@ public abstract class BaseCloudService implements CloudService {
     protected final AtomicInteger totalTasksProcessed;
     protected final AtomicInteger processingTimeTotal;
     protected final AtomicInteger queueLength;
+    protected final AtomicInteger errorCount;
+    protected volatile long lastTaskProcessingTime;
+    protected volatile long lastDataStorageTime;
+    protected volatile long startTime;
     
     // Resource utilization
     protected volatile double cpuUtilization;
@@ -75,6 +81,10 @@ public abstract class BaseCloudService implements CloudService {
         this.totalTasksProcessed = new AtomicInteger(0);
         this.processingTimeTotal = new AtomicInteger(0);
         this.queueLength = new AtomicInteger(0);
+        this.errorCount = new AtomicInteger(0);
+        this.lastTaskProcessingTime = 0;
+        this.lastDataStorageTime = 0;
+        this.startTime = System.currentTimeMillis();
         
         this.cpuUtilization = 15.0; // Start with low utilization
         this.memoryUtilization = 25.0; // Start with moderate memory usage
@@ -217,33 +227,27 @@ public abstract class BaseCloudService implements CloudService {
         }
     }
     
-    @Override
     public double getCpuUtilization() {
         return cpuUtilization;
     }
     
-    @Override
     public double getMemoryUtilization() {
         return memoryUtilization;
     }
     
-    @Override
     public double getBandwidthUtilization() {
         return bandwidthUtilization;
     }
     
-    @Override
     public int getTotalTasksProcessed() {
         return totalTasksProcessed.get();
     }
     
-    @Override
     public double getAverageProcessingTime() {
         int count = totalTasksProcessed.get();
         return count > 0 ? (double) processingTimeTotal.get() / count : 0;
     }
     
-    @Override
     public double getServiceEfficiency() {
         // Calculate efficiency based on resource utilization and processing performance
         double resourceEfficiency = (100.0 - cpuUtilization) * 0.4 + 
@@ -255,7 +259,6 @@ public abstract class BaseCloudService implements CloudService {
         return (resourceEfficiency + processingEfficiency) / 2.0;
     }
     
-    @Override
     public Map<String, Object> getConfiguration() {
         return new HashMap<>(configuration);
     }
@@ -266,7 +269,6 @@ public abstract class BaseCloudService implements CloudService {
         logger.info("Configuration updated for cloud service: {}", serviceId);
     }
     
-    @Override
     public Map<String, Object> getPerformanceMetrics() {
         Map<String, Object> metrics = new HashMap<>();
         metrics.put("serviceId", serviceId);
@@ -283,7 +285,6 @@ public abstract class BaseCloudService implements CloudService {
         return metrics;
     }
     
-    @Override
     public void resetStatistics() {
         totalTasksProcessed.set(0);
         processingTimeTotal.set(0);
@@ -292,7 +293,6 @@ public abstract class BaseCloudService implements CloudService {
         logger.info("Statistics reset for cloud service: {}", serviceId);
     }
     
-    @Override
     public DiagnosticResult performDiagnostic() {
         logger.debug("Performing diagnostic for cloud service: {}", serviceId);
         
@@ -335,7 +335,6 @@ public abstract class BaseCloudService implements CloudService {
         return new DiagnosticResult(passed, message, details);
     }
     
-    @Override
     public boolean canAcceptTasks() {
         return isRunning && 
                cpuUtilization < (Double) configuration.get("maxCpuUtilization") &&
@@ -343,9 +342,78 @@ public abstract class BaseCloudService implements CloudService {
                queueLength.get() < (Integer) configuration.get("maxQueueLength");
     }
     
-    @Override
     public int getQueueLength() {
         return queueLength.get();
+    }
+
+    @Override
+    public double getProcessingCapacity() {
+        return 500.0; // MB/s - typical cloud service capacity
+    }
+
+    @Override
+    public double getStorageCapacity() {
+        return 10000.0; // MB - typical cloud service storage
+    }
+
+    public double getCpuUsage() {
+        return cpuUtilization;
+    }
+
+    public double getMemoryUsage() {
+        return memoryUtilization;
+    }
+
+    public double getStorageUsage() {
+        return 60.0; // Cloud services typically have persistent storage
+    }
+
+    public double getBandwidthUsage() {
+        return bandwidthUtilization;
+    }
+
+    public double getEnergyConsumption() {
+        // Estimate energy consumption based on CPU and memory usage
+        return cpuUtilization * 0.8 + memoryUtilization * 0.4;
+    }
+
+    public double getTaskProcessingRate() {
+        if (totalTasksProcessed.get() == 0) return 0.0;
+        return totalTasksProcessed.get() / (System.currentTimeMillis() - startTime) * 1000.0;
+    }
+
+    public double getDataStorageRate() {
+        return 10.0; // MB/s - typical data storage rate
+    }
+
+    public int getErrorCount() {
+        return errorCount.get();
+    }
+
+    public void resetErrorCount() {
+        errorCount.set(0);
+    }
+
+    public long getLastTaskProcessingTime() {
+        return lastTaskProcessingTime;
+    }
+
+    public long getLastDataStorageTime() {
+        return lastDataStorageTime;
+    }
+
+    @Override
+    public PerformanceMetrics getMetrics() {
+        PerformanceMetrics metrics = new PerformanceMetrics(serviceId, serviceType);
+        metrics.addMetric("cpu_usage", cpuUtilization);
+        metrics.addMetric("memory_usage", memoryUtilization);
+        metrics.addMetric("bandwidth_usage", bandwidthUtilization);
+        metrics.addMetric("task_processing_rate", getTaskProcessingRate());
+        metrics.addMetric("data_storage_rate", getDataStorageRate());
+        metrics.addMetric("error_count", errorCount.get());
+        metrics.addMetric("healthy", isHealthy());
+        metrics.addMetric("running", isRunning());
+        return metrics;
     }
     
     /**
@@ -353,26 +421,19 @@ public abstract class BaseCloudService implements CloudService {
      */
     protected void processIncomingTasks() {
         try {
-            // Simulate receiving tasks from edge nodes
             Object incomingTask = networkManager.receiveTaskFromEdge();
-            
             if (incomingTask != null && canAcceptTasks()) {
                 queueLength.incrementAndGet();
-                
                 long startTime = System.currentTimeMillis();
-                
                 // Process the task
-                Object result = processTask(incomingTask);
-                
-                // Update statistics
+                String taskString = incomingTask.toString();
+                Object result = processTask(taskString);
                 long processingTime = System.currentTimeMillis() - startTime;
                 processingTimeTotal.addAndGet((int) processingTime);
                 totalTasksProcessed.incrementAndGet();
                 queueLength.decrementAndGet();
-                
                 logger.debug("Task processed by cloud service: {} in {}ms", serviceId, processingTime);
             }
-            
         } catch (Exception e) {
             logger.error("Error processing incoming tasks for cloud service: {}", serviceId, e);
         }

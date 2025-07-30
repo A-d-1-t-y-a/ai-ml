@@ -1,8 +1,11 @@
 package com.nci.fogedge.iot.devices;
 
 import com.nci.fogedge.iot.BaseIoTDevice;
+import com.nci.fogedge.iot.IoTDevice;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +87,7 @@ public class LightSensor extends BaseIoTDevice {
     }
     
     @Override
-    public Object generateData() {
+    public String collectData() {
         try {
             // Generate realistic light reading with environmental variations
             double environmentalVariation = Math.sin(System.currentTimeMillis() / 8000.0) * lightVariation;
@@ -102,20 +105,20 @@ public class LightSensor extends BaseIoTDevice {
             double measuredLightLevel = currentLightLevel + measurementNoise;
             measuredLightLevel = Math.max(1.0, Math.min(65535.0, measuredLightLevel));
             
-            // Create light data object
-            Map<String, Object> lightData = new HashMap<>();
-            lightData.put("deviceId", deviceId);
-            lightData.put("deviceType", "LIGHT_SENSOR");
-            lightData.put("timestamp", System.currentTimeMillis());
-            lightData.put("lightLevel", Math.round(measuredLightLevel));
-            lightData.put("unit", "lux");
-            lightData.put("accuracy", accuracy);
-            lightData.put("batteryLevel", batteryLevel);
-            lightData.put("signalStrength", signalStrength);
-            lightData.put("status", status);
+            // Create light data JSON string
+            String lightData = String.format(
+                "{\"deviceId\":\"%s\",\"deviceType\":\"LIGHT_SENSOR\",\"timestamp\":%d,\"lightLevel\":%.0f,\"unit\":\"lux\",\"accuracy\":%.1f,\"batteryLevel\":%.1f,\"signalStrength\":%.1f,\"status\":\"%s\"}",
+                deviceId,
+                System.currentTimeMillis(),
+                Math.round(measuredLightLevel),
+                accuracy,
+                batteryLevel,
+                signalStrength,
+                status
+            );
             
             // Update total data generated
-            totalDataGenerated.addAndGet(lightData.toString().getBytes().length);
+            totalDataGenerated.addAndGet(lightData.getBytes().length);
             
             logger.debug("Light sensor {} generated reading: {} lux", deviceId, measuredLightLevel);
             
@@ -125,6 +128,91 @@ public class LightSensor extends BaseIoTDevice {
             logger.error("Error generating light data for device: {}", deviceId, e);
             return null;
         }
+    }
+    
+    @Override
+    public boolean transmitData(String data) {
+        try {
+            if (data != null && !data.isEmpty()) {
+                boolean success = networkManager.transmitData(deviceId, data);
+                if (success) {
+                    successfulTransmissions.incrementAndGet();
+                    logger.debug("Light sensor {} transmitted data successfully", deviceId);
+                } else {
+                    failedTransmissions.incrementAndGet();
+                    logger.warn("Light sensor {} failed to transmit data", deviceId);
+                }
+                return success;
+            }
+            return false;
+        } catch (Exception e) {
+            failedTransmissions.incrementAndGet();
+            logger.error("Error transmitting data from light sensor: {}", deviceId, e);
+            return false;
+        }
+    }
+    
+    @Override
+    public PerformanceMetrics getMetrics() {
+        PerformanceMetrics metrics = new PerformanceMetrics(deviceId, "LIGHT_SENSOR");
+        
+        metrics.addMetric("batteryLevel", batteryLevel);
+        metrics.addMetric("signalStrength", signalStrength);
+        metrics.addMetric("transmissionRate", getTransmissionRate());
+        metrics.addMetric("errorCount", getErrorCount());
+        metrics.addMetric("currentLightLevel", currentLightLevel);
+        metrics.addMetric("baseLightLevel", baseLightLevel);
+        metrics.addMetric("accuracy", accuracy);
+        metrics.addMetric("calibrationOffset", calibrationOffset);
+        metrics.addMetric("lightVariation", lightVariation);
+        metrics.addMetric("isHealthy", isHealthy());
+        metrics.addMetric("isRunning", isRunning());
+        
+        return metrics;
+    }
+    
+    @Override
+    public void updateConfiguration(Map<String, Object> config) {
+        if (config != null) {
+            configuration.putAll(config);
+            logger.debug("Light sensor {} configuration updated", deviceId);
+        }
+    }
+    
+    @Override
+    public double getBatteryLevel() {
+        return batteryLevel;
+    }
+    
+    @Override
+    public double getSignalStrength() {
+        return signalStrength;
+    }
+    
+    @Override
+    public double getTransmissionRate() {
+        long total = successfulTransmissions.get() + failedTransmissions.get();
+        return total > 0 ? (double) successfulTransmissions.get() / total : 0.0;
+    }
+    
+    @Override
+    public int getErrorCount() {
+        return failedTransmissions.get();
+    }
+    
+    @Override
+    public void resetErrorCount() {
+        failedTransmissions.set(0);
+    }
+    
+    @Override
+    public long getLastDataCollectionTime() {
+        return System.currentTimeMillis();
+    }
+    
+    @Override
+    public long getLastTransmissionTime() {
+        return System.currentTimeMillis();
     }
     
     /**
@@ -216,26 +304,10 @@ public class LightSensor extends BaseIoTDevice {
     }
     
     @Override
-    public Map<String, Object> getPerformanceMetrics() {
-        Map<String, Object> metrics = super.getPerformanceMetrics();
-        
-        // Add light-specific metrics
-        metrics.put("currentLightLevel", currentLightLevel);
-        metrics.put("baseLightLevel", baseLightLevel);
-        metrics.put("accuracy", accuracy);
-        metrics.put("calibrationOffset", calibrationOffset);
-        metrics.put("lightVariation", lightVariation);
-        
-        return metrics;
-    }
-    
-    @Override
-    public IoTDevice.DiagnosticResult performDiagnostic() {
-        IoTDevice.DiagnosticResult baseResult = super.performDiagnostic();
-        
-        Map<String, Object> details = new HashMap<>(baseResult.getDetails());
-        boolean passed = baseResult.isPassed();
-        String message = baseResult.getMessage();
+    public DiagnosticResult performDiagnostic() {
+        Map<String, Object> details = new HashMap<>();
+        boolean passed = true;
+        String message = "Light sensor diagnostic passed";
         
         // Add light-specific diagnostic checks
         if (currentLightLevel < 1.0 || currentLightLevel > 65535.0) {
@@ -251,6 +323,10 @@ public class LightSensor extends BaseIoTDevice {
         }
         details.put("calibrationOffset", calibrationOffset);
         
-        return new IoTDevice.DiagnosticResult(passed, message, details);
+        details.put("batteryLevel", batteryLevel);
+        details.put("signalStrength", signalStrength);
+        details.put("status", status);
+        
+        return passed ? DiagnosticResult.success(message, details) : DiagnosticResult.failure(message, details);
     }
 } 

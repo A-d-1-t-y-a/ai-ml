@@ -3,6 +3,7 @@ package com.nci.fogedge.edge.nodes;
 import com.nci.fogedge.edge.BaseEdgeNode;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,156 +82,96 @@ public class DataProcessingNode extends BaseEdgeNode {
     }
     
     @Override
-    public Object processData(Object data) {
+    public String processData(String data) {
         try {
-            logger.debug("Processing data in edge node: {}", nodeId);
+            logger.debug("Processing data in data processing node: {}", nodeId);
             
             // Simulate data processing pipeline
-            Object filteredData = applyDataFilter(data);
-            Object aggregatedData = applyDataAggregation(filteredData);
-            Object compressedData = applyDataCompression(aggregatedData);
+            String filteredData = applyDataFilter(data);
+            String aggregatedData = applyDataAggregation(filteredData);
+            String compressedData = applyDataCompression(aggregatedData);
             
             // Update processing statistics
             dataFilterCount++;
             dataAggregationCount++;
             
             // Create processing result
-            Map<String, Object> processingResult = new HashMap<>();
-            processingResult.put("nodeId", nodeId);
-            processingResult.put("nodeType", "DATA_PROCESSING");
-            processingResult.put("timestamp", System.currentTimeMillis());
-            processingResult.put("originalDataSize", data.toString().getBytes().length);
-            processingResult.put("processedDataSize", compressedData.toString().getBytes().length);
-            processingResult.put("dataReductionRate", dataReductionRate);
-            processingResult.put("filterAccuracy", filterAccuracy);
-            processingResult.put("aggregationEfficiency", aggregationEfficiency);
-            processingResult.put("processedData", compressedData);
+            String processingResult = "Processed data: " + compressedData;
             
-            logger.debug("Data processing completed in edge node: {} with {}% reduction", 
-                        nodeId, dataReductionRate * 100);
-            
+            logger.debug("Data processed successfully in data processing node: {}", nodeId);
             return processingResult;
             
         } catch (Exception e) {
-            logger.error("Error processing data in edge node: {}", nodeId, e);
-            return null;
+            logger.error("Error processing data in data processing node: {}", nodeId, e);
+            return "Error processing data";
         }
     }
+
+    public Object processData(Object data) {
+        if (data instanceof String) {
+            return processData((String) data);
+        }
+        return "";
+    }
     
-    /**
-     * Apply data filtering to remove noise and outliers
-     * 
-     * @param data Raw data to filter
-     * @return Filtered data
-     */
-    private Object applyDataFilter(Object data) {
+    private String applyDataFilter(String data) {
         try {
-            // Simulate data filtering algorithm
+            // Simulate data filtering with realistic processing time
+            Thread.sleep(random.nextInt(50) + 10); // 10-60ms processing time
+            
+            // Apply filter based on configuration
             double filterThreshold = (Double) configuration.get("filterThreshold");
             
-            // Apply filter based on data characteristics
-            if (data instanceof Map) {
-                Map<?, ?> dataMap = (Map<?, ?>) data;
-                Map<String, Object> filteredMap = new HashMap<>();
-                
-                for (Map.Entry<?, ?> entry : dataMap.entrySet()) {
-                    // Simulate filtering logic
-                    if (random.nextDouble() < filterAccuracy) {
-                        filteredMap.put(entry.getKey().toString(), entry.getValue());
-                    }
-                }
-                
-                return filteredMap;
+            // Simulate filtering logic (keep data that meets threshold)
+            if (Math.random() > filterThreshold) {
+                return data + " [FILTERED]";
             }
             
             return data;
             
-        } catch (Exception e) {
-            logger.error("Error applying data filter in edge node: {}", nodeId, e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Data filtering interrupted in node: {}", nodeId);
             return data;
         }
     }
     
-    /**
-     * Apply data aggregation to combine multiple data points
-     * 
-     * @param data Filtered data to aggregate
-     * @return Aggregated data
-     */
-    private Object applyDataAggregation(Object data) {
+    private String applyDataAggregation(String data) {
         try {
-            // Simulate data aggregation algorithm
+            // Simulate data aggregation with realistic processing time
+            Thread.sleep(random.nextInt(100) + 20); // 20-120ms processing time
+            
+            // Apply aggregation based on configuration
             int aggregationWindow = (Integer) configuration.get("aggregationWindow");
             
-            // Apply aggregation based on data type
-            if (data instanceof Map) {
-                Map<?, ?> dataMap = (Map<?, ?>) data;
-                Map<String, Object> aggregatedMap = new HashMap<>();
-                
-                for (Map.Entry<?, ?> entry : dataMap.entrySet()) {
-                    String key = entry.getKey().toString();
-                    Object value = entry.getValue();
-                    
-                    // Simulate aggregation logic (e.g., averaging, summing)
-                    if (value instanceof Number) {
-                        double numValue = ((Number) value).doubleValue();
-                        double aggregatedValue = numValue * aggregationEfficiency;
-                        aggregatedMap.put(key, aggregatedValue);
-                    } else {
-                        aggregatedMap.put(key, value);
-                    }
-                }
-                
-                return aggregatedMap;
-            }
+            // Simulate aggregation logic
+            String aggregatedData = data + " [AGGREGATED over " + aggregationWindow + "s]";
             
-            return data;
+            return aggregatedData;
             
-        } catch (Exception e) {
-            logger.error("Error applying data aggregation in edge node: {}", nodeId, e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Data aggregation interrupted in node: {}", nodeId);
             return data;
         }
     }
     
-    /**
-     * Apply data compression to reduce data size
-     * 
-     * @param data Aggregated data to compress
-     * @return Compressed data
-     */
-    private Object applyDataCompression(Object data) {
+    private String applyDataCompression(String data) {
         try {
-            // Simulate data compression algorithm
+            // Simulate data compression with realistic processing time
+            Thread.sleep(random.nextInt(30) + 5); // 5-35ms processing time
+            
+            // Apply compression based on configuration
             double compressionRatio = (Double) configuration.get("dataCompression");
             
-            // Apply compression based on data characteristics
-            if (data instanceof Map) {
-                Map<?, ?> dataMap = (Map<?, ?>) data;
-                Map<String, Object> compressedMap = new HashMap<>();
-                
-                // Simulate compression by reducing precision and removing redundant fields
-                for (Map.Entry<?, ?> entry : dataMap.entrySet()) {
-                    String key = entry.getKey().toString();
-                    Object value = entry.getValue();
-                    
-                    // Apply compression logic
-                    if (value instanceof Number) {
-                        double numValue = ((Number) value).doubleValue();
-                        // Reduce precision for compression
-                        double compressedValue = Math.round(numValue * 100.0) / 100.0;
-                        compressedMap.put(key, compressedValue);
-                    } else {
-                        compressedMap.put(key, value);
-                    }
-                }
-                
-                return compressedMap;
-            }
+            // Simulate compression logic
+            String compressedData = data + " [COMPRESSED " + String.format("%.1f", compressionRatio * 100) + "%]";
             
-            return data;
+            return compressedData;
             
-        } catch (Exception e) {
-            logger.error("Error applying data compression in edge node: {}", nodeId, e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Data compression interrupted in node: {}", nodeId);
             return data;
         }
     }
@@ -303,8 +244,36 @@ public class DataProcessingNode extends BaseEdgeNode {
     }
     
     @Override
-    public EdgeNode.DiagnosticResult performDiagnostic() {
-        EdgeNode.DiagnosticResult baseResult = super.performDiagnostic();
+    public long getLastTaskOffloadingTime() {
+        return lastTaskOffloadingTime;
+    }
+
+    @Override
+    public boolean offloadTaskToCloud(String task) {
+        try {
+            logger.debug("Offloading task to cloud from data processing node: {}", nodeId);
+            
+            // Simulate task offloading to cloud
+            boolean offloadingSuccess = networkManager.offloadTaskToCloud(nodeId, task);
+            
+            if (offloadingSuccess) {
+                lastTaskOffloadingTime = System.currentTimeMillis();
+                logger.debug("Task offloaded successfully from data processing node: {}", nodeId);
+            } else {
+                logger.warn("Task offloading failed from data processing node: {}", nodeId);
+            }
+            
+            return offloadingSuccess;
+            
+        } catch (Exception e) {
+            logger.error("Error offloading task from data processing node: {}", nodeId, e);
+            return false;
+        }
+    }
+
+    @Override
+    public DiagnosticResult performDiagnostic() {
+        DiagnosticResult baseResult = super.performDiagnostic();
         
         Map<String, Object> details = new HashMap<>(baseResult.getDetails());
         boolean passed = baseResult.isPassed();
@@ -335,6 +304,16 @@ public class DataProcessingNode extends BaseEdgeNode {
         details.put("dataFilterCount", dataFilterCount);
         details.put("dataAggregationCount", dataAggregationCount);
         
-        return new EdgeNode.DiagnosticResult(passed, message, details);
+        return new DiagnosticResult(passed, message, details);
+    }
+
+    @Override
+    public boolean isRunning() {
+        return this.isRunning;
+    }
+
+    @Override
+    public String getLocation() {
+        return "UNKNOWN";
     }
 } 

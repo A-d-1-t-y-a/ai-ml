@@ -2,13 +2,13 @@ package com.nci.fogedge.cloud;
 
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 /**
- * Base interface for all Cloud Services in the Fog and Edge Computing System
+ * Cloud Service Interface for the Fog and Edge Computing System
  * 
- * This interface defines the contract that all cloud computing services must implement,
- * including data analytics, machine learning, storage, and orchestration services.
- * It provides methods for service lifecycle management and task processing.
+ * This interface defines the contract for all cloud services in the system.
+ * It provides methods for service lifecycle management, task processing, and communication.
  * 
  * @author National College of Ireland - Fog and Edge Computing Project
  * @version 1.0.0
@@ -17,164 +17,181 @@ import com.nci.fogedge.utils.MetricsCollector;
 public interface CloudService {
     
     /**
-     * Get the unique identifier for this cloud service
+     * Get the unique service identifier
      * 
-     * @return Service ID string
+     * @return Service ID
      */
     String getServiceId();
     
     /**
-     * Get the type of this cloud service
+     * Get the service type
      * 
-     * @return Service type (e.g., "DATA_ANALYTICS", "MACHINE_LEARNING", "STORAGE")
+     * @return Service type
      */
     String getServiceType();
     
     /**
-     * Get the current status of the service
+     * Get the service location
      * 
-     * @return Service status (e.g., "ACTIVE", "INACTIVE", "OVERLOADED", "ERROR")
+     * @return Service location
      */
-    String getStatus();
+    String getLocation();
     
     /**
-     * Check if the service is healthy and functioning properly
-     * 
-     * @return true if service is healthy, false otherwise
-     */
-    boolean isHealthy();
-    
-    /**
-     * Start the cloud service and begin task processing
+     * Start the cloud service
      */
     void start();
     
     /**
-     * Stop the cloud service and cease all operations
+     * Stop the cloud service
      */
     void stop();
     
     /**
-     * Process a task received from edge nodes
+     * Check if the service is running
+     * 
+     * @return True if service is running
+     */
+    boolean isRunning();
+    
+    /**
+     * Check if the service is healthy
+     * 
+     * @return True if service is healthy
+     */
+    boolean isHealthy();
+    
+    /**
+     * Process task received from edge nodes
      * 
      * @param task Task to process
      * @return Processing result
      */
-    Object processTask(Object task);
+    String processTask(String task);
     
     /**
-     * Get the current CPU utilization of the service
+     * Store data in cloud storage
      * 
-     * @return CPU utilization as percentage (0-100)
+     * @param data Data to store
+     * @return True if storage successful
      */
-    double getCpuUtilization();
+    boolean storeData(String data);
     
     /**
-     * Get the current memory utilization of the service
+     * Retrieve data from cloud storage
      * 
-     * @return Memory utilization as percentage (0-100)
+     * @param dataId Data identifier
+     * @return Retrieved data
      */
-    double getMemoryUtilization();
+    String retrieveData(String dataId);
     
     /**
-     * Get the current network bandwidth utilization
+     * Get service status
      * 
-     * @return Bandwidth utilization as percentage (0-100)
+     * @return Service status information
      */
-    double getBandwidthUtilization();
+    String getStatus();
     
     /**
-     * Get the total tasks processed by this service
+     * Get service metrics
      * 
-     * @return Total number of tasks processed
+     * @return Service performance metrics
      */
-    int getTotalTasksProcessed();
-    
-    /**
-     * Get the average processing time
-     * 
-     * @return Average processing time in milliseconds
-     */
-    double getAverageProcessingTime();
-    
-    /**
-     * Get the service efficiency
-     * 
-     * @return Service efficiency as percentage (0-100)
-     */
-    double getServiceEfficiency();
-    
-    /**
-     * Get service configuration parameters
-     * 
-     * @return Map of configuration parameters
-     */
-    java.util.Map<String, Object> getConfiguration();
+    PerformanceMetrics getMetrics();
     
     /**
      * Update service configuration
      * 
-     * @param config New configuration parameters
+     * @param config Configuration parameters
      */
     void updateConfiguration(java.util.Map<String, Object> config);
     
     /**
-     * Get service performance metrics
+     * Get processing capacity
      * 
-     * @return Map containing performance metrics
+     * @return Processing capacity in MB/s
      */
-    java.util.Map<String, Object> getPerformanceMetrics();
+    double getProcessingCapacity();
     
     /**
-     * Reset service statistics and counters
-     */
-    void resetStatistics();
-    
-    /**
-     * Perform service self-diagnostic
+     * Get storage capacity
      * 
-     * @return Diagnostic result
+     * @return Storage capacity in MB
      */
-    DiagnosticResult performDiagnostic();
+    double getStorageCapacity();
     
     /**
-     * Check if the service can handle additional tasks
+     * Get current CPU usage
      * 
-     * @return true if service can accept more tasks, false otherwise
+     * @return CPU usage percentage (0-100)
      */
-    boolean canAcceptTasks();
+    double getCpuUsage();
     
     /**
-     * Get the current queue length
+     * Get current memory usage
      * 
-     * @return Number of tasks in the processing queue
+     * @return Memory usage percentage (0-100)
      */
-    int getQueueLength();
+    double getMemoryUsage();
     
     /**
-     * Result of service diagnostic operation
+     * Get current storage usage
+     * 
+     * @return Storage usage percentage (0-100)
      */
-    class DiagnosticResult {
-        private final boolean passed;
-        private final String message;
-        private final java.util.Map<String, Object> details;
-        
-        public DiagnosticResult(boolean passed, String message, java.util.Map<String, Object> details) {
-            this.passed = passed;
-            this.message = message;
-            this.details = details;
-        }
-        
-        public boolean isPassed() {
-            return passed;
-        }
-        
-        public String getMessage() {
-            return message;
-        }
-        
-        public java.util.Map<String, Object> getDetails() {
-            return details;
-        }
-    }
+    double getStorageUsage();
+    
+    /**
+     * Get network bandwidth usage
+     * 
+     * @return Bandwidth usage in Mbps
+     */
+    double getBandwidthUsage();
+    
+    /**
+     * Get energy consumption
+     * 
+     * @return Energy consumption in watts
+     */
+    double getEnergyConsumption();
+    
+    /**
+     * Get task processing rate
+     * 
+     * @return Tasks processed per second
+     */
+    double getTaskProcessingRate();
+    
+    /**
+     * Get data storage rate
+     * 
+     * @return Data stored per second
+     */
+    double getDataStorageRate();
+    
+    /**
+     * Get error count
+     * 
+     * @return Number of errors encountered
+     */
+    int getErrorCount();
+    
+    /**
+     * Reset service error count
+     */
+    void resetErrorCount();
+    
+    /**
+     * Get last task processing timestamp
+     * 
+     * @return Timestamp of last task processing
+     */
+    long getLastTaskProcessingTime();
+    
+    /**
+     * Get last data storage timestamp
+     * 
+     * @return Timestamp of last data storage
+     */
+    long getLastDataStorageTime();
 } 

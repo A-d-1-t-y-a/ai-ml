@@ -1,8 +1,11 @@
 package com.nci.fogedge.iot.devices;
 
 import com.nci.fogedge.iot.BaseIoTDevice;
+import com.nci.fogedge.iot.IoTDevice;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +87,7 @@ public class TemperatureSensor extends BaseIoTDevice {
     }
     
     @Override
-    public Object generateData() {
+    public String collectData() {
         try {
             // Generate realistic temperature reading with environmental variations
             double environmentalVariation = Math.sin(System.currentTimeMillis() / 10000.0) * temperatureVariation;
@@ -98,20 +101,20 @@ public class TemperatureSensor extends BaseIoTDevice {
             double measurementNoise = (random.nextDouble() - 0.5) * accuracy;
             double measuredTemperature = currentTemperature + measurementNoise;
             
-            // Create temperature data object
-            Map<String, Object> temperatureData = new HashMap<>();
-            temperatureData.put("deviceId", deviceId);
-            temperatureData.put("deviceType", "TEMPERATURE_SENSOR");
-            temperatureData.put("timestamp", System.currentTimeMillis());
-            temperatureData.put("temperature", Math.round(measuredTemperature * 10.0) / 10.0); // Round to 1 decimal
-            temperatureData.put("unit", "celsius");
-            temperatureData.put("accuracy", accuracy);
-            temperatureData.put("batteryLevel", batteryLevel);
-            temperatureData.put("signalStrength", signalStrength);
-            temperatureData.put("status", status);
+            // Create temperature data JSON string
+            String temperatureData = String.format(
+                "{\"deviceId\":\"%s\",\"deviceType\":\"TEMPERATURE_SENSOR\",\"timestamp\":%d,\"temperature\":%.1f,\"unit\":\"celsius\",\"accuracy\":%.1f,\"batteryLevel\":%.1f,\"signalStrength\":%.1f,\"status\":\"%s\"}",
+                deviceId,
+                System.currentTimeMillis(),
+                Math.round(measuredTemperature * 10.0) / 10.0,
+                accuracy,
+                batteryLevel,
+                signalStrength,
+                status
+            );
             
             // Update total data generated
-            totalDataGenerated.addAndGet(temperatureData.toString().getBytes().length);
+            totalDataGenerated.addAndGet(temperatureData.getBytes().length);
             
             logger.debug("Temperature sensor {} generated reading: {}°C", deviceId, measuredTemperature);
             
@@ -121,6 +124,91 @@ public class TemperatureSensor extends BaseIoTDevice {
             logger.error("Error generating temperature data for device: {}", deviceId, e);
             return null;
         }
+    }
+    
+    @Override
+    public boolean transmitData(String data) {
+        try {
+            if (data != null && !data.isEmpty()) {
+                boolean success = networkManager.transmitData(deviceId, data);
+                if (success) {
+                    successfulTransmissions.incrementAndGet();
+                    logger.debug("Temperature sensor {} transmitted data successfully", deviceId);
+                } else {
+                    failedTransmissions.incrementAndGet();
+                    logger.warn("Temperature sensor {} failed to transmit data", deviceId);
+                }
+                return success;
+            }
+            return false;
+        } catch (Exception e) {
+            failedTransmissions.incrementAndGet();
+            logger.error("Error transmitting data from temperature sensor: {}", deviceId, e);
+            return false;
+        }
+    }
+    
+    @Override
+    public PerformanceMetrics getMetrics() {
+        PerformanceMetrics metrics = new PerformanceMetrics(deviceId, "TEMPERATURE_SENSOR");
+        
+        metrics.addMetric("batteryLevel", batteryLevel);
+        metrics.addMetric("signalStrength", signalStrength);
+        metrics.addMetric("transmissionRate", getTransmissionRate());
+        metrics.addMetric("errorCount", getErrorCount());
+        metrics.addMetric("currentTemperature", currentTemperature);
+        metrics.addMetric("baseTemperature", baseTemperature);
+        metrics.addMetric("accuracy", accuracy);
+        metrics.addMetric("calibrationOffset", calibrationOffset);
+        metrics.addMetric("temperatureVariation", temperatureVariation);
+        metrics.addMetric("isHealthy", isHealthy());
+        metrics.addMetric("isRunning", isRunning());
+        
+        return metrics;
+    }
+    
+    @Override
+    public void updateConfiguration(Map<String, Object> config) {
+        if (config != null) {
+            configuration.putAll(config);
+            logger.debug("Temperature sensor {} configuration updated", deviceId);
+        }
+    }
+    
+    @Override
+    public double getBatteryLevel() {
+        return batteryLevel;
+    }
+    
+    @Override
+    public double getSignalStrength() {
+        return signalStrength;
+    }
+    
+    @Override
+    public double getTransmissionRate() {
+        long total = successfulTransmissions.get() + failedTransmissions.get();
+        return total > 0 ? (double) successfulTransmissions.get() / total : 0.0;
+    }
+    
+    @Override
+    public int getErrorCount() {
+        return failedTransmissions.get();
+    }
+    
+    @Override
+    public void resetErrorCount() {
+        failedTransmissions.set(0);
+    }
+    
+    @Override
+    public long getLastDataCollectionTime() {
+        return System.currentTimeMillis();
+    }
+    
+    @Override
+    public long getLastTransmissionTime() {
+        return System.currentTimeMillis();
     }
     
     /**
@@ -207,26 +295,10 @@ public class TemperatureSensor extends BaseIoTDevice {
     }
     
     @Override
-    public Map<String, Object> getPerformanceMetrics() {
-        Map<String, Object> metrics = super.getPerformanceMetrics();
-        
-        // Add temperature-specific metrics
-        metrics.put("currentTemperature", currentTemperature);
-        metrics.put("baseTemperature", baseTemperature);
-        metrics.put("accuracy", accuracy);
-        metrics.put("calibrationOffset", calibrationOffset);
-        metrics.put("temperatureVariation", temperatureVariation);
-        
-        return metrics;
-    }
-    
-    @Override
-    public IoTDevice.DiagnosticResult performDiagnostic() {
-        IoTDevice.DiagnosticResult baseResult = super.performDiagnostic();
-        
-        Map<String, Object> details = new HashMap<>(baseResult.getDetails());
-        boolean passed = baseResult.isPassed();
-        String message = baseResult.getMessage();
+    public DiagnosticResult performDiagnostic() {
+        Map<String, Object> details = new HashMap<>();
+        boolean passed = true;
+        String message = "Temperature sensor diagnostic passed";
         
         // Add temperature-specific diagnostic checks
         if (currentTemperature < -40.0 || currentTemperature > 80.0) {
@@ -242,6 +314,10 @@ public class TemperatureSensor extends BaseIoTDevice {
         }
         details.put("calibrationOffset", calibrationOffset);
         
-        return new IoTDevice.DiagnosticResult(passed, message, details);
+        details.put("batteryLevel", batteryLevel);
+        details.put("signalStrength", signalStrength);
+        details.put("status", status);
+        
+        return passed ? DiagnosticResult.success(message, details) : DiagnosticResult.failure(message, details);
     }
 } 

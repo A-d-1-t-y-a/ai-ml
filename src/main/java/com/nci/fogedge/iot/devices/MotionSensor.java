@@ -1,8 +1,11 @@
 package com.nci.fogedge.iot.devices;
 
 import com.nci.fogedge.iot.BaseIoTDevice;
+import com.nci.fogedge.iot.IoTDevice;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +87,7 @@ public class MotionSensor extends BaseIoTDevice {
     }
     
     @Override
-    public Object generateData() {
+    public String collectData() {
         try {
             long currentTime = System.currentTimeMillis();
             
@@ -104,22 +107,23 @@ public class MotionSensor extends BaseIoTDevice {
                 motionDetected = false;
             }
             
-            // Create motion data object
-            Map<String, Object> motionData = new HashMap<>();
-            motionData.put("deviceId", deviceId);
-            motionData.put("deviceType", "MOTION_SENSOR");
-            motionData.put("timestamp", currentTime);
-            motionData.put("motionDetected", motionDetected);
-            motionData.put("detectionCount", detectionCount);
-            motionData.put("lastMotionTime", lastMotionTime);
-            motionData.put("detectionRange", detectionRange);
-            motionData.put("sensitivity", sensitivity);
-            motionData.put("batteryLevel", batteryLevel);
-            motionData.put("signalStrength", signalStrength);
-            motionData.put("status", status);
+            // Create motion data JSON string
+            String motionData = String.format(
+                "{\"deviceId\":\"%s\",\"deviceType\":\"MOTION_SENSOR\",\"timestamp\":%d,\"motionDetected\":%s,\"detectionCount\":%d,\"lastMotionTime\":%d,\"detectionRange\":%.1f,\"sensitivity\":%.1f,\"batteryLevel\":%.1f,\"signalStrength\":%.1f,\"status\":\"%s\"}",
+                deviceId,
+                currentTime,
+                motionDetected,
+                detectionCount,
+                lastMotionTime,
+                detectionRange,
+                sensitivity,
+                batteryLevel,
+                signalStrength,
+                status
+            );
             
             // Update total data generated
-            totalDataGenerated.addAndGet(motionData.toString().getBytes().length);
+            totalDataGenerated.addAndGet(motionData.getBytes().length);
             
             return motionData;
             
@@ -127,6 +131,92 @@ public class MotionSensor extends BaseIoTDevice {
             logger.error("Error generating motion data for device: {}", deviceId, e);
             return null;
         }
+    }
+    
+    @Override
+    public boolean transmitData(String data) {
+        try {
+            if (data != null && !data.isEmpty()) {
+                boolean success = networkManager.transmitData(deviceId, data);
+                if (success) {
+                    successfulTransmissions.incrementAndGet();
+                    logger.debug("Motion sensor {} transmitted data successfully", deviceId);
+                } else {
+                    failedTransmissions.incrementAndGet();
+                    logger.warn("Motion sensor {} failed to transmit data", deviceId);
+                }
+                return success;
+            }
+            return false;
+        } catch (Exception e) {
+            failedTransmissions.incrementAndGet();
+            logger.error("Error transmitting data from motion sensor: {}", deviceId, e);
+            return false;
+        }
+    }
+    
+    @Override
+    public PerformanceMetrics getMetrics() {
+        PerformanceMetrics metrics = new PerformanceMetrics(deviceId, "MOTION_SENSOR");
+        
+        metrics.addMetric("batteryLevel", batteryLevel);
+        metrics.addMetric("signalStrength", signalStrength);
+        metrics.addMetric("transmissionRate", getTransmissionRate());
+        metrics.addMetric("errorCount", getErrorCount());
+        metrics.addMetric("motionDetected", motionDetected);
+        metrics.addMetric("detectionCount", detectionCount);
+        metrics.addMetric("lastMotionTime", lastMotionTime);
+        metrics.addMetric("detectionRange", detectionRange);
+        metrics.addMetric("sensitivity", sensitivity);
+        metrics.addMetric("cooldownPeriod", cooldownPeriod);
+        metrics.addMetric("isHealthy", isHealthy());
+        metrics.addMetric("isRunning", isRunning());
+        
+        return metrics;
+    }
+    
+    @Override
+    public void updateConfiguration(Map<String, Object> config) {
+        if (config != null) {
+            configuration.putAll(config);
+            logger.debug("Motion sensor {} configuration updated", deviceId);
+        }
+    }
+    
+    @Override
+    public double getBatteryLevel() {
+        return batteryLevel;
+    }
+    
+    @Override
+    public double getSignalStrength() {
+        return signalStrength;
+    }
+    
+    @Override
+    public double getTransmissionRate() {
+        long total = successfulTransmissions.get() + failedTransmissions.get();
+        return total > 0 ? (double) successfulTransmissions.get() / total : 0.0;
+    }
+    
+    @Override
+    public int getErrorCount() {
+        return failedTransmissions.get();
+    }
+    
+    @Override
+    public void resetErrorCount() {
+        failedTransmissions.set(0);
+    }
+    
+    @Override
+    public long getLastDataCollectionTime() {
+        return System.currentTimeMillis();
+    }
+    
+    @Override
+    public long getLastTransmissionTime() {
+        return System.currentTimeMillis();
     }
     
     /**
@@ -183,27 +273,10 @@ public class MotionSensor extends BaseIoTDevice {
     }
     
     @Override
-    public Map<String, Object> getPerformanceMetrics() {
-        Map<String, Object> metrics = super.getPerformanceMetrics();
-        
-        // Add motion-specific metrics
-        metrics.put("motionDetected", motionDetected);
-        metrics.put("detectionCount", detectionCount);
-        metrics.put("lastMotionTime", lastMotionTime);
-        metrics.put("detectionRange", detectionRange);
-        metrics.put("sensitivity", sensitivity);
-        metrics.put("cooldownPeriod", cooldownPeriod);
-        
-        return metrics;
-    }
-    
-    @Override
-    public IoTDevice.DiagnosticResult performDiagnostic() {
-        IoTDevice.DiagnosticResult baseResult = super.performDiagnostic();
-        
-        Map<String, Object> details = new HashMap<>(baseResult.getDetails());
-        boolean passed = baseResult.isPassed();
-        String message = baseResult.getMessage();
+    public DiagnosticResult performDiagnostic() {
+        Map<String, Object> details = new HashMap<>();
+        boolean passed = true;
+        String message = "Motion sensor diagnostic passed";
         
         // Add motion-specific diagnostic checks
         if (detectionRange < 1.0 || detectionRange > 20.0) {
@@ -222,7 +295,10 @@ public class MotionSensor extends BaseIoTDevice {
         
         details.put("motionDetected", motionDetected);
         details.put("detectionCount", detectionCount);
+        details.put("batteryLevel", batteryLevel);
+        details.put("signalStrength", signalStrength);
+        details.put("status", status);
         
-        return new IoTDevice.DiagnosticResult(passed, message, details);
+        return passed ? DiagnosticResult.success(message, details) : DiagnosticResult.failure(message, details);
     }
 } 

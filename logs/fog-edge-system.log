@@ -1,0 +1,1465 @@
+2025-07-30 15:02:02.982 [main] INFO  com.nci.fogedge.Main - === FOG AND EDGE COMPUTING SYSTEM STARTUP ===
+2025-07-30 15:02:02.986 [main] INFO  com.nci.fogedge.Main - Based on IEEE INFOCOM 2022 Research Paper
+2025-07-30 15:02:02.986 [main] INFO  com.nci.fogedge.Main - System Version: 1.0.0
+2025-07-30 15:02:02.987 [main] INFO  com.nci.fogedge.Main - Initializing system components...
+2025-07-30 15:02:02.987 [main] INFO  c.n.f.utils.ConfigurationManager - ConfigurationManager initialized
+2025-07-30 15:02:02.988 [main] WARN  c.n.f.utils.ConfigurationManager - Configuration file not found: config/application.yml
+2025-07-30 15:02:02.990 [main] WARN  c.n.f.utils.ConfigurationManager - Configuration file not found: config/default.yml
+2025-07-30 15:02:02.992 [main] INFO  c.n.f.utils.ConfigurationManager - Default configuration values set
+2025-07-30 15:02:02.992 [main] INFO  c.n.f.utils.ConfigurationManager - Configuration loaded successfully
+2025-07-30 15:02:02.992 [main] INFO  com.nci.fogedge.Main - Configuration loaded successfully
+2025-07-30 15:02:02.994 [main] INFO  com.nci.fogedge.Main - Metrics collector initialized
+2025-07-30 15:02:02.999 [main] INFO  com.nci.fogedge.utils.DataExporter - DataExporter initialized
+2025-07-30 15:02:03.000 [main] INFO  com.nci.fogedge.Main - Data exporter initialized
+2025-07-30 15:02:03.003 [main] INFO  com.nci.fogedge.Main - Network manager initialized
+2025-07-30 15:02:03.008 [main] INFO  com.nci.fogedge.iot.IoTDeviceManager - IoT Device Manager initialized
+2025-07-30 15:02:03.009 [main] INFO  com.nci.fogedge.Main - IoT device manager initialized
+2025-07-30 15:02:03.010 [main] INFO  com.nci.fogedge.edge.EdgeNodeManager - Edge Node Manager initialized
+2025-07-30 15:02:03.010 [main] INFO  com.nci.fogedge.Main - Edge node manager initialized
+2025-07-30 15:02:03.012 [main] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Manager initialized
+2025-07-30 15:02:03.012 [main] INFO  com.nci.fogedge.Main - Cloud manager initialized
+2025-07-30 15:02:03.012 [main] INFO  com.nci.fogedge.Main - Thread pool initialized with 10 threads
+2025-07-30 15:02:03.012 [main] INFO  com.nci.fogedge.Main - All system components initialized successfully
+2025-07-30 15:02:03.012 [main] INFO  com.nci.fogedge.Main - Starting Fog and Edge Computing System...
+2025-07-30 15:02:03.013 [main] INFO  com.nci.fogedge.iot.IoTDeviceManager - Starting IoT Device Manager...
+2025-07-30 15:02:03.013 [main] INFO  com.nci.fogedge.iot.IoTDeviceManager - Creating IoT devices...
+2025-07-30 15:02:03.028 [main] INFO  com.nci.fogedge.iot.IoTDeviceManager - Created 36 IoT devices successfully
+2025-07-30 15:02:03.028 [main] INFO  com.nci.fogedge.iot.IoTDeviceManager - Starting all IoT devices...
+2025-07-30 15:02:03.029 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_000
+2025-07-30 15:02:03.032 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_000 started successfully
+2025-07-30 15:02:03.032 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_001
+2025-07-30 15:02:03.032 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_001 started successfully
+2025-07-30 15:02:03.033 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_002
+2025-07-30 15:02:03.034 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_002 started successfully
+2025-07-30 15:02:03.034 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_003
+2025-07-30 15:02:03.034 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_003 started successfully
+2025-07-30 15:02:03.034 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_004
+2025-07-30 15:02:03.035 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_004 started successfully
+2025-07-30 15:02:03.035 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_005
+2025-07-30 15:02:03.036 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_005 started successfully
+2025-07-30 15:02:03.037 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_006
+2025-07-30 15:02:03.037 [pool-10-thread-1] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_005 failed to transmit data
+2025-07-30 15:02:03.036 [pool-6-thread-1] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_001 failed to transmit data
+2025-07-30 15:02:03.037 [pool-7-thread-1] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_002 failed to transmit data
+2025-07-30 15:02:03.038 [pool-10-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_005
+2025-07-30 15:02:03.038 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_006 started successfully
+2025-07-30 15:02:03.039 [pool-8-thread-1] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_003 failed to transmit data
+2025-07-30 15:02:03.041 [pool-5-thread-1] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_000 failed to transmit data
+2025-07-30 15:02:03.040 [pool-6-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_001
+2025-07-30 15:02:03.041 [pool-8-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_003
+2025-07-30 15:02:03.040 [pool-7-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_002
+2025-07-30 15:02:03.041 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_007
+2025-07-30 15:02:03.041 [pool-9-thread-1] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_004 failed to transmit data
+2025-07-30 15:02:03.042 [pool-5-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_000
+2025-07-30 15:02:03.042 [pool-11-thread-2] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_006 failed to transmit data
+2025-07-30 15:02:03.042 [pool-9-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_004
+2025-07-30 15:02:03.042 [pool-11-thread-2] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_006
+2025-07-30 15:02:03.042 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_007 started successfully
+2025-07-30 15:02:03.043 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_008
+2025-07-30 15:02:03.043 [pool-12-thread-1] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_007 failed to transmit data
+2025-07-30 15:02:03.043 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_008 started successfully
+2025-07-30 15:02:03.043 [pool-12-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_007
+2025-07-30 15:02:03.044 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: TEMP_009
+2025-07-30 15:02:03.044 [pool-13-thread-1] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_008 failed to transmit data
+2025-07-30 15:02:03.044 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_009 started successfully
+2025-07-30 15:02:03.044 [pool-13-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_008
+2025-07-30 15:02:03.044 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: HUMID_000
+2025-07-30 15:02:03.045 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_000 started successfully
+2025-07-30 15:02:03.046 [pool-14-thread-1] WARN  c.n.f.iot.devices.TemperatureSensor - Temperature sensor TEMP_009 failed to transmit data
+2025-07-30 15:02:03.046 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: HUMID_001
+2025-07-30 15:02:03.046 [pool-14-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: TEMP_009
+2025-07-30 15:02:03.046 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_001 started successfully
+2025-07-30 15:02:03.046 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: HUMID_002
+2025-07-30 15:02:03.046 [pool-15-thread-1] WARN  c.n.f.iot.devices.HumiditySensor - Humidity sensor HUMID_000 failed to transmit data
+2025-07-30 15:02:03.047 [pool-15-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: HUMID_000
+2025-07-30 15:02:03.047 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_002 started successfully
+2025-07-30 15:02:03.047 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: HUMID_003
+2025-07-30 15:02:03.047 [pool-16-thread-1] WARN  c.n.f.iot.devices.HumiditySensor - Humidity sensor HUMID_001 failed to transmit data
+2025-07-30 15:02:03.047 [pool-16-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: HUMID_001
+2025-07-30 15:02:03.048 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_003 started successfully
+2025-07-30 15:02:03.048 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: HUMID_004
+2025-07-30 15:02:03.049 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_004 started successfully
+2025-07-30 15:02:03.049 [pool-17-thread-1] WARN  c.n.f.iot.devices.HumiditySensor - Humidity sensor HUMID_002 failed to transmit data
+2025-07-30 15:02:03.049 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: HUMID_005
+2025-07-30 15:02:03.049 [pool-18-thread-1] WARN  c.n.f.iot.devices.HumiditySensor - Humidity sensor HUMID_003 failed to transmit data
+2025-07-30 15:02:03.049 [pool-17-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: HUMID_002
+2025-07-30 15:02:03.050 [pool-18-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: HUMID_003
+2025-07-30 15:02:03.050 [pool-19-thread-1] WARN  c.n.f.iot.devices.HumiditySensor - Humidity sensor HUMID_004 failed to transmit data
+2025-07-30 15:02:03.051 [pool-19-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: HUMID_004
+2025-07-30 15:02:03.050 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_005 started successfully
+2025-07-30 15:02:03.051 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: HUMID_006
+2025-07-30 15:02:03.051 [pool-20-thread-1] WARN  c.n.f.iot.devices.HumiditySensor - Humidity sensor HUMID_005 failed to transmit data
+2025-07-30 15:02:03.051 [pool-20-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: HUMID_005
+2025-07-30 15:02:03.051 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_006 started successfully
+2025-07-30 15:02:03.052 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: HUMID_007
+2025-07-30 15:02:03.056 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_007 started successfully
+2025-07-30 15:02:03.057 [pool-21-thread-1] WARN  c.n.f.iot.devices.HumiditySensor - Humidity sensor HUMID_006 failed to transmit data
+2025-07-30 15:02:03.057 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: PRESSURE_000
+2025-07-30 15:02:03.058 [pool-21-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: HUMID_006
+2025-07-30 15:02:03.058 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_000 started successfully
+2025-07-30 15:02:03.058 [pool-22-thread-1] WARN  c.n.f.iot.devices.HumiditySensor - Humidity sensor HUMID_007 failed to transmit data
+2025-07-30 15:02:03.058 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: PRESSURE_001
+2025-07-30 15:02:03.059 [pool-22-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: HUMID_007
+2025-07-30 15:02:03.059 [pool-23-thread-1] WARN  c.n.f.iot.devices.PressureSensor - Pressure sensor PRESSURE_000 failed to transmit data
+2025-07-30 15:02:03.059 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_001 started successfully
+2025-07-30 15:02:03.059 [pool-23-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: PRESSURE_000
+2025-07-30 15:02:03.059 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: PRESSURE_002
+2025-07-30 15:02:03.060 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_002 started successfully
+2025-07-30 15:02:03.060 [pool-24-thread-1] WARN  c.n.f.iot.devices.PressureSensor - Pressure sensor PRESSURE_001 failed to transmit data
+2025-07-30 15:02:03.060 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: PRESSURE_003
+2025-07-30 15:02:03.060 [pool-24-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: PRESSURE_001
+2025-07-30 15:02:03.061 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_003 started successfully
+2025-07-30 15:02:03.061 [pool-25-thread-1] WARN  c.n.f.iot.devices.PressureSensor - Pressure sensor PRESSURE_002 failed to transmit data
+2025-07-30 15:02:03.061 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: PRESSURE_004
+2025-07-30 15:02:03.061 [pool-25-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: PRESSURE_002
+2025-07-30 15:02:03.061 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_004 started successfully
+2025-07-30 15:02:03.061 [pool-26-thread-1] WARN  c.n.f.iot.devices.PressureSensor - Pressure sensor PRESSURE_003 failed to transmit data
+2025-07-30 15:02:03.061 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: PRESSURE_005
+2025-07-30 15:02:03.062 [pool-26-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: PRESSURE_003
+2025-07-30 15:02:03.062 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_005 started successfully
+2025-07-30 15:02:03.062 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: LIGHT_000
+2025-07-30 15:02:03.062 [pool-27-thread-1] WARN  c.n.f.iot.devices.PressureSensor - Pressure sensor PRESSURE_004 failed to transmit data
+2025-07-30 15:02:03.062 [pool-27-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: PRESSURE_004
+2025-07-30 15:02:03.063 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_000 started successfully
+2025-07-30 15:02:03.063 [pool-28-thread-1] WARN  c.n.f.iot.devices.PressureSensor - Pressure sensor PRESSURE_005 failed to transmit data
+2025-07-30 15:02:03.063 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: LIGHT_001
+2025-07-30 15:02:03.064 [pool-28-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: PRESSURE_005
+2025-07-30 15:02:03.064 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_001 started successfully
+2025-07-30 15:02:03.064 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: LIGHT_002
+2025-07-30 15:02:03.064 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_002 started successfully
+2025-07-30 15:02:03.065 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: LIGHT_003
+2025-07-30 15:02:03.065 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_003 started successfully
+2025-07-30 15:02:03.065 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: LIGHT_004
+2025-07-30 15:02:03.066 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_004 started successfully
+2025-07-30 15:02:03.066 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: MOTION_000
+2025-07-30 15:02:03.067 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device MOTION_000 started successfully
+2025-07-30 15:02:03.067 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: MOTION_001
+2025-07-30 15:02:03.068 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:03.068 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:03.068 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:03.068 [pool-33-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:03.068 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:03.068 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device MOTION_001 started successfully
+2025-07-30 15:02:03.070 [pool-34-thread-1] WARN  c.n.fogedge.iot.devices.MotionSensor - Motion sensor MOTION_000 failed to transmit data
+2025-07-30 15:02:03.070 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: MOTION_002
+2025-07-30 15:02:03.071 [pool-34-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: MOTION_000
+2025-07-30 15:02:03.071 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device MOTION_002 started successfully
+2025-07-30 15:02:03.072 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: MOTION_003
+2025-07-30 15:02:03.071 [pool-35-thread-1] WARN  c.n.fogedge.iot.devices.MotionSensor - Motion sensor MOTION_001 failed to transmit data
+2025-07-30 15:02:03.073 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device MOTION_003 started successfully
+2025-07-30 15:02:03.073 [pool-35-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: MOTION_001
+2025-07-30 15:02:03.073 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: ACTUATOR_000
+2025-07-30 15:02:03.073 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device ACTUATOR_000 started successfully
+2025-07-30 15:02:03.074 [pool-37-thread-1] WARN  c.n.fogedge.iot.devices.MotionSensor - Motion sensor MOTION_003 failed to transmit data
+2025-07-30 15:02:03.074 [pool-37-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: MOTION_003
+2025-07-30 15:02:03.074 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: ACTUATOR_001
+2025-07-30 15:02:03.075 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device ACTUATOR_001 started successfully
+2025-07-30 15:02:03.075 [pool-38-thread-1] WARN  c.n.f.iot.devices.SmartActuator - Smart actuator ACTUATOR_000 failed to transmit data
+2025-07-30 15:02:03.075 [pool-36-thread-2] WARN  c.n.fogedge.iot.devices.MotionSensor - Motion sensor MOTION_002 failed to transmit data
+2025-07-30 15:02:03.075 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Starting device: ACTUATOR_002
+2025-07-30 15:02:03.075 [pool-38-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: ACTUATOR_000
+2025-07-30 15:02:03.076 [pool-36-thread-2] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: MOTION_002
+2025-07-30 15:02:03.076 [main] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device ACTUATOR_002 started successfully
+2025-07-30 15:02:03.076 [main] INFO  com.nci.fogedge.iot.IoTDeviceManager - All IoT devices started
+2025-07-30 15:02:03.076 [pool-39-thread-1] WARN  c.n.f.iot.devices.SmartActuator - Smart actuator ACTUATOR_001 failed to transmit data
+2025-07-30 15:02:03.076 [main] INFO  com.nci.fogedge.iot.IoTDeviceManager - Starting device monitoring...
+2025-07-30 15:02:03.077 [pool-39-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: ACTUATOR_001
+2025-07-30 15:02:03.077 [pool-40-thread-1] WARN  c.n.f.iot.devices.SmartActuator - Smart actuator ACTUATOR_002 failed to transmit data
+2025-07-30 15:02:03.077 [pool-40-thread-1] WARN  com.nci.fogedge.iot.BaseIoTDevice - Data transmission failed from device: ACTUATOR_002
+2025-07-30 15:02:03.078 [main] INFO  com.nci.fogedge.iot.IoTDeviceManager - Device monitoring started
+2025-07-30 15:02:03.078 [main] INFO  com.nci.fogedge.iot.IoTDeviceManager - IoT Device Manager started successfully with 36 devices
+2025-07-30 15:02:03.078 [main] INFO  com.nci.fogedge.Main - IoT devices started successfully
+2025-07-30 15:02:03.079 [main] INFO  com.nci.fogedge.edge.EdgeNodeManager - Starting Edge Node Manager...
+2025-07-30 15:02:03.079 [main] INFO  com.nci.fogedge.edge.EdgeNodeManager - Creating edge nodes...
+2025-07-30 15:02:03.083 [main] INFO  com.nci.fogedge.edge.EdgeNodeManager - Created 10 edge nodes successfully
+2025-07-30 15:02:03.083 [main] INFO  com.nci.fogedge.edge.EdgeNodeManager - Starting all edge nodes...
+2025-07-30 15:02:03.083 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_DATA_000
+2025-07-30 15:02:03.085 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_000 started successfully
+2025-07-30 15:02:03.085 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_DATA_001
+2025-07-30 15:02:03.086 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_001 started successfully
+2025-07-30 15:02:03.086 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_DATA_002
+2025-07-30 15:02:03.087 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_002 started successfully
+2025-07-30 15:02:03.087 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_DATA_003
+2025-07-30 15:02:03.087 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_003 started successfully
+2025-07-30 15:02:03.087 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_DATA_004
+2025-07-30 15:02:03.089 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_004 started successfully
+2025-07-30 15:02:03.089 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_ANALYTICS_000
+2025-07-30 15:02:03.089 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_ANALYTICS_000 started successfully
+2025-07-30 15:02:03.090 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_ANALYTICS_001
+2025-07-30 15:02:03.090 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_ANALYTICS_001 started successfully
+2025-07-30 15:02:03.090 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_ANALYTICS_002
+2025-07-30 15:02:03.091 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_ANALYTICS_002 started successfully
+2025-07-30 15:02:03.091 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_GATEWAY_000
+2025-07-30 15:02:03.092 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_GATEWAY_000 started successfully
+2025-07-30 15:02:03.092 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Starting edge node: EDGE_GATEWAY_001
+2025-07-30 15:02:03.092 [main] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_GATEWAY_001 started successfully
+2025-07-30 15:02:03.092 [main] INFO  com.nci.fogedge.edge.EdgeNodeManager - All edge nodes started
+2025-07-30 15:02:03.093 [main] INFO  com.nci.fogedge.edge.EdgeNodeManager - Starting edge monitoring...
+2025-07-30 15:02:03.095 [main] INFO  com.nci.fogedge.edge.EdgeNodeManager - Edge monitoring started
+2025-07-30 15:02:03.095 [main] INFO  com.nci.fogedge.edge.EdgeNodeManager - Edge Node Manager started successfully with 10 nodes
+2025-07-30 15:02:03.095 [main] INFO  com.nci.fogedge.Main - Edge nodes started successfully
+2025-07-30 15:02:03.096 [main] INFO  com.nci.fogedge.cloud.CloudManager - Starting Cloud Manager...
+2025-07-30 15:02:03.096 [main] INFO  com.nci.fogedge.cloud.CloudManager - Creating cloud services...
+2025-07-30 15:02:03.099 [main] INFO  c.n.f.cloud.services.StorageService - StorageService initialized: CLOUD_STORAGE_000
+2025-07-30 15:02:03.100 [main] INFO  c.n.f.cloud.services.StorageService - StorageService initialized: CLOUD_STORAGE_001
+2025-07-30 15:02:03.101 [main] INFO  c.n.f.c.s.OrchestrationService - OrchestrationService initialized: CLOUD_ORCHESTRATION_000
+2025-07-30 15:02:03.101 [main] INFO  com.nci.fogedge.cloud.CloudManager - Created 8 cloud services successfully
+2025-07-30 15:02:03.101 [main] INFO  com.nci.fogedge.cloud.CloudManager - Starting all cloud services...
+2025-07-30 15:02:03.101 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Starting cloud service: CLOUD_ANALYTICS_000
+2025-07-30 15:02:03.104 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ANALYTICS_000 started successfully
+2025-07-30 15:02:03.105 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Starting cloud service: CLOUD_ANALYTICS_001
+2025-07-30 15:02:03.105 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ANALYTICS_001 started successfully
+2025-07-30 15:02:03.105 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Starting cloud service: CLOUD_ANALYTICS_002
+2025-07-30 15:02:03.106 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ANALYTICS_002 started successfully
+2025-07-30 15:02:03.106 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Starting cloud service: CLOUD_ML_000
+2025-07-30 15:02:03.107 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ML_000 started successfully
+2025-07-30 15:02:03.107 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Starting cloud service: CLOUD_ML_001
+2025-07-30 15:02:03.108 [main] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ML_001 started successfully
+2025-07-30 15:02:03.108 [main] INFO  c.n.f.cloud.services.StorageService - Starting StorageService: CLOUD_STORAGE_000
+2025-07-30 15:02:03.108 [main] INFO  c.n.f.cloud.services.StorageService - StorageService CLOUD_STORAGE_000 started successfully
+2025-07-30 15:02:03.108 [main] INFO  c.n.f.cloud.services.StorageService - Starting StorageService: CLOUD_STORAGE_001
+2025-07-30 15:02:03.108 [main] INFO  c.n.f.cloud.services.StorageService - StorageService CLOUD_STORAGE_001 started successfully
+2025-07-30 15:02:03.108 [main] INFO  c.n.f.c.s.OrchestrationService - Starting OrchestrationService: CLOUD_ORCHESTRATION_000
+2025-07-30 15:02:03.109 [main] INFO  c.n.f.c.s.OrchestrationService - OrchestrationService CLOUD_ORCHESTRATION_000 started successfully
+2025-07-30 15:02:03.109 [main] INFO  com.nci.fogedge.cloud.CloudManager - All cloud services started
+2025-07-30 15:02:03.109 [main] INFO  com.nci.fogedge.cloud.CloudManager - Starting cloud monitoring...
+2025-07-30 15:02:03.112 [main] INFO  com.nci.fogedge.cloud.CloudManager - Cloud monitoring started
+2025-07-30 15:02:03.112 [main] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Manager started successfully with 8 services
+2025-07-30 15:02:03.112 [main] INFO  com.nci.fogedge.Main - Cloud services started successfully
+2025-07-30 15:02:03.115 [main] INFO  com.nci.fogedge.Main - Network monitoring started
+2025-07-30 15:02:03.117 [main] INFO  com.nci.fogedge.Main - === SYSTEM STARTED SUCCESSFULLY ===
+2025-07-30 15:02:03.117 [main] INFO  com.nci.fogedge.Main - System is now processing IoT data with Fog and Edge Computing architecture
+2025-07-30 15:02:03.117 [main] INFO  com.nci.fogedge.Main - Performance metrics will be collected every 30 seconds
+2025-07-30 15:02:03.117 [main] INFO  com.nci.fogedge.Main - Data will be exported every 60 seconds
+2025-07-30 15:02:03.117 [main] INFO  com.nci.fogedge.Main - Performance analysis will be conducted every 2 minutes
+2025-07-30 15:02:08.131 [pool-4-thread-1] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:02:13.079 [pool-1-thread-1] INFO  com.nci.fogedge.iot.IoTDeviceManager - Device Health Status: 36/36 devices healthy ({:.2f}%)
+2025-07-30 15:02:13.096 [pool-2-thread-1] INFO  com.nci.fogedge.edge.EdgeNodeManager - Edge Node Health Status: 10/10 nodes healthy ({:.2f}%)
+2025-07-30 15:02:13.112 [pool-3-thread-1] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Service Health Status: 8/8 services healthy ({:.2f}%)
+2025-07-30 15:02:13.138 [pool-4-thread-2] ERROR com.nci.fogedge.utils.DataExporter - Error exporting metrics
+java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: YearOfEra
+	at java.base/java.time.Instant.getLong(Instant.java:604)
+	at java.base/java.time.format.DateTimePrintContext.getValue(DateTimePrintContext.java:308)
+	at java.base/java.time.format.DateTimeFormatterBuilder$NumberPrinterParser.format(DateTimeFormatterBuilder.java:2763)
+	at java.base/java.time.format.DateTimeFormatterBuilder$CompositePrinterParser.format(DateTimeFormatterBuilder.java:2402)
+	at java.base/java.time.format.DateTimeFormatter.formatTo(DateTimeFormatter.java:1849)
+	at java.base/java.time.format.DateTimeFormatter.format(DateTimeFormatter.java:1823)
+	at com.nci.fogedge.utils.DataExporter.exportSystemMetrics(DataExporter.java:74)
+	at com.nci.fogedge.utils.DataExporter.exportMetrics(DataExporter.java:55)
+	at com.nci.fogedge.Main.lambda$start$2(Main.java:150)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:13.139 [pool-4-thread-2] DEBUG com.nci.fogedge.Main - Periodic data export completed
+2025-07-30 15:02:18.085 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager - Data Transmission Stats:
+2025-07-30 15:02:18.086 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Total Data Generated: 0 bytes
+2025-07-30 15:02:18.086 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Successful Transmissions: 0
+2025-07-30 15:02:18.086 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Failed Transmissions: 0
+2025-07-30 15:02:18.086 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Success Rate: {:.2f}%
+2025-07-30 15:02:18.100 [pool-2-thread-2] INFO  com.nci.fogedge.edge.EdgeNodeManager - Processing Performance Stats:
+2025-07-30 15:02:18.101 [pool-2-thread-2] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Total Data Processed: 0 bytes
+2025-07-30 15:02:18.101 [pool-2-thread-2] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:02:18.102 [pool-2-thread-2] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Active Edge Nodes: 10
+2025-07-30 15:02:18.118 [pool-4-thread-3] INFO  com.nci.fogedge.Main - === PERFORMANCE ANALYSIS ===
+2025-07-30 15:02:18.118 [pool-3-thread-2] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Processing Performance Stats:
+2025-07-30 15:02:18.119 [pool-3-thread-2] INFO  com.nci.fogedge.cloud.CloudManager -   Total Tasks Processed: 0
+2025-07-30 15:02:18.119 [pool-3-thread-2] INFO  com.nci.fogedge.cloud.CloudManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:02:18.120 [pool-3-thread-2] INFO  com.nci.fogedge.cloud.CloudManager -   Active Cloud Services: 8
+2025-07-30 15:02:18.120 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Average Latency: 0.00 ms
+2025-07-30 15:02:18.121 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Latency Reduction: 100.00%
+2025-07-30 15:02:18.121 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Data Reduction at Edge: 70.00%
+2025-07-30 15:02:18.121 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Energy Efficiency: 35.00%
+2025-07-30 15:02:18.122 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Bandwidth Optimization: 55.00%
+2025-07-30 15:02:18.122 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Active IoT Devices: 36
+2025-07-30 15:02:18.122 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Active Edge Nodes: 10
+2025-07-30 15:02:18.122 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Cloud Services Status: EXCELLENT
+2025-07-30 15:02:18.122 [pool-4-thread-3] INFO  com.nci.fogedge.Main - === END PERFORMANCE ANALYSIS ===
+2025-07-30 15:02:18.123 [pool-4-thread-3] DEBUG com.nci.fogedge.Main - Periodic performance analysis completed
+2025-07-30 15:02:23.104 [pool-2-thread-3] INFO  com.nci.fogedge.edge.EdgeNodeManager - Task Offloading Stats:
+2025-07-30 15:02:23.106 [pool-2-thread-3] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Total Tasks: 0
+2025-07-30 15:02:23.106 [pool-2-thread-3] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Tasks Offloaded: 0
+2025-07-30 15:02:23.106 [pool-2-thread-3] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Offloading Rate: {:.2f}%
+2025-07-30 15:02:23.120 [pool-3-thread-3] INFO  com.nci.fogedge.cloud.CloudManager - Task Reception Stats:
+2025-07-30 15:02:23.121 [pool-3-thread-3] INFO  com.nci.fogedge.cloud.CloudManager -   Tasks Received from Edge: 0
+2025-07-30 15:02:23.121 [pool-3-thread-3] INFO  com.nci.fogedge.cloud.CloudManager -   Tasks Processed: 0
+2025-07-30 15:02:23.122 [pool-3-thread-3] INFO  com.nci.fogedge.cloud.CloudManager -   Processing Rate: {:.2f}%
+2025-07-30 15:02:33.078 [pool-33-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:33.079 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:33.079 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:33.079 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:33.079 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:02:38.135 [pool-4-thread-1] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:03:03.071 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:03.071 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:03.072 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:03.072 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:03.072 [pool-33-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:03.088 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager - Data Transmission Stats:
+2025-07-30 15:03:03.088 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Total Data Generated: 0 bytes
+2025-07-30 15:03:03.089 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Successful Transmissions: 0
+2025-07-30 15:03:03.089 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Failed Transmissions: 0
+2025-07-30 15:03:03.089 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Success Rate: {:.2f}%
+2025-07-30 15:03:03.104 [pool-2-thread-1] INFO  com.nci.fogedge.edge.EdgeNodeManager - Processing Performance Stats:
+2025-07-30 15:03:03.104 [pool-2-thread-1] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Total Data Processed: 0 bytes
+2025-07-30 15:03:03.104 [pool-2-thread-1] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:03:03.104 [pool-2-thread-1] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Active Edge Nodes: 10
+2025-07-30 15:03:03.119 [pool-3-thread-1] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Processing Performance Stats:
+2025-07-30 15:03:03.119 [pool-3-thread-1] INFO  com.nci.fogedge.cloud.CloudManager -   Total Tasks Processed: 0
+2025-07-30 15:03:03.119 [pool-3-thread-1] INFO  com.nci.fogedge.cloud.CloudManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:03:03.119 [pool-3-thread-1] INFO  com.nci.fogedge.cloud.CloudManager -   Active Cloud Services: 8
+2025-07-30 15:03:08.117 [pool-4-thread-2] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:03:13.079 [pool-1-thread-1] INFO  com.nci.fogedge.iot.IoTDeviceManager - Device Health Status: 36/36 devices healthy ({:.2f}%)
+2025-07-30 15:03:13.095 [pool-2-thread-4] INFO  com.nci.fogedge.edge.EdgeNodeManager - Edge Node Health Status: 10/10 nodes healthy ({:.2f}%)
+2025-07-30 15:03:13.111 [pool-3-thread-4] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Service Health Status: 8/8 services healthy ({:.2f}%)
+2025-07-30 15:03:13.116 [pool-4-thread-4] ERROR com.nci.fogedge.utils.DataExporter - Error exporting metrics
+java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: YearOfEra
+	at java.base/java.time.Instant.getLong(Instant.java:604)
+	at java.base/java.time.format.DateTimePrintContext.getValue(DateTimePrintContext.java:308)
+	at java.base/java.time.format.DateTimeFormatterBuilder$NumberPrinterParser.format(DateTimeFormatterBuilder.java:2763)
+	at java.base/java.time.format.DateTimeFormatterBuilder$CompositePrinterParser.format(DateTimeFormatterBuilder.java:2402)
+	at java.base/java.time.format.DateTimeFormatter.formatTo(DateTimeFormatter.java:1849)
+	at java.base/java.time.format.DateTimeFormatter.format(DateTimeFormatter.java:1823)
+	at com.nci.fogedge.utils.DataExporter.exportSystemMetrics(DataExporter.java:74)
+	at com.nci.fogedge.utils.DataExporter.exportMetrics(DataExporter.java:55)
+	at com.nci.fogedge.Main.lambda$start$2(Main.java:150)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:13.117 [pool-4-thread-4] DEBUG com.nci.fogedge.Main - Periodic data export completed
+2025-07-30 15:03:33.066 [pool-33-thread-2] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:33.066 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:33.066 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:33.069 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:33.070 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:03:38.116 [pool-4-thread-5] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:03:48.092 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager - Data Transmission Stats:
+2025-07-30 15:03:48.093 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Total Data Generated: 0 bytes
+2025-07-30 15:03:48.093 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Successful Transmissions: 0
+2025-07-30 15:03:48.093 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Failed Transmissions: 0
+2025-07-30 15:03:48.093 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Success Rate: {:.2f}%
+2025-07-30 15:03:48.106 [pool-2-thread-2] INFO  com.nci.fogedge.edge.EdgeNodeManager - Processing Performance Stats:
+2025-07-30 15:03:48.110 [pool-2-thread-2] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Total Data Processed: 0 bytes
+2025-07-30 15:03:48.110 [pool-2-thread-2] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:03:48.110 [pool-2-thread-2] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Active Edge Nodes: 10
+2025-07-30 15:03:48.114 [pool-3-thread-2] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Processing Performance Stats:
+2025-07-30 15:03:48.114 [pool-3-thread-2] INFO  com.nci.fogedge.cloud.CloudManager -   Total Tasks Processed: 0
+2025-07-30 15:03:48.116 [pool-3-thread-2] INFO  com.nci.fogedge.cloud.CloudManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:03:48.116 [pool-3-thread-2] INFO  com.nci.fogedge.cloud.CloudManager -   Active Cloud Services: 8
+2025-07-30 15:03:53.109 [pool-2-thread-5] INFO  com.nci.fogedge.edge.EdgeNodeManager - Task Offloading Stats:
+2025-07-30 15:03:53.110 [pool-2-thread-5] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Total Tasks: 0
+2025-07-30 15:03:53.111 [pool-2-thread-5] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Tasks Offloaded: 0
+2025-07-30 15:03:53.111 [pool-2-thread-5] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Offloading Rate: {:.2f}%
+2025-07-30 15:03:53.125 [pool-3-thread-5] INFO  com.nci.fogedge.cloud.CloudManager - Task Reception Stats:
+2025-07-30 15:03:53.126 [pool-3-thread-5] INFO  com.nci.fogedge.cloud.CloudManager -   Tasks Received from Edge: 0
+2025-07-30 15:03:53.127 [pool-3-thread-5] INFO  com.nci.fogedge.cloud.CloudManager -   Tasks Processed: 0
+2025-07-30 15:03:53.127 [pool-3-thread-5] INFO  com.nci.fogedge.cloud.CloudManager -   Processing Rate: {:.2f}%
+2025-07-30 15:04:03.072 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:03.072 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:03.072 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:03.072 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:03.072 [pool-33-thread-2] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:08.118 [pool-4-thread-6] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:04:13.091 [pool-1-thread-4] INFO  com.nci.fogedge.iot.IoTDeviceManager - Device Health Status: 36/36 devices healthy ({:.2f}%)
+2025-07-30 15:04:13.105 [pool-2-thread-3] INFO  com.nci.fogedge.edge.EdgeNodeManager - Edge Node Health Status: 10/10 nodes healthy ({:.2f}%)
+2025-07-30 15:04:13.116 [pool-4-thread-3] ERROR com.nci.fogedge.utils.DataExporter - Error exporting metrics
+java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: YearOfEra
+	at java.base/java.time.Instant.getLong(Instant.java:604)
+	at java.base/java.time.format.DateTimePrintContext.getValue(DateTimePrintContext.java:308)
+	at java.base/java.time.format.DateTimeFormatterBuilder$NumberPrinterParser.format(DateTimeFormatterBuilder.java:2763)
+	at java.base/java.time.format.DateTimeFormatterBuilder$CompositePrinterParser.format(DateTimeFormatterBuilder.java:2402)
+	at java.base/java.time.format.DateTimeFormatter.formatTo(DateTimeFormatter.java:1849)
+	at java.base/java.time.format.DateTimeFormatter.format(DateTimeFormatter.java:1823)
+	at com.nci.fogedge.utils.DataExporter.exportSystemMetrics(DataExporter.java:74)
+	at com.nci.fogedge.utils.DataExporter.exportMetrics(DataExporter.java:55)
+	at com.nci.fogedge.Main.lambda$start$2(Main.java:150)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:13.117 [pool-4-thread-3] DEBUG com.nci.fogedge.Main - Periodic data export completed
+2025-07-30 15:04:13.121 [pool-3-thread-3] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Service Health Status: 8/8 services healthy ({:.2f}%)
+2025-07-30 15:04:18.128 [pool-4-thread-1] INFO  com.nci.fogedge.Main - === PERFORMANCE ANALYSIS ===
+2025-07-30 15:04:18.129 [pool-4-thread-1] INFO  com.nci.fogedge.Main - Average Latency: 0.00 ms
+2025-07-30 15:04:18.133 [pool-4-thread-1] INFO  com.nci.fogedge.Main - Latency Reduction: 100.00%
+2025-07-30 15:04:18.133 [pool-4-thread-1] INFO  com.nci.fogedge.Main - Data Reduction at Edge: 70.00%
+2025-07-30 15:04:18.136 [pool-4-thread-1] INFO  com.nci.fogedge.Main - Energy Efficiency: 35.00%
+2025-07-30 15:04:18.143 [pool-4-thread-1] INFO  com.nci.fogedge.Main - Bandwidth Optimization: 55.00%
+2025-07-30 15:04:18.144 [pool-4-thread-1] INFO  com.nci.fogedge.Main - Active IoT Devices: 36
+2025-07-30 15:04:18.145 [pool-4-thread-1] INFO  com.nci.fogedge.Main - Active Edge Nodes: 10
+2025-07-30 15:04:18.145 [pool-4-thread-1] INFO  com.nci.fogedge.Main - Cloud Services Status: EXCELLENT
+2025-07-30 15:04:18.145 [pool-4-thread-1] INFO  com.nci.fogedge.Main - === END PERFORMANCE ANALYSIS ===
+2025-07-30 15:04:18.146 [pool-4-thread-1] DEBUG com.nci.fogedge.Main - Periodic performance analysis completed
+2025-07-30 15:04:33.076 [pool-33-thread-2] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:33.076 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:33.076 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:33.076 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:33.076 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:04:33.090 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager - Data Transmission Stats:
+2025-07-30 15:04:33.093 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Total Data Generated: 0 bytes
+2025-07-30 15:04:33.093 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Successful Transmissions: 0
+2025-07-30 15:04:33.095 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Failed Transmissions: 0
+2025-07-30 15:04:33.095 [pool-2-thread-6] INFO  com.nci.fogedge.edge.EdgeNodeManager - Processing Performance Stats:
+2025-07-30 15:04:33.096 [pool-1-thread-3] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Success Rate: {:.2f}%
+2025-07-30 15:04:33.096 [pool-2-thread-6] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Total Data Processed: 0 bytes
+2025-07-30 15:04:33.096 [pool-2-thread-6] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:04:33.096 [pool-2-thread-6] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Active Edge Nodes: 10
+2025-07-30 15:04:33.112 [pool-3-thread-6] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Processing Performance Stats:
+2025-07-30 15:04:33.112 [pool-3-thread-6] INFO  com.nci.fogedge.cloud.CloudManager -   Total Tasks Processed: 0
+2025-07-30 15:04:33.114 [pool-3-thread-6] INFO  com.nci.fogedge.cloud.CloudManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:04:33.114 [pool-3-thread-6] INFO  com.nci.fogedge.cloud.CloudManager -   Active Cloud Services: 8
+2025-07-30 15:04:38.127 [pool-4-thread-7] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:05:03.069 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:03.068 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:03.069 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:03.069 [pool-33-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:03.068 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:08.117 [pool-4-thread-8] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:05:13.079 [pool-1-thread-5] INFO  com.nci.fogedge.iot.IoTDeviceManager - Device Health Status: 36/36 devices healthy ({:.2f}%)
+2025-07-30 15:05:13.095 [pool-2-thread-1] INFO  com.nci.fogedge.edge.EdgeNodeManager - Edge Node Health Status: 10/10 nodes healthy ({:.2f}%)
+2025-07-30 15:05:13.110 [pool-3-thread-1] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Service Health Status: 8/8 services healthy ({:.2f}%)
+2025-07-30 15:05:13.117 [pool-4-thread-4] ERROR com.nci.fogedge.utils.DataExporter - Error exporting metrics
+java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: YearOfEra
+	at java.base/java.time.Instant.getLong(Instant.java:604)
+	at java.base/java.time.format.DateTimePrintContext.getValue(DateTimePrintContext.java:308)
+	at java.base/java.time.format.DateTimeFormatterBuilder$NumberPrinterParser.format(DateTimeFormatterBuilder.java:2763)
+	at java.base/java.time.format.DateTimeFormatterBuilder$CompositePrinterParser.format(DateTimeFormatterBuilder.java:2402)
+	at java.base/java.time.format.DateTimeFormatter.formatTo(DateTimeFormatter.java:1849)
+	at java.base/java.time.format.DateTimeFormatter.format(DateTimeFormatter.java:1823)
+	at com.nci.fogedge.utils.DataExporter.exportSystemMetrics(DataExporter.java:74)
+	at com.nci.fogedge.utils.DataExporter.exportMetrics(DataExporter.java:55)
+	at com.nci.fogedge.Main.lambda$start$2(Main.java:150)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:13.118 [pool-4-thread-4] DEBUG com.nci.fogedge.Main - Periodic data export completed
+2025-07-30 15:05:18.086 [pool-1-thread-1] INFO  com.nci.fogedge.iot.IoTDeviceManager - Data Transmission Stats:
+2025-07-30 15:05:18.086 [pool-1-thread-1] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Total Data Generated: 0 bytes
+2025-07-30 15:05:18.087 [pool-1-thread-1] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Successful Transmissions: 0
+2025-07-30 15:05:18.087 [pool-1-thread-1] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Failed Transmissions: 0
+2025-07-30 15:05:18.088 [pool-1-thread-1] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Success Rate: {:.2f}%
+2025-07-30 15:05:18.101 [pool-2-thread-7] INFO  com.nci.fogedge.edge.EdgeNodeManager - Processing Performance Stats:
+2025-07-30 15:05:18.104 [pool-2-thread-7] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Total Data Processed: 0 bytes
+2025-07-30 15:05:18.104 [pool-2-thread-7] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:05:18.104 [pool-2-thread-7] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Active Edge Nodes: 10
+2025-07-30 15:05:18.117 [pool-3-thread-7] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Processing Performance Stats:
+2025-07-30 15:05:18.118 [pool-3-thread-7] INFO  com.nci.fogedge.cloud.CloudManager -   Total Tasks Processed: 0
+2025-07-30 15:05:18.118 [pool-3-thread-7] INFO  com.nci.fogedge.cloud.CloudManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:05:18.118 [pool-3-thread-7] INFO  com.nci.fogedge.cloud.CloudManager -   Active Cloud Services: 8
+2025-07-30 15:05:23.098 [pool-2-thread-4] INFO  com.nci.fogedge.edge.EdgeNodeManager - Task Offloading Stats:
+2025-07-30 15:05:23.099 [pool-2-thread-4] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Total Tasks: 0
+2025-07-30 15:05:23.099 [pool-2-thread-4] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Tasks Offloaded: 0
+2025-07-30 15:05:23.099 [pool-2-thread-4] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Offloading Rate: {:.2f}%
+2025-07-30 15:05:23.113 [pool-3-thread-4] INFO  com.nci.fogedge.cloud.CloudManager - Task Reception Stats:
+2025-07-30 15:05:23.114 [pool-3-thread-4] INFO  com.nci.fogedge.cloud.CloudManager -   Tasks Received from Edge: 0
+2025-07-30 15:05:23.114 [pool-3-thread-4] INFO  com.nci.fogedge.cloud.CloudManager -   Tasks Processed: 0
+2025-07-30 15:05:23.114 [pool-3-thread-4] INFO  com.nci.fogedge.cloud.CloudManager -   Processing Rate: {:.2f}%
+2025-07-30 15:05:33.078 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:33.078 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:33.078 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:33.078 [pool-33-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:33.079 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:05:38.117 [pool-4-thread-2] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:06:10.555 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:10.555 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:10.555 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:10.555 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:10.555 [pool-33-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:10.570 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager - Data Transmission Stats:
+2025-07-30 15:06:10.570 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Total Data Generated: 0 bytes
+2025-07-30 15:06:10.570 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Successful Transmissions: 0
+2025-07-30 15:06:10.570 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Failed Transmissions: 0
+2025-07-30 15:06:10.571 [pool-1-thread-2] INFO  com.nci.fogedge.iot.IoTDeviceManager -   Success Rate: {:.2f}%
+2025-07-30 15:06:10.586 [pool-2-thread-8] INFO  com.nci.fogedge.edge.EdgeNodeManager - Processing Performance Stats:
+2025-07-30 15:06:10.586 [pool-2-thread-8] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Total Data Processed: 0 bytes
+2025-07-30 15:06:10.587 [pool-2-thread-8] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:06:10.587 [pool-2-thread-8] INFO  com.nci.fogedge.edge.EdgeNodeManager -   Active Edge Nodes: 10
+2025-07-30 15:06:10.594 [pool-3-thread-8] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Processing Performance Stats:
+2025-07-30 15:06:10.594 [pool-3-thread-8] INFO  com.nci.fogedge.cloud.CloudManager -   Total Tasks Processed: 0
+2025-07-30 15:06:10.595 [pool-3-thread-8] INFO  com.nci.fogedge.cloud.CloudManager -   Average Processing Time: {:.2f} ms
+2025-07-30 15:06:10.596 [pool-3-thread-8] INFO  com.nci.fogedge.cloud.CloudManager -   Active Cloud Services: 8
+2025-07-30 15:06:13.084 [pool-1-thread-7] INFO  com.nci.fogedge.iot.IoTDeviceManager - Device Health Status: 36/36 devices healthy ({:.2f}%)
+2025-07-30 15:06:13.100 [pool-2-thread-2] INFO  com.nci.fogedge.edge.EdgeNodeManager - Edge Node Health Status: 10/10 nodes healthy ({:.2f}%)
+2025-07-30 15:06:13.115 [pool-3-thread-2] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Service Health Status: 8/8 services healthy ({:.2f}%)
+2025-07-30 15:06:15.601 [pool-4-thread-6] ERROR com.nci.fogedge.utils.DataExporter - Error exporting metrics
+java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: YearOfEra
+	at java.base/java.time.Instant.getLong(Instant.java:604)
+	at java.base/java.time.format.DateTimePrintContext.getValue(DateTimePrintContext.java:308)
+	at java.base/java.time.format.DateTimeFormatterBuilder$NumberPrinterParser.format(DateTimeFormatterBuilder.java:2763)
+	at java.base/java.time.format.DateTimeFormatterBuilder$CompositePrinterParser.format(DateTimeFormatterBuilder.java:2402)
+	at java.base/java.time.format.DateTimeFormatter.formatTo(DateTimeFormatter.java:1849)
+	at java.base/java.time.format.DateTimeFormatter.format(DateTimeFormatter.java:1823)
+	at com.nci.fogedge.utils.DataExporter.exportSystemMetrics(DataExporter.java:74)
+	at com.nci.fogedge.utils.DataExporter.exportMetrics(DataExporter.java:55)
+	at com.nci.fogedge.Main.lambda$start$2(Main.java:150)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:15.602 [pool-4-thread-2] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:06:15.602 [pool-4-thread-6] DEBUG com.nci.fogedge.Main - Periodic data export completed
+2025-07-30 15:06:18.123 [pool-4-thread-3] INFO  com.nci.fogedge.Main - === PERFORMANCE ANALYSIS ===
+2025-07-30 15:06:18.123 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Average Latency: 0.00 ms
+2025-07-30 15:06:18.124 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Latency Reduction: 100.00%
+2025-07-30 15:06:18.124 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Data Reduction at Edge: 70.00%
+2025-07-30 15:06:18.124 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Energy Efficiency: 35.00%
+2025-07-30 15:06:18.124 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Bandwidth Optimization: 55.00%
+2025-07-30 15:06:18.124 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Active IoT Devices: 36
+2025-07-30 15:06:18.124 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Active Edge Nodes: 10
+2025-07-30 15:06:18.124 [pool-4-thread-3] INFO  com.nci.fogedge.Main - Cloud Services Status: EXCELLENT
+2025-07-30 15:06:18.125 [pool-4-thread-3] INFO  com.nci.fogedge.Main - === END PERFORMANCE ANALYSIS ===
+2025-07-30 15:06:18.125 [pool-4-thread-3] DEBUG com.nci.fogedge.Main - Periodic performance analysis completed
+2025-07-30 15:06:33.064 [pool-30-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_001
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:33.065 [pool-31-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_002
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:33.065 [pool-29-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_000
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:33.080 [pool-33-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_004
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:33.081 [pool-32-thread-1] ERROR c.n.fogedge.iot.devices.LightSensor - Error generating light data for device: LIGHT_003
+java.util.IllegalFormatConversionException: f != java.lang.Long
+	at java.base/java.util.Formatter$FormatSpecifier.failConversion(Formatter.java:4442)
+	at java.base/java.util.Formatter$FormatSpecifier.printFloat(Formatter.java:2976)
+	at java.base/java.util.Formatter$FormatSpecifier.print(Formatter.java:2924)
+	at java.base/java.util.Formatter.format(Formatter.java:2689)
+	at java.base/java.util.Formatter.format(Formatter.java:2625)
+	at java.base/java.lang.String.format(String.java:4147)
+	at com.nci.fogedge.iot.devices.LightSensor.collectData(LightSensor.java:109)
+	at com.nci.fogedge.iot.BaseIoTDevice.generateAndTransmitData(BaseIoTDevice.java:358)
+	at com.nci.fogedge.iot.BaseIoTDevice.lambda$start$0(BaseIoTDevice.java:157)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:305)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:38.117 [pool-4-thread-1] DEBUG com.nci.fogedge.Main - Periodic metrics collection completed
+2025-07-30 15:06:42.763 [Thread-1] INFO  com.nci.fogedge.Main - Shutdown signal received. Terminating system gracefully...
+2025-07-30 15:06:42.763 [Thread-1] INFO  com.nci.fogedge.Main - Initiating system shutdown...
+2025-07-30 15:06:42.765 [Thread-1] INFO  com.nci.fogedge.Main - Thread pool shutdown completed
+2025-07-30 15:06:42.765 [Thread-1] INFO  com.nci.fogedge.iot.IoTDeviceManager - Stopping IoT Device Manager...
+2025-07-30 15:06:42.765 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_000
+2025-07-30 15:06:42.767 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_000 stopped successfully
+2025-07-30 15:06:42.767 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_001
+2025-07-30 15:06:42.767 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_001 stopped successfully
+2025-07-30 15:06:42.767 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_002
+2025-07-30 15:06:42.767 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_002 stopped successfully
+2025-07-30 15:06:42.768 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_003
+2025-07-30 15:06:42.768 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_003 stopped successfully
+2025-07-30 15:06:42.769 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_004
+2025-07-30 15:06:42.770 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_004 stopped successfully
+2025-07-30 15:06:42.770 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_005
+2025-07-30 15:06:42.771 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_005 stopped successfully
+2025-07-30 15:06:42.771 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_006
+2025-07-30 15:06:42.772 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_006 stopped successfully
+2025-07-30 15:06:42.774 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_007
+2025-07-30 15:06:42.777 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_007 stopped successfully
+2025-07-30 15:06:42.777 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_008
+2025-07-30 15:06:42.778 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_008 stopped successfully
+2025-07-30 15:06:42.778 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: TEMP_009
+2025-07-30 15:06:42.779 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device TEMP_009 stopped successfully
+2025-07-30 15:06:42.779 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: HUMID_000
+2025-07-30 15:06:42.780 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_000 stopped successfully
+2025-07-30 15:06:42.780 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: HUMID_001
+2025-07-30 15:06:42.781 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_001 stopped successfully
+2025-07-30 15:06:42.783 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: HUMID_002
+2025-07-30 15:06:42.783 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_002 stopped successfully
+2025-07-30 15:06:42.783 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: HUMID_003
+2025-07-30 15:06:42.783 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_003 stopped successfully
+2025-07-30 15:06:42.784 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: HUMID_004
+2025-07-30 15:06:42.784 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_004 stopped successfully
+2025-07-30 15:06:42.785 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: HUMID_005
+2025-07-30 15:06:42.785 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_005 stopped successfully
+2025-07-30 15:06:42.785 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: HUMID_006
+2025-07-30 15:06:42.786 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_006 stopped successfully
+2025-07-30 15:06:42.786 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: HUMID_007
+2025-07-30 15:06:42.787 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device HUMID_007 stopped successfully
+2025-07-30 15:06:42.787 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: PRESSURE_000
+2025-07-30 15:06:42.792 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_000 stopped successfully
+2025-07-30 15:06:42.792 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: PRESSURE_001
+2025-07-30 15:06:42.793 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_001 stopped successfully
+2025-07-30 15:06:42.793 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: PRESSURE_002
+2025-07-30 15:06:42.794 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_002 stopped successfully
+2025-07-30 15:06:42.794 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: PRESSURE_003
+2025-07-30 15:06:42.796 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_003 stopped successfully
+2025-07-30 15:06:42.796 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: PRESSURE_004
+2025-07-30 15:06:42.797 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_004 stopped successfully
+2025-07-30 15:06:42.797 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: PRESSURE_005
+2025-07-30 15:06:42.797 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device PRESSURE_005 stopped successfully
+2025-07-30 15:06:42.797 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: LIGHT_000
+2025-07-30 15:06:42.797 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_000 stopped successfully
+2025-07-30 15:06:42.797 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: LIGHT_001
+2025-07-30 15:06:42.798 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_001 stopped successfully
+2025-07-30 15:06:42.798 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: LIGHT_002
+2025-07-30 15:06:42.799 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_002 stopped successfully
+2025-07-30 15:06:42.799 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: LIGHT_003
+2025-07-30 15:06:42.799 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_003 stopped successfully
+2025-07-30 15:06:42.799 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: LIGHT_004
+2025-07-30 15:06:42.800 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device LIGHT_004 stopped successfully
+2025-07-30 15:06:42.800 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: MOTION_000
+2025-07-30 15:06:42.801 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device MOTION_000 stopped successfully
+2025-07-30 15:06:42.802 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: MOTION_001
+2025-07-30 15:06:42.802 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device MOTION_001 stopped successfully
+2025-07-30 15:06:42.802 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: MOTION_002
+2025-07-30 15:06:42.804 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device MOTION_002 stopped successfully
+2025-07-30 15:06:42.804 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: MOTION_003
+2025-07-30 15:06:42.805 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device MOTION_003 stopped successfully
+2025-07-30 15:06:42.805 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: ACTUATOR_000
+2025-07-30 15:06:42.806 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device ACTUATOR_000 stopped successfully
+2025-07-30 15:06:42.806 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: ACTUATOR_001
+2025-07-30 15:06:42.807 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device ACTUATOR_001 stopped successfully
+2025-07-30 15:06:42.809 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Stopping device: ACTUATOR_002
+2025-07-30 15:06:42.809 [Thread-1] INFO  com.nci.fogedge.iot.BaseIoTDevice - Device ACTUATOR_002 stopped successfully
+2025-07-30 15:06:42.812 [Thread-1] INFO  com.nci.fogedge.iot.IoTDeviceManager - IoT Device Manager stopped successfully
+2025-07-30 15:06:42.816 [Thread-1] INFO  com.nci.fogedge.Main - IoT devices stopped
+2025-07-30 15:06:42.816 [Thread-1] INFO  com.nci.fogedge.edge.EdgeNodeManager - Stopping Edge Node Manager...
+2025-07-30 15:06:42.817 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_DATA_000
+2025-07-30 15:06:42.817 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_000 stopped successfully
+2025-07-30 15:06:42.818 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_DATA_001
+2025-07-30 15:06:42.819 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_001 stopped successfully
+2025-07-30 15:06:42.819 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_DATA_002
+2025-07-30 15:06:42.819 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_002 stopped successfully
+2025-07-30 15:06:42.826 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_DATA_003
+2025-07-30 15:06:42.827 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_003 stopped successfully
+2025-07-30 15:06:42.828 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_DATA_004
+2025-07-30 15:06:42.828 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_DATA_004 stopped successfully
+2025-07-30 15:06:42.829 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_ANALYTICS_000
+2025-07-30 15:06:42.830 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_ANALYTICS_000 stopped successfully
+2025-07-30 15:06:42.830 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_ANALYTICS_001
+2025-07-30 15:06:42.830 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_ANALYTICS_001 stopped successfully
+2025-07-30 15:06:42.831 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_ANALYTICS_002
+2025-07-30 15:06:42.832 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_ANALYTICS_002 stopped successfully
+2025-07-30 15:06:42.832 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_GATEWAY_000
+2025-07-30 15:06:42.833 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_GATEWAY_000 stopped successfully
+2025-07-30 15:06:42.841 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Stopping edge node: EDGE_GATEWAY_001
+2025-07-30 15:06:42.843 [Thread-1] INFO  com.nci.fogedge.edge.BaseEdgeNode - Edge node EDGE_GATEWAY_001 stopped successfully
+2025-07-30 15:06:42.846 [Thread-1] INFO  com.nci.fogedge.edge.EdgeNodeManager - Edge Node Manager stopped successfully
+2025-07-30 15:06:42.847 [Thread-1] INFO  com.nci.fogedge.Main - Edge nodes stopped
+2025-07-30 15:06:42.848 [Thread-1] INFO  com.nci.fogedge.cloud.CloudManager - Stopping Cloud Manager...
+2025-07-30 15:06:42.849 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Stopping cloud service: CLOUD_ANALYTICS_000
+2025-07-30 15:06:42.850 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ANALYTICS_000 stopped successfully
+2025-07-30 15:06:42.850 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Stopping cloud service: CLOUD_ANALYTICS_001
+2025-07-30 15:06:42.851 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ANALYTICS_001 stopped successfully
+2025-07-30 15:06:42.852 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Stopping cloud service: CLOUD_ANALYTICS_002
+2025-07-30 15:06:42.855 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ANALYTICS_002 stopped successfully
+2025-07-30 15:06:42.857 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Stopping cloud service: CLOUD_ML_000
+2025-07-30 15:06:42.858 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ML_000 stopped successfully
+2025-07-30 15:06:42.858 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Stopping cloud service: CLOUD_ML_001
+2025-07-30 15:06:42.859 [Thread-1] INFO  c.nci.fogedge.cloud.BaseCloudService - Cloud service CLOUD_ML_001 stopped successfully
+2025-07-30 15:06:42.860 [Thread-1] INFO  c.n.f.cloud.services.StorageService - Stopping StorageService: CLOUD_STORAGE_000
+2025-07-30 15:06:42.860 [Thread-1] INFO  c.n.f.cloud.services.StorageService - StorageService CLOUD_STORAGE_000 stopped successfully
+2025-07-30 15:06:42.860 [Thread-1] INFO  c.n.f.cloud.services.StorageService - Stopping StorageService: CLOUD_STORAGE_001
+2025-07-30 15:06:42.860 [Thread-1] INFO  c.n.f.cloud.services.StorageService - StorageService CLOUD_STORAGE_001 stopped successfully
+2025-07-30 15:06:42.860 [Thread-1] INFO  c.n.f.c.s.OrchestrationService - Stopping OrchestrationService: CLOUD_ORCHESTRATION_000
+2025-07-30 15:06:42.860 [Thread-1] INFO  c.n.f.c.s.OrchestrationService - OrchestrationService CLOUD_ORCHESTRATION_000 stopped successfully
+2025-07-30 15:06:42.862 [Thread-1] INFO  com.nci.fogedge.cloud.CloudManager - Cloud Manager stopped successfully
+2025-07-30 15:06:42.862 [Thread-1] INFO  com.nci.fogedge.Main - Cloud services stopped
+2025-07-30 15:06:42.865 [Thread-1] INFO  com.nci.fogedge.Main - Network monitoring stopped
+2025-07-30 15:06:42.866 [Thread-1] ERROR com.nci.fogedge.utils.DataExporter - Error exporting metrics
+java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: YearOfEra
+	at java.base/java.time.Instant.getLong(Instant.java:604)
+	at java.base/java.time.format.DateTimePrintContext.getValue(DateTimePrintContext.java:308)
+	at java.base/java.time.format.DateTimeFormatterBuilder$NumberPrinterParser.format(DateTimeFormatterBuilder.java:2763)
+	at java.base/java.time.format.DateTimeFormatterBuilder$CompositePrinterParser.format(DateTimeFormatterBuilder.java:2402)
+	at java.base/java.time.format.DateTimeFormatter.formatTo(DateTimeFormatter.java:1849)
+	at java.base/java.time.format.DateTimeFormatter.format(DateTimeFormatter.java:1823)
+	at com.nci.fogedge.utils.DataExporter.exportSystemMetrics(DataExporter.java:74)
+	at com.nci.fogedge.utils.DataExporter.exportMetrics(DataExporter.java:55)
+	at com.nci.fogedge.Main.shutdown(Main.java:251)
+	at com.nci.fogedge.Main.lambda$main$0(Main.java:62)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-30 15:06:42.867 [Thread-1] INFO  com.nci.fogedge.Main - Final metrics exported
+2025-07-30 15:06:42.867 [Thread-1] INFO  com.nci.fogedge.Main - === SYSTEM SHUTDOWN COMPLETED ===

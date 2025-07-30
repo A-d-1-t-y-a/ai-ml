@@ -1,8 +1,11 @@
 package com.nci.fogedge.iot.devices;
 
 import com.nci.fogedge.iot.BaseIoTDevice;
+import com.nci.fogedge.iot.IoTDevice;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +88,7 @@ public class SmartActuator extends BaseIoTDevice {
     }
     
     @Override
-    public Object generateData() {
+    public String collectData() {
         try {
             long currentTime = System.currentTimeMillis();
             
@@ -94,24 +97,25 @@ public class SmartActuator extends BaseIoTDevice {
                 performRandomOperation();
             }
             
-            // Create actuator status data object
-            Map<String, Object> actuatorData = new HashMap<>();
-            actuatorData.put("deviceId", deviceId);
-            actuatorData.put("deviceType", "SMART_ACTUATOR");
-            actuatorData.put("timestamp", currentTime);
-            actuatorData.put("currentState", currentState);
-            actuatorData.put("actuatorType", actuatorType);
-            actuatorData.put("operationCount", operationCount);
-            actuatorData.put("lastOperationTime", lastOperationTime);
-            actuatorData.put("powerConsumption", powerConsumption);
-            actuatorData.put("responseTime", responseTime);
-            actuatorData.put("isOperational", isOperational);
-            actuatorData.put("batteryLevel", batteryLevel);
-            actuatorData.put("signalStrength", signalStrength);
-            actuatorData.put("status", status);
+            // Create actuator status data JSON string
+            String actuatorData = String.format(
+                "{\"deviceId\":\"%s\",\"deviceType\":\"SMART_ACTUATOR\",\"timestamp\":%d,\"currentState\":\"%s\",\"actuatorType\":\"%s\",\"operationCount\":%d,\"lastOperationTime\":%d,\"powerConsumption\":%.1f,\"responseTime\":%.1f,\"isOperational\":%s,\"batteryLevel\":%.1f,\"signalStrength\":%.1f,\"status\":\"%s\"}",
+                deviceId,
+                currentTime,
+                currentState,
+                actuatorType,
+                operationCount,
+                lastOperationTime,
+                powerConsumption,
+                responseTime,
+                isOperational,
+                batteryLevel,
+                signalStrength,
+                status
+            );
             
             // Update total data generated
-            totalDataGenerated.addAndGet(actuatorData.toString().getBytes().length);
+            totalDataGenerated.addAndGet(actuatorData.getBytes().length);
             
             return actuatorData;
             
@@ -119,6 +123,93 @@ public class SmartActuator extends BaseIoTDevice {
             logger.error("Error generating actuator data for device: {}", deviceId, e);
             return null;
         }
+    }
+    
+    @Override
+    public boolean transmitData(String data) {
+        try {
+            if (data != null && !data.isEmpty()) {
+                boolean success = networkManager.transmitData(deviceId, data);
+                if (success) {
+                    successfulTransmissions.incrementAndGet();
+                    logger.debug("Smart actuator {} transmitted data successfully", deviceId);
+                } else {
+                    failedTransmissions.incrementAndGet();
+                    logger.warn("Smart actuator {} failed to transmit data", deviceId);
+                }
+                return success;
+            }
+            return false;
+        } catch (Exception e) {
+            failedTransmissions.incrementAndGet();
+            logger.error("Error transmitting data from smart actuator: {}", deviceId, e);
+            return false;
+        }
+    }
+    
+    @Override
+    public PerformanceMetrics getMetrics() {
+        PerformanceMetrics metrics = new PerformanceMetrics(deviceId, "SMART_ACTUATOR");
+        
+        metrics.addMetric("batteryLevel", batteryLevel);
+        metrics.addMetric("signalStrength", signalStrength);
+        metrics.addMetric("transmissionRate", getTransmissionRate());
+        metrics.addMetric("errorCount", getErrorCount());
+        metrics.addMetric("currentState", currentState);
+        metrics.addMetric("actuatorType", actuatorType);
+        metrics.addMetric("operationCount", operationCount);
+        metrics.addMetric("lastOperationTime", lastOperationTime);
+        metrics.addMetric("powerConsumption", powerConsumption);
+        metrics.addMetric("responseTime", responseTime);
+        metrics.addMetric("isOperational", isOperational);
+        metrics.addMetric("isHealthy", isHealthy());
+        metrics.addMetric("isRunning", isRunning());
+        
+        return metrics;
+    }
+    
+    @Override
+    public void updateConfiguration(Map<String, Object> config) {
+        if (config != null) {
+            configuration.putAll(config);
+            logger.debug("Smart actuator {} configuration updated", deviceId);
+        }
+    }
+    
+    @Override
+    public double getBatteryLevel() {
+        return batteryLevel;
+    }
+    
+    @Override
+    public double getSignalStrength() {
+        return signalStrength;
+    }
+    
+    @Override
+    public double getTransmissionRate() {
+        long total = successfulTransmissions.get() + failedTransmissions.get();
+        return total > 0 ? (double) successfulTransmissions.get() / total : 0.0;
+    }
+    
+    @Override
+    public int getErrorCount() {
+        return failedTransmissions.get();
+    }
+    
+    @Override
+    public void resetErrorCount() {
+        failedTransmissions.set(0);
+    }
+    
+    @Override
+    public long getLastDataCollectionTime() {
+        return System.currentTimeMillis();
+    }
+    
+    @Override
+    public long getLastTransmissionTime() {
+        return System.currentTimeMillis();
     }
     
     /**
@@ -241,28 +332,10 @@ public class SmartActuator extends BaseIoTDevice {
     }
     
     @Override
-    public Map<String, Object> getPerformanceMetrics() {
-        Map<String, Object> metrics = super.getPerformanceMetrics();
-        
-        // Add actuator-specific metrics
-        metrics.put("currentState", currentState);
-        metrics.put("actuatorType", actuatorType);
-        metrics.put("operationCount", operationCount);
-        metrics.put("lastOperationTime", lastOperationTime);
-        metrics.put("powerConsumption", powerConsumption);
-        metrics.put("responseTime", responseTime);
-        metrics.put("isOperational", isOperational);
-        
-        return metrics;
-    }
-    
-    @Override
-    public IoTDevice.DiagnosticResult performDiagnostic() {
-        IoTDevice.DiagnosticResult baseResult = super.performDiagnostic();
-        
-        Map<String, Object> details = new HashMap<>(baseResult.getDetails());
-        boolean passed = baseResult.isPassed();
-        String message = baseResult.getMessage();
+    public DiagnosticResult performDiagnostic() {
+        Map<String, Object> details = new HashMap<>();
+        boolean passed = true;
+        String message = "Smart actuator diagnostic passed";
         
         // Add actuator-specific diagnostic checks
         if (!isOperational) {
@@ -287,7 +360,10 @@ public class SmartActuator extends BaseIoTDevice {
         
         details.put("currentState", currentState);
         details.put("actuatorType", actuatorType);
+        details.put("batteryLevel", batteryLevel);
+        details.put("signalStrength", signalStrength);
+        details.put("status", status);
         
-        return new IoTDevice.DiagnosticResult(passed, message, details);
+        return passed ? DiagnosticResult.success(message, details) : DiagnosticResult.failure(message, details);
     }
 } 

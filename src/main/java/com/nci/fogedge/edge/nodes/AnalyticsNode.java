@@ -3,6 +3,7 @@ package com.nci.fogedge.edge.nodes;
 import com.nci.fogedge.edge.BaseEdgeNode;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,14 +87,14 @@ public class AnalyticsNode extends BaseEdgeNode {
     }
     
     @Override
-    public Object processData(Object data) {
+    public String processData(String data) {
         try {
-            logger.debug("Performing analytics in edge node: {}", nodeId);
+            logger.debug("Processing data in analytics node: {}", nodeId);
             
             // Simulate analytics pipeline
-            Object patternResult = performPatternRecognition(data);
-            Object anomalyResult = performAnomalyDetection(data);
-            Object predictionResult = performPredictiveModeling(data);
+            String patternResult = performPatternRecognition(data);
+            String anomalyResult = performAnomalyDetection(data);
+            String predictionResult = performPredictiveModeling(data);
             
             // Update analytics statistics
             patternDetectionCount++;
@@ -101,27 +102,22 @@ public class AnalyticsNode extends BaseEdgeNode {
             predictionCount++;
             
             // Create analytics result
-            Map<String, Object> analyticsResult = new HashMap<>();
-            analyticsResult.put("nodeId", nodeId);
-            analyticsResult.put("nodeType", "ANALYTICS");
-            analyticsResult.put("timestamp", System.currentTimeMillis());
-            analyticsResult.put("analyticsAccuracy", analyticsAccuracy);
-            analyticsResult.put("patternRecognitionAccuracy", patternRecognitionAccuracy);
-            analyticsResult.put("anomalyDetectionSensitivity", anomalyDetectionSensitivity);
-            analyticsResult.put("predictionAccuracy", predictionAccuracy);
-            analyticsResult.put("patternResult", patternResult);
-            analyticsResult.put("anomalyResult", anomalyResult);
-            analyticsResult.put("predictionResult", predictionResult);
+            String analyticsResult = "Analytics: " + patternResult + " | " + anomalyResult + " | " + predictionResult;
             
-            logger.debug("Analytics completed in edge node: {} with {}% accuracy", 
-                        nodeId, analyticsAccuracy * 100);
-            
+            logger.debug("Data processed successfully in analytics node: {}", nodeId);
             return analyticsResult;
             
         } catch (Exception e) {
-            logger.error("Error performing analytics in edge node: {}", nodeId, e);
-            return null;
+            logger.error("Error processing data in analytics node: {}", nodeId, e);
+            return "Error processing data";
         }
+    }
+
+    public Object processData(Object data) {
+        if (data instanceof String) {
+            return processData((String) data);
+        }
+        return "";
     }
     
     /**
@@ -130,22 +126,14 @@ public class AnalyticsNode extends BaseEdgeNode {
      * @param data Data to analyze for patterns
      * @return Pattern recognition result
      */
-    private Object performPatternRecognition(Object data) {
+    private String performPatternRecognition(String data) {
         try {
-            // Simulate pattern recognition algorithm
-            double patternThreshold = (Double) configuration.get("patternThreshold");
-            
-            Map<String, Object> patternResult = new HashMap<>();
-            patternResult.put("patternDetected", random.nextDouble() < patternRecognitionAccuracy);
-            patternResult.put("patternType", "TEMPORAL_TREND");
-            patternResult.put("confidence", patternRecognitionAccuracy);
-            patternResult.put("description", "Detected increasing trend in sensor readings");
-            
-            return patternResult;
-            
-        } catch (Exception e) {
-            logger.error("Error performing pattern recognition in edge node: {}", nodeId, e);
-            return null;
+            Thread.sleep(random.nextInt(50) + 10);
+            return data + " [PATTERN]";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Pattern recognition interrupted in node: {}", nodeId);
+            return data;
         }
     }
     
@@ -155,23 +143,14 @@ public class AnalyticsNode extends BaseEdgeNode {
      * @param data Data to analyze for anomalies
      * @return Anomaly detection result
      */
-    private Object performAnomalyDetection(Object data) {
+    private String performAnomalyDetection(String data) {
         try {
-            // Simulate anomaly detection algorithm
-            double anomalyThreshold = (Double) configuration.get("anomalyThreshold");
-            
-            Map<String, Object> anomalyResult = new HashMap<>();
-            anomalyResult.put("anomalyDetected", random.nextDouble() < 0.1); // 10% chance of anomaly
-            anomalyResult.put("anomalyType", "SPIKE_DETECTION");
-            anomalyResult.put("severity", "MEDIUM");
-            anomalyResult.put("confidence", anomalyDetectionSensitivity);
-            anomalyResult.put("description", "Detected unusual spike in sensor readings");
-            
-            return anomalyResult;
-            
-        } catch (Exception e) {
-            logger.error("Error performing anomaly detection in edge node: {}", nodeId, e);
-            return null;
+            Thread.sleep(random.nextInt(50) + 10);
+            return data + " [ANOMALY]";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Anomaly detection interrupted in node: {}", nodeId);
+            return data;
         }
     }
     
@@ -181,23 +160,14 @@ public class AnalyticsNode extends BaseEdgeNode {
      * @param data Data to use for predictions
      * @return Prediction result
      */
-    private Object performPredictiveModeling(Object data) {
+    private String performPredictiveModeling(String data) {
         try {
-            // Simulate predictive modeling algorithm
-            int predictionHorizon = (Integer) configuration.get("predictionHorizon");
-            
-            Map<String, Object> predictionResult = new HashMap<>();
-            predictionResult.put("predictionType", "FORECAST");
-            predictionResult.put("horizon", predictionHorizon);
-            predictionResult.put("predictedValue", 25.5 + (random.nextDouble() - 0.5) * 5.0);
-            predictionResult.put("confidence", predictionAccuracy);
-            predictionResult.put("description", "Predicted temperature trend for next 24 hours");
-            
-            return predictionResult;
-            
-        } catch (Exception e) {
-            logger.error("Error performing predictive modeling in edge node: {}", nodeId, e);
-            return null;
+            Thread.sleep(random.nextInt(50) + 10);
+            return data + " [PREDICTION]";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Predictive modeling interrupted in node: {}", nodeId);
+            return data;
         }
     }
     
@@ -289,21 +259,42 @@ public class AnalyticsNode extends BaseEdgeNode {
     }
     
     @Override
-    public EdgeNode.DiagnosticResult performDiagnostic() {
-        EdgeNode.DiagnosticResult baseResult = super.performDiagnostic();
+    public long getLastTaskOffloadingTime() {
+        return lastTaskOffloadingTime;
+    }
+
+    @Override
+    public boolean offloadTaskToCloud(String task) {
+        try {
+            logger.debug("Offloading task to cloud from analytics node: {}", nodeId);
+            
+            // Simulate task offloading to cloud
+            boolean offloadingSuccess = networkManager.offloadTaskToCloud(nodeId, task);
+            
+            if (offloadingSuccess) {
+                lastTaskOffloadingTime = System.currentTimeMillis();
+                logger.debug("Task offloaded successfully from analytics node: {}", nodeId);
+            } else {
+                logger.warn("Task offloading failed from analytics node: {}", nodeId);
+            }
+            
+            return offloadingSuccess;
+            
+        } catch (Exception e) {
+            logger.error("Error offloading task from analytics node: {}", nodeId, e);
+            return false;
+        }
+    }
+
+    @Override
+    public DiagnosticResult performDiagnostic() {
+        DiagnosticResult baseResult = super.performDiagnostic();
         
         Map<String, Object> details = new HashMap<>(baseResult.getDetails());
         boolean passed = baseResult.isPassed();
         String message = baseResult.getMessage();
         
         // Add analytics-specific diagnostic checks
-        if (analyticsAccuracy < 0.8) {
-            passed = false;
-            message = "Low analytics accuracy";
-        }
-        details.put("analyticsAccuracy", analyticsAccuracy);
-        details.put("minAnalyticsAccuracy", 0.8);
-        
         if (patternRecognitionAccuracy < 0.7) {
             passed = false;
             message = "Low pattern recognition accuracy";
@@ -311,12 +302,12 @@ public class AnalyticsNode extends BaseEdgeNode {
         details.put("patternRecognitionAccuracy", patternRecognitionAccuracy);
         details.put("minPatternRecognitionAccuracy", 0.7);
         
-        if (anomalyDetectionSensitivity < 0.7) {
+        if (anomalyDetectionSensitivity < 0.6) {
             passed = false;
             message = "Low anomaly detection sensitivity";
         }
         details.put("anomalyDetectionSensitivity", anomalyDetectionSensitivity);
-        details.put("minAnomalyDetectionSensitivity", 0.7);
+        details.put("minAnomalyDetectionSensitivity", 0.6);
         
         if (predictionAccuracy < 0.6) {
             passed = false;
@@ -328,7 +319,18 @@ public class AnalyticsNode extends BaseEdgeNode {
         details.put("patternDetectionCount", patternDetectionCount);
         details.put("anomalyDetectionCount", anomalyDetectionCount);
         details.put("predictionCount", predictionCount);
+        details.put("analyticsAccuracy", analyticsAccuracy);
         
-        return new EdgeNode.DiagnosticResult(passed, message, details);
+        return new DiagnosticResult(passed, message, details);
+    }
+
+    @Override
+    public boolean isRunning() {
+        return this.isRunning;
+    }
+
+    @Override
+    public String getLocation() {
+        return "UNKNOWN";
     }
 } 

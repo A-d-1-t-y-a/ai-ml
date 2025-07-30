@@ -2,6 +2,8 @@ package com.nci.fogedge.iot;
 
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
+import com.nci.fogedge.utils.PerformanceMetrics;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +114,12 @@ public abstract class BaseIoTDevice implements IoTDevice {
     }
     
     @Override
+    public String getLocation() {
+        // Default location - can be overridden by subclasses
+        return "DEFAULT_LOCATION";
+    }
+    
+    @Override
     public String getStatus() {
         return status;
     }
@@ -119,6 +127,11 @@ public abstract class BaseIoTDevice implements IoTDevice {
     @Override
     public boolean isHealthy() {
         return isRunning && batteryLevel > 10.0 && signalStrength > -80.0;
+    }
+    
+    @Override
+    public boolean isRunning() {
+        return isRunning;
     }
     
     @Override
@@ -209,6 +222,62 @@ public abstract class BaseIoTDevice implements IoTDevice {
     }
     
     @Override
+    public String collectData() {
+        // This method should be implemented by subclasses
+        return null;
+    }
+    
+    @Override
+    public boolean transmitData(String data) {
+        try {
+            if (data != null && !data.isEmpty()) {
+                boolean success = networkManager.transmitData(deviceId, data);
+                if (success) {
+                    successfulTransmissions.incrementAndGet();
+                    logger.debug("Data transmitted successfully from device: {}", deviceId);
+                } else {
+                    failedTransmissions.incrementAndGet();
+                    logger.warn("Data transmission failed from device: {}", deviceId);
+                }
+                return success;
+            }
+            return false;
+        } catch (Exception e) {
+            logger.error("Error transmitting data from device: {}", deviceId, e);
+            failedTransmissions.incrementAndGet();
+            return false;
+        }
+    }
+    
+    @Override
+    public PerformanceMetrics getMetrics() {
+        PerformanceMetrics metrics = new PerformanceMetrics(deviceId, deviceType);
+        
+        metrics.addMetric("batteryLevel", batteryLevel);
+        metrics.addMetric("signalStrength", signalStrength);
+        metrics.addMetric("transmissionRate", getTransmissionRate());
+        metrics.addMetric("errorCount", getErrorCount());
+        metrics.addMetric("totalDataGenerated", totalDataGenerated.get());
+        metrics.addMetric("successfulTransmissions", successfulTransmissions.get());
+        metrics.addMetric("failedTransmissions", failedTransmissions.get());
+        metrics.addMetric("transmissionSuccessRate", getTransmissionSuccessRate());
+        metrics.addMetric("lastTransmissionTime", lastTransmissionTime);
+        metrics.addMetric("isHealthy", isHealthy());
+        metrics.addMetric("isRunning", isRunning);
+        metrics.addMetric("status", status);
+        
+        return metrics;
+    }
+    
+    @Override
+    public void updateConfiguration(Map<String, Object> config) {
+        if (config != null) {
+            configuration.putAll(config);
+            logger.info("Configuration updated for device: {}", deviceId);
+        }
+    }
+    
+    @Override
     public double getBatteryLevel() {
         return batteryLevel;
     }
@@ -220,71 +289,30 @@ public abstract class BaseIoTDevice implements IoTDevice {
     
     @Override
     public double getTransmissionRate() {
-        return transmissionRate.get();
+        long total = successfulTransmissions.get() + failedTransmissions.get();
+        return total > 0 ? (double) successfulTransmissions.get() / total : 0.0;
     }
     
     @Override
-    public long getTotalDataGenerated() {
-        return totalDataGenerated.get();
-    }
-    
-    @Override
-    public int getSuccessfulTransmissions() {
-        return successfulTransmissions.get();
-    }
-    
-    @Override
-    public int getFailedTransmissions() {
+    public int getErrorCount() {
         return failedTransmissions.get();
     }
     
     @Override
-    public double getTransmissionSuccessRate() {
-        int total = successfulTransmissions.get() + failedTransmissions.get();
-        return total > 0 ? (double) successfulTransmissions.get() / total * 100 : 0;
-    }
-    
-    @Override
-    public Map<String, Object> getConfiguration() {
-        return new HashMap<>(configuration);
-    }
-    
-    @Override
-    public void updateConfiguration(Map<String, Object> config) {
-        configuration.putAll(config);
-        logger.info("Configuration updated for device: {}", deviceId);
-    }
-    
-    @Override
-    public Map<String, Object> getPerformanceMetrics() {
-        Map<String, Object> metrics = new HashMap<>();
-        metrics.put("deviceId", deviceId);
-        metrics.put("deviceType", deviceType);
-        metrics.put("status", status);
-        metrics.put("batteryLevel", batteryLevel);
-        metrics.put("signalStrength", signalStrength);
-        metrics.put("totalDataGenerated", totalDataGenerated.get());
-        metrics.put("successfulTransmissions", successfulTransmissions.get());
-        metrics.put("failedTransmissions", failedTransmissions.get());
-        metrics.put("transmissionSuccessRate", getTransmissionSuccessRate());
-        metrics.put("transmissionRate", transmissionRate.get());
-        metrics.put("lastTransmissionTime", lastTransmissionTime);
-        
-        return metrics;
-    }
-    
-    @Override
-    public void resetStatistics() {
-        totalDataGenerated.set(0);
-        successfulTransmissions.set(0);
+    public void resetErrorCount() {
         failedTransmissions.set(0);
-        transmissionRate.set(0);
-        lastTransmissionTime = System.currentTimeMillis();
-        
-        logger.info("Statistics reset for device: {}", deviceId);
     }
     
     @Override
+    public long getLastDataCollectionTime() {
+        return System.currentTimeMillis();
+    }
+    
+    @Override
+    public long getLastTransmissionTime() {
+        return lastTransmissionTime;
+    }
+    
     public DiagnosticResult performDiagnostic() {
         logger.debug("Performing diagnostic for device: {}", deviceId);
         
@@ -318,7 +346,7 @@ public abstract class BaseIoTDevice implements IoTDevice {
         details.put("status", status);
         details.put("isRunning", isRunning);
         
-        return new DiagnosticResult(passed, message, details);
+        return passed ? DiagnosticResult.success(message, details) : DiagnosticResult.failure(message, details);
     }
     
     /**
@@ -327,7 +355,7 @@ public abstract class BaseIoTDevice implements IoTDevice {
     protected void generateAndTransmitData() {
         try {
             // Generate device-specific data
-            Object data = generateData();
+            String data = collectData();
             
             if (data != null) {
                 // Simulate data transmission via LoRaWAN
@@ -360,31 +388,6 @@ public abstract class BaseIoTDevice implements IoTDevice {
         } catch (Exception e) {
             logger.error("Error in data generation and transmission for device: {}", deviceId, e);
             failedTransmissions.incrementAndGet();
-        }
-    }
-    
-    /**
-     * Transmit data to the network layer
-     * 
-     * @param data Data to transmit
-     * @return true if transmission successful, false otherwise
-     */
-    protected boolean transmitData(Object data) {
-        try {
-            // Simulate LoRaWAN transmission with network conditions
-            double transmissionSuccessProbability = calculateTransmissionSuccessProbability();
-            
-            if (Math.random() < transmissionSuccessProbability) {
-                // Simulate network transmission
-                networkManager.transmitData(deviceId, data.toString().getBytes());
-                return true;
-            } else {
-                return false;
-            }
-            
-        } catch (Exception e) {
-            logger.error("Error transmitting data from device: {}", deviceId, e);
-            return false;
         }
     }
     
@@ -435,19 +438,57 @@ public abstract class BaseIoTDevice implements IoTDevice {
         }
         
         // Update metrics
-        Map<String, Object> metrics = getPerformanceMetrics();
-        PerformanceMetrics perfMetrics = new PerformanceMetrics(
-            deviceId, "DEVICE", 
-            (Double) metrics.get("latency"), 
-            (Double) metrics.get("throughput"),
-            (Double) metrics.get("energyConsumption"),
-            (Double) metrics.get("cpuUsage"),
-            (Double) metrics.get("memoryUsage"),
-            (Long) metrics.get("dataProcessed"),
-            (Integer) metrics.get("activeConnections"),
-            (Double) metrics.get("healthScore")
-        );
+        PerformanceMetrics perfMetrics = getMetrics();
         metricsCollector.updateDeviceMetrics(deviceId, perfMetrics);
+    }
+    
+    /**
+     * Get total data generated
+     */
+    public long getTotalDataGenerated() {
+        return totalDataGenerated.get();
+    }
+    
+    /**
+     * Get successful transmissions count
+     */
+    public int getSuccessfulTransmissions() {
+        return successfulTransmissions.get();
+    }
+    
+    /**
+     * Get failed transmissions count
+     */
+    public int getFailedTransmissions() {
+        return failedTransmissions.get();
+    }
+    
+    /**
+     * Get transmission success rate
+     */
+    public double getTransmissionSuccessRate() {
+        int total = successfulTransmissions.get() + failedTransmissions.get();
+        return total > 0 ? (double) successfulTransmissions.get() / total * 100 : 0;
+    }
+    
+    /**
+     * Get device configuration
+     */
+    public Map<String, Object> getConfiguration() {
+        return new HashMap<>(configuration);
+    }
+    
+    /**
+     * Reset device statistics
+     */
+    public void resetStatistics() {
+        totalDataGenerated.set(0);
+        successfulTransmissions.set(0);
+        failedTransmissions.set(0);
+        transmissionRate.set(0);
+        lastTransmissionTime = System.currentTimeMillis();
+        
+        logger.info("Statistics reset for device: {}", deviceId);
     }
     
     /**

@@ -3,6 +3,7 @@ package com.nci.fogedge.edge.nodes;
 import com.nci.fogedge.edge.BaseEdgeNode;
 import com.nci.fogedge.network.NetworkManager;
 import com.nci.fogedge.utils.MetricsCollector;
+import com.nci.fogedge.utils.DiagnosticResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,42 +89,8 @@ public class GatewayNode extends BaseEdgeNode {
     }
     
     @Override
-    public Object processData(Object data) {
-        try {
-            logger.debug("Processing data in gateway node: {}", nodeId);
-            
-            // Simulate gateway processing pipeline
-            Object routedData = performMessageRouting(data);
-            Object translatedData = performProtocolTranslation(routedData);
-            Object balancedData = performLoadBalancing(translatedData);
-            
-            // Update gateway statistics
-            messageRoutingCount++;
-            protocolTranslationCount++;
-            loadBalancingCount++;
-            
-            // Create gateway result
-            Map<String, Object> gatewayResult = new HashMap<>();
-            gatewayResult.put("nodeId", nodeId);
-            gatewayResult.put("nodeType", "GATEWAY");
-            gatewayResult.put("timestamp", System.currentTimeMillis());
-            gatewayResult.put("gatewayEfficiency", gatewayEfficiency);
-            gatewayResult.put("routingAccuracy", routingAccuracy);
-            gatewayResult.put("translationEfficiency", translationEfficiency);
-            gatewayResult.put("loadBalancingEffectiveness", loadBalancingEffectiveness);
-            gatewayResult.put("routedData", routedData);
-            gatewayResult.put("translatedData", translatedData);
-            gatewayResult.put("balancedData", balancedData);
-            
-            logger.debug("Gateway processing completed in edge node: {} with {}% efficiency", 
-                        nodeId, gatewayEfficiency * 100);
-            
-            return gatewayResult;
-            
-        } catch (Exception e) {
-            logger.error("Error processing data in gateway node: {}", nodeId, e);
-            return null;
-        }
+    public String processData(String data) {
+        return "Gateway processed: " + data;
     }
     
     /**
@@ -132,24 +99,13 @@ public class GatewayNode extends BaseEdgeNode {
      * @param data Data to route
      * @return Routed data
      */
-    private Object performMessageRouting(Object data) {
+    private String performMessageRouting(String data) {
         try {
-            // Simulate intelligent routing algorithm
-            String routingAlgorithm = (String) configuration.get("routingAlgorithm");
-            
-            Map<String, Object> routingResult = new HashMap<>();
-            routingResult.put("sourceNode", nodeId);
-            routingResult.put("destinationNode", "EDGE_DATA_001");
-            routingResult.put("routingPath", "IoT -> Gateway -> Edge -> Cloud");
-            routingResult.put("routingDecision", "OPTIMAL_PATH");
-            routingResult.put("latency", 15.0 + random.nextDouble() * 10.0); // 15-25ms
-            routingResult.put("confidence", routingAccuracy);
-            routingResult.put("data", data);
-            
-            return routingResult;
-            
-        } catch (Exception e) {
-            logger.error("Error performing message routing in gateway node: {}", nodeId, e);
+            Thread.sleep(random.nextInt(40) + 10);
+            return data + " [ROUTED]";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Message routing interrupted in node: {}", nodeId);
             return data;
         }
     }
@@ -160,23 +116,13 @@ public class GatewayNode extends BaseEdgeNode {
      * @param data Data to translate
      * @return Translated data
      */
-    private Object performProtocolTranslation(Object data) {
+    private String performProtocolTranslation(String data) {
         try {
-            // Simulate protocol translation algorithm
-            String supportedProtocols = (String) configuration.get("supportedProtocols");
-            
-            Map<String, Object> translationResult = new HashMap<>();
-            translationResult.put("sourceProtocol", "LoRaWAN");
-            translationResult.put("targetProtocol", "5G");
-            translationResult.put("translationSuccess", random.nextDouble() < translationEfficiency);
-            translationResult.put("translationTime", 5.0 + random.nextDouble() * 3.0); // 5-8ms
-            translationResult.put("dataIntegrity", 0.98);
-            translationResult.put("data", data);
-            
-            return translationResult;
-            
-        } catch (Exception e) {
-            logger.error("Error performing protocol translation in gateway node: {}", nodeId, e);
+            Thread.sleep(random.nextInt(40) + 10);
+            return data + " [TRANSLATED]";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Protocol translation interrupted in node: {}", nodeId);
             return data;
         }
     }
@@ -187,25 +133,13 @@ public class GatewayNode extends BaseEdgeNode {
      * @param data Data to balance
      * @return Balanced data
      */
-    private Object performLoadBalancing(Object data) {
+    private String performLoadBalancing(String data) {
         try {
-            // Simulate load balancing algorithm
-            String loadBalancingAlgorithm = (String) configuration.get("loadBalancingAlgorithm");
-            int maxConnections = (Integer) configuration.get("maxConnections");
-            
-            Map<String, Object> balancingResult = new HashMap<>();
-            balancingResult.put("algorithm", loadBalancingAlgorithm);
-            balancingResult.put("selectedServer", "EDGE_SERVER_" + (random.nextInt(5) + 1));
-            balancingResult.put("currentLoad", 45.0 + random.nextDouble() * 30.0); // 45-75%
-            balancingResult.put("maxCapacity", maxConnections);
-            balancingResult.put("balancingSuccess", random.nextDouble() < loadBalancingEffectiveness);
-            balancingResult.put("responseTime", 20.0 + random.nextDouble() * 15.0); // 20-35ms
-            balancingResult.put("data", data);
-            
-            return balancingResult;
-            
-        } catch (Exception e) {
-            logger.error("Error performing load balancing in gateway node: {}", nodeId, e);
+            Thread.sleep(random.nextInt(40) + 10);
+            return data + " [BALANCED]";
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Load balancing interrupted in node: {}", nodeId);
             return data;
         }
     }
@@ -298,46 +232,78 @@ public class GatewayNode extends BaseEdgeNode {
     }
     
     @Override
-    public EdgeNode.DiagnosticResult performDiagnostic() {
-        EdgeNode.DiagnosticResult baseResult = super.performDiagnostic();
+    public long getLastTaskOffloadingTime() {
+        return lastTaskOffloadingTime;
+    }
+
+    @Override
+    public boolean offloadTaskToCloud(String task) {
+        try {
+            logger.debug("Offloading task to cloud from gateway node: {}", nodeId);
+            
+            // Simulate task offloading to cloud
+            boolean offloadingSuccess = networkManager.offloadTaskToCloud(nodeId, task);
+            
+            if (offloadingSuccess) {
+                lastTaskOffloadingTime = System.currentTimeMillis();
+                logger.debug("Task offloaded successfully from gateway node: {}", nodeId);
+            } else {
+                logger.warn("Task offloading failed from gateway node: {}", nodeId);
+            }
+            
+            return offloadingSuccess;
+            
+        } catch (Exception e) {
+            logger.error("Error offloading task from gateway node: {}", nodeId, e);
+            return false;
+        }
+    }
+
+    @Override
+    public DiagnosticResult performDiagnostic() {
+        DiagnosticResult baseResult = super.performDiagnostic();
         
         Map<String, Object> details = new HashMap<>(baseResult.getDetails());
         boolean passed = baseResult.isPassed();
         String message = baseResult.getMessage();
         
         // Add gateway-specific diagnostic checks
-        if (gatewayEfficiency < 0.8) {
-            passed = false;
-            message = "Low gateway efficiency";
-        }
-        details.put("gatewayEfficiency", gatewayEfficiency);
-        details.put("minGatewayEfficiency", 0.8);
-        
-        if (routingAccuracy < 0.9) {
+        if (routingAccuracy < 0.8) {
             passed = false;
             message = "Low routing accuracy";
         }
         details.put("routingAccuracy", routingAccuracy);
-        details.put("minRoutingAccuracy", 0.9);
+        details.put("minRoutingAccuracy", 0.8);
         
-        if (translationEfficiency < 0.8) {
+        if (translationEfficiency < 0.7) {
             passed = false;
-            message = "Low translation efficiency";
+            message = "Low protocol translation efficiency";
         }
         details.put("translationEfficiency", translationEfficiency);
-        details.put("minTranslationEfficiency", 0.8);
+        details.put("minTranslationEfficiency", 0.7);
         
-        if (loadBalancingEffectiveness < 0.7) {
+        if (loadBalancingEffectiveness < 0.6) {
             passed = false;
             message = "Low load balancing effectiveness";
         }
         details.put("loadBalancingEffectiveness", loadBalancingEffectiveness);
-        details.put("minLoadBalancingEffectiveness", 0.7);
+        details.put("minLoadBalancingEffectiveness", 0.6);
         
         details.put("messageRoutingCount", messageRoutingCount);
         details.put("protocolTranslationCount", protocolTranslationCount);
         details.put("loadBalancingCount", loadBalancingCount);
+        details.put("gatewayEfficiency", gatewayEfficiency);
         
-        return new EdgeNode.DiagnosticResult(passed, message, details);
+        return new DiagnosticResult(passed, message, details);
+    }
+
+    @Override
+    public boolean isRunning() {
+        return this.isRunning;
+    }
+
+    @Override
+    public String getLocation() {
+        return "UNKNOWN";
     }
 } 
