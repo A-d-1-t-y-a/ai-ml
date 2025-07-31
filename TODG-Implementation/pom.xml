@@ -15,19 +15,7 @@
     </properties>
 
     <dependencies>
-        <!-- CloudSim dependency from Maven Central -->
-        <dependency>
-            <groupId>org.cloudbus.cloudsim</groupId>
-            <artifactId>cloudsim</artifactId>
-            <version>4.0</version>
-        </dependency>
-        
-        <!-- CloudSim Plus as an alternative to CloudSim if needed -->
-        <dependency>
-            <groupId>org.cloudsimplus</groupId>
-            <artifactId>cloudsim-plus</artifactId>
-            <version>7.3.0</version>
-        </dependency>
+        <!-- We'll implement our own simulation without external dependencies -->
 
         <!-- JFreeChart for graph generation -->
         <dependency>
