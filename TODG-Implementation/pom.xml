@@ -15,22 +15,18 @@
     </properties>
 
     <dependencies>
-        <!-- iFogSim dependency -->
-        <dependency>
-            <groupId>org.fog.cloudsim</groupId>
-            <artifactId>ifogsim</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/ifogsim.jar</systemPath>
-        </dependency>
-
-        <!-- CloudSim dependency -->
+        <!-- CloudSim dependency from Maven Central -->
         <dependency>
             <groupId>org.cloudbus.cloudsim</groupId>
             <artifactId>cloudsim</artifactId>
             <version>4.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/cloudsim-4.0.jar</systemPath>
+        </dependency>
+        
+        <!-- CloudSim Plus as an alternative to CloudSim if needed -->
+        <dependency>
+            <groupId>org.cloudsimplus</groupId>
+            <artifactId>cloudsim-plus</artifactId>
+            <version>7.3.0</version>
         </dependency>
 
         <!-- JFreeChart for graph generation -->
@@ -91,7 +87,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.todg.simulation.TODGSimulation</mainClass>
+                            <mainClass>org.todg.simulation.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
