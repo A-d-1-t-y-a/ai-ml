@@ -35,7 +35,9 @@ public class Task {
         WAITING,
         EXECUTING,
         COMPLETED,
-        FAILED
+        FAILED,
+        OFFLOADED,
+        REJECTED
     }
 
     /**
@@ -95,11 +97,11 @@ public class Task {
         return deadline;
     }
 
-    public double getCreationTime() {
+    public double getArrivalTime() {
         return creationTime;
     }
 
-    public TaskType getType() {
+    public TaskType getTaskType() {
         return type;
     }
 

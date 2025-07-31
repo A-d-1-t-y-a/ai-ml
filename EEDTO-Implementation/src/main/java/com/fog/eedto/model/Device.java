@@ -3,6 +3,8 @@ package com.fog.eedto.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fog.eedto.model.Task;
+
 /**
  * Abstract base class for all devices in the EEDTO system (IoT devices, edge servers, cloud servers).
  * Contains common properties and methods for all device types.

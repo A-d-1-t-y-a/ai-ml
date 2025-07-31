@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import com.fog.eedto.algorithm.EEDTOAlgorithm;
 import com.fog.eedto.blockchain.BlockchainService;
@@ -22,7 +22,7 @@ import com.fog.eedto.model.Task;
  * and runs the EEDTO algorithm for task offloading decisions.
  */
 public class Simulation {
-    private static final Logger logger = LogManager.getLogger(Simulation.class);
+    private static final Logger logger = Logger.getLogger(Simulation.class.getName());
     
     private final List<IoTDevice> iotDevices;
     private final List<EdgeServer> edgeServers;
@@ -95,8 +95,8 @@ public class Simulation {
         // Initialize devices
         initializeDevices(numIoTDevices, numEdgeServers, numCloudServers);
         
-        logger.info("Simulation initialized with {} IoT devices, {} edge servers, and {} cloud servers",
-                   numIoTDevices, numEdgeServers, numCloudServers);
+        logger.info(String.format("Simulation initialized with %d IoT devices, %d edge servers, and %d cloud servers",
+                   numIoTDevices, numEdgeServers, numCloudServers));
     }
     
     /**
@@ -124,7 +124,7 @@ public class Simulation {
             );
             
             iotDevices.add(iotDevice);
-            logger.debug("Created IoT device: {}", iotDevice);
+            logger.fine(String.format("Created IoT device: %s", iotDevice));
         }
         
         // Create edge servers
@@ -146,7 +146,7 @@ public class Simulation {
             );
             
             edgeServers.add(edgeServer);
-            logger.debug("Created edge server: {}", edgeServer);
+            logger.fine(String.format("Created edge server: %s", edgeServer));
         }
         
         // Create cloud servers
@@ -169,7 +169,7 @@ public class Simulation {
             );
             
             cloudServers.add(cloudServer);
-            logger.debug("Created cloud server: {}", cloudServer);
+            logger.fine(String.format("Created cloud server: %s", cloudServer));
         }
     }
     
@@ -246,7 +246,7 @@ public class Simulation {
                         iotDevice.removeTask(task);
                         totalTasksRejected++;
                         
-                        logger.debug("Task {} rejected, no suitable device found", task.getId());
+                        logger.fine(String.format("Task %d rejected, no suitable device found", task.getId()));
                     } else if (targetDevice == iotDevice) {
                         // Execute locally
                         double finishTime = iotDevice.executeTask(task, currentTime);
@@ -259,8 +259,8 @@ public class Simulation {
                         // Remove task from queue
                         iotDevice.removeTask(task);
                         
-                        logger.debug("Task {} executed locally on device {}, finish time: {}", 
-                                    task.getId(), iotDevice.getId(), finishTime);
+                        logger.fine(String.format("Task %d executed locally on device %d, finish time: %.2f", 
+                                    task.getId(), iotDevice.getId(), finishTime));
                     } else {
                         // Offload to target device
                         task.setStatus(Task.TaskStatus.OFFLOADED);
@@ -293,8 +293,8 @@ public class Simulation {
                         // Remove task from queue
                         iotDevice.removeTask(task);
                         
-                        logger.debug("Task {} offloaded from device {} to {}, finish time: {}", 
-                                    task.getId(), iotDevice.getId(), targetDevice.getName(), finishTime);
+                        logger.fine(String.format("Task %d offloaded from device %d to %s, finish time: %.2f", 
+                                    task.getId(), iotDevice.getId(), targetDevice.getName(), finishTime));
                     }
                 }
             }
@@ -309,38 +309,38 @@ public class Simulation {
      */
     private void logStatistics() {
         logger.info("Simulation completed");
-        logger.info("Total tasks generated: {}", totalTasksGenerated);
-        logger.info("Total tasks completed: {}", totalTasksCompleted);
-        logger.info("Total tasks rejected: {}", totalTasksRejected);
-        logger.info("Task completion rate: {}%", 
-                   totalTasksGenerated > 0 ? (double) totalTasksCompleted / totalTasksGenerated * 100 : 0);
-        logger.info("Average energy consumed per task: {} J", 
-                   totalTasksCompleted > 0 ? totalEnergyConsumed / totalTasksCompleted : 0);
-        logger.info("Average response time per task: {} s", 
-                   totalTasksCompleted > 0 ? totalResponseTime / totalTasksCompleted : 0);
-        logger.info("Average execution cost per task: ${}",
-                   totalTasksCompleted > 0 ? totalExecutionCost / totalTasksCompleted : 0);
-        logger.info("Blockchain size: {} blocks", blockchainService.getBlockchainSize());
-        logger.info("Blockchain valid: {}", blockchainService.isChainValid());
+        logger.info(String.format("Total tasks generated: %d", totalTasksGenerated));
+        logger.info(String.format("Total tasks completed: %d", totalTasksCompleted));
+        logger.info(String.format("Total tasks rejected: %d", totalTasksRejected));
+        logger.info(String.format("Task completion rate: %.2f%%", 
+                   totalTasksGenerated > 0 ? (double) totalTasksCompleted / totalTasksGenerated * 100 : 0));
+        logger.info(String.format("Average energy consumed per task: %.2f J", 
+                   totalTasksCompleted > 0 ? totalEnergyConsumed / totalTasksCompleted : 0));
+        logger.info(String.format("Average response time per task: %.2f s", 
+                   totalTasksCompleted > 0 ? totalResponseTime / totalTasksCompleted : 0));
+        logger.info(String.format("Average execution cost per task: $%.2f",
+                   totalTasksCompleted > 0 ? totalExecutionCost / totalTasksCompleted : 0));
+        logger.info(String.format("Blockchain size: %d blocks", blockchainService.getBlockchainSize()));
+        logger.info(String.format("Blockchain valid: %b", blockchainService.isChainValid()));
         
         // Log EEDTO algorithm statistics
-        logger.info("EEDTO algorithm statistics: {}", eedtoAlgorithm);
+        logger.info(String.format("EEDTO algorithm statistics: %s", eedtoAlgorithm));
         
         // Log device statistics
         for (IoTDevice iotDevice : iotDevices) {
-            logger.info("IoT device {} statistics: energy consumed: {} J, remaining battery: {}%",
+            logger.info(String.format("IoT device %d statistics: energy consumed: %.2f J, remaining battery: %.2f%%",
                        iotDevice.getId(), iotDevice.getEnergyConsumed(),
-                       iotDevice.getRemainingBattery() / iotDevice.getBatteryCapacity() * 100);
+                       iotDevice.getRemainingBattery() / iotDevice.getBatteryCapacity() * 100));
         }
         
         for (EdgeServer edgeServer : edgeServers) {
-            logger.info("Edge server {} statistics: energy consumed: {} J",
-                       edgeServer.getId(), edgeServer.getEnergyConsumed());
+            logger.info(String.format("Edge server %d statistics: energy consumed: %.2f J",
+                       edgeServer.getId(), edgeServer.getEnergyConsumed()));
         }
         
         for (CloudServer cloudServer : cloudServers) {
-            logger.info("Cloud server {} statistics: energy consumed: {} J",
-                       cloudServer.getId(), cloudServer.getEnergyConsumed());
+            logger.info(String.format("Cloud server %d statistics: energy consumed: %.2f J",
+                       cloudServer.getId(), cloudServer.getEnergyConsumed()));
         }
     }
     

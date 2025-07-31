@@ -1,4 +1,4 @@
-package com.fog.eedto;
+package com.fog.eedto.util;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -6,12 +6,11 @@ import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
@@ -27,137 +26,47 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import com.fog.eedto.simulation.Simulation;
 import com.fog.eedto.simulation.SimulationResults;
 
 /**
- * Main class for the EEDTO system.
- * This class runs the simulation with different parameters and generates visualizations of the results.
+ * Utility class for generating charts and graphs for EEDTO simulation results.
  */
-public class Main {
-    private static final Logger logger = Logger.getLogger(Main.class.getName());
+public class ChartGenerator {
+    private static final Logger logger = LogManager.getLogger(ChartGenerator.class);
     
     // Directory for storing output files
     private static final String OUTPUT_DIR = "output";
     
-    public static void main(String[] args) {
-        logger.info("Starting EEDTO simulation");
-        
+    /**
+     * Generate all charts for a single simulation
+     * 
+     * @param name Simulation name
+     * @param results Simulation results
+     * @return Array of generated file paths
+     */
+    public static String[] generateAllCharts(String name, SimulationResults results) {
         // Create output directory if it doesn't exist
         File outputDir = new File(OUTPUT_DIR);
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
         
-        // Run simulations with different parameters
-        List<SimulationResults> allResults = new ArrayList<>();
-        
-        // Baseline simulation
-        logger.info("Running baseline simulation");
-        SimulationResults baselineResults = runSimulation(
-            "Baseline",
-            10, 3, 1, 300, 0.1,
-            0.33, 0.33, 0.33, 0.2, 5, 3, 2
-        );
-        allResults.add(baselineResults);
-        
-        // Energy-focused simulation
-        logger.info("Running energy-focused simulation");
-        SimulationResults energyResults = runSimulation(
-            "Energy-Focused",
-            10, 3, 1, 300, 0.1,
-            0.6, 0.2, 0.2, 0.2, 5, 3, 2
-        );
-        allResults.add(energyResults);
-        
-        // Latency-focused simulation
-        logger.info("Running latency-focused simulation");
-        SimulationResults latencyResults = runSimulation(
-            "Latency-Focused",
-            10, 3, 1, 300, 0.1,
-            0.2, 0.6, 0.2, 0.2, 5, 3, 2
-        );
-        allResults.add(latencyResults);
-        
-        // Security-focused simulation
-        logger.info("Running security-focused simulation");
-        SimulationResults securityResults = runSimulation(
-            "Security-Focused",
-            10, 3, 1, 300, 0.1,
-            0.2, 0.2, 0.6, 0.2, 5, 3, 2
-        );
-        allResults.add(securityResults);
-        
-        // Generate comparative visualizations
-        generateComparativeVisualizations(allResults);
-        
-        logger.info("EEDTO simulation completed successfully");
-    }
-    
-    /**
-     * Run a simulation with the specified parameters
-     * 
-     * @param name Simulation name
-     * @param numIoTDevices Number of IoT devices
-     * @param numEdgeServers Number of edge servers
-     * @param numCloudServers Number of cloud servers
-     * @param simulationEndTime Simulation end time in seconds
-     * @param taskGenerationRate Task generation rate per second per IoT device
-     * @param energyWeight Weight factor for energy efficiency in decision-making
-     * @param latencyWeight Weight factor for latency in decision-making
-     * @param securityWeight Weight factor for security in decision-making
-     * @param energyThreshold Minimum battery level for IoT devices (percentage)
-     * @param latencyThreshold Maximum acceptable latency in seconds
-     * @param securityLevel Required security level (1-5)
-     * @param blockchainDifficulty Mining difficulty for the blockchain
-     * @return Simulation results
-     */
-    private static SimulationResults runSimulation(String name, int numIoTDevices, int numEdgeServers, 
-                                                 int numCloudServers, double simulationEndTime, 
-                                                 double taskGenerationRate, double energyWeight, 
-                                                 double latencyWeight, double securityWeight, 
-                                                 double energyThreshold, double latencyThreshold, 
-                                                 int securityLevel, int blockchainDifficulty) {
-        // Create and run simulation
-        Simulation simulation = new Simulation(
-            numIoTDevices, numEdgeServers, numCloudServers,
-            simulationEndTime, taskGenerationRate,
-            energyWeight, latencyWeight, securityWeight,
-            energyThreshold, latencyThreshold, securityLevel,
-            blockchainDifficulty
-        );
-        
-        simulation.run();
-        
-        // Get results
-        SimulationResults results = simulation.getResults();
-        
-        // Generate visualizations
-        generateVisualizations(name, results);
-        
-        return results;
-    }
-    
-    /**
-     * Generate visualizations for a single simulation
-     * 
-     * @param name Simulation name
-     * @param results Simulation results
-     */
-    private static void generateVisualizations(String name, SimulationResults results) {
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String filePrefix = OUTPUT_DIR + File.separator + name + "_" + timestamp;
         
-        // Generate task distribution pie chart
-        generateTaskDistributionPieChart(name, results, filePrefix + "_task_distribution.png");
+        String taskDistributionChart = generateTaskDistributionPieChart(name, results, filePrefix + "_task_distribution.png");
+        String energyConsumptionChart = generateEnergyConsumptionBarChart(name, results, filePrefix + "_energy_consumption.png");
+        String responseTimeChart = generateResponseTimeBarChart(name, results, filePrefix + "_response_time.png");
+        String costChart = generateCostBarChart(name, results, filePrefix + "_cost.png");
         
-        // Generate energy consumption bar chart
-        generateEnergyConsumptionBarChart(name, results, filePrefix + "_energy_consumption.png");
+        logger.info("Generated charts for simulation: {}", name);
         
-        // Generate response time bar chart
-        generateResponseTimeBarChart(name, results, filePrefix + "_response_time.png");
-        
-        logger.info("Generated visualizations for simulation: {}", name);
+        return new String[] {
+            taskDistributionChart,
+            energyConsumptionChart,
+            responseTimeChart,
+            costChart
+        };
     }
     
     /**
@@ -166,8 +75,9 @@ public class Main {
      * @param name Simulation name
      * @param results Simulation results
      * @param outputFile Output file path
+     * @return Path to the generated chart file
      */
-    private static void generateTaskDistributionPieChart(String name, SimulationResults results, String outputFile) {
+    public static String generateTaskDistributionPieChart(String name, SimulationResults results, String outputFile) {
         DefaultPieDataset<String> dataset = new DefaultPieDataset<>();
         dataset.setValue("Local Execution", results.getLocalExecutions());
         dataset.setValue("Edge Offload", results.getEdgeOffloads());
@@ -195,8 +105,11 @@ public class Main {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            logger.info("Generated task distribution chart: {}", outputFile);
+            return outputFile;
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error saving pie chart: {0}", e.getMessage());
+            logger.error("Error saving pie chart: {}", e.getMessage());
+            return null;
         }
     }
     
@@ -206,8 +119,9 @@ public class Main {
      * @param name Simulation name
      * @param results Simulation results
      * @param outputFile Output file path
+     * @return Path to the generated chart file
      */
-    private static void generateEnergyConsumptionBarChart(String name, SimulationResults results, String outputFile) {
+    public static String generateEnergyConsumptionBarChart(String name, SimulationResults results, String outputFile) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         dataset.addValue(results.getAverageEnergyPerTask(), "Average Energy (J)", name);
         
@@ -230,8 +144,11 @@ public class Main {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            logger.info("Generated energy consumption chart: {}", outputFile);
+            return outputFile;
         } catch (IOException e) {
             logger.error("Error saving energy consumption chart: {}", e.getMessage());
+            return null;
         }
     }
     
@@ -241,8 +158,9 @@ public class Main {
      * @param name Simulation name
      * @param results Simulation results
      * @param outputFile Output file path
+     * @return Path to the generated chart file
      */
-    private static void generateResponseTimeBarChart(String name, SimulationResults results, String outputFile) {
+    public static String generateResponseTimeBarChart(String name, SimulationResults results, String outputFile) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         dataset.addValue(results.getAverageResponseTime(), "Average Response Time (s)", name);
         
@@ -265,44 +183,98 @@ public class Main {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            logger.info("Generated response time chart: {}", outputFile);
+            return outputFile;
         } catch (IOException e) {
             logger.error("Error saving response time chart: {}", e.getMessage());
+            return null;
         }
     }
     
     /**
-     * Generate comparative visualizations for multiple simulations
+     * Generate cost bar chart
      * 
-     * @param allResults List of simulation results
+     * @param name Simulation name
+     * @param results Simulation results
+     * @param outputFile Output file path
+     * @return Path to the generated chart file
      */
-    private static void generateComparativeVisualizations(List<SimulationResults> allResults) {
+    public static String generateCostBarChart(String name, SimulationResults results, String outputFile) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        dataset.addValue(results.getAverageExecutionCost(), "Average Cost ($)", name);
+        
+        JFreeChart chart = ChartFactory.createBarChart(
+            name + " - Execution Cost",
+            "Simulation",
+            "Average Cost per Task ($)",
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            true,
+            false
+        );
+        
+        CategoryPlot plot = chart.getCategoryPlot();
+        BarRenderer renderer = (BarRenderer) plot.getRenderer();
+        renderer.setSeriesPaint(0, new Color(255, 153, 0));
+        renderer.setDrawBarOutline(false);
+        renderer.setItemMargin(0.1);
+        
+        try {
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            logger.info("Generated cost chart: {}", outputFile);
+            return outputFile;
+        } catch (IOException e) {
+            logger.error("Error saving cost chart: {}", e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Generate comparative charts for multiple simulations
+     * 
+     * @param simulationNames Names of the simulations
+     * @param allResults List of simulation results
+     * @return Array of generated file paths
+     */
+    public static String[] generateComparativeCharts(String[] simulationNames, List<SimulationResults> allResults) {
+        // Create output directory if it doesn't exist
+        File outputDir = new File(OUTPUT_DIR);
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
+        
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String filePrefix = OUTPUT_DIR + File.separator + "Comparative_" + timestamp;
         
-        // Generate comparative energy consumption chart
-        generateComparativeEnergyChart(allResults, filePrefix + "_energy.png");
+        String energyChart = generateComparativeEnergyChart(simulationNames, allResults, filePrefix + "_energy.png");
+        String responseTimeChart = generateComparativeResponseTimeChart(simulationNames, allResults, filePrefix + "_response_time.png");
+        String offloadingChart = generateComparativeOffloadingChart(simulationNames, allResults, filePrefix + "_offloading.png");
+        String costChart = generateComparativeCostChart(simulationNames, allResults, filePrefix + "_cost.png");
         
-        // Generate comparative response time chart
-        generateComparativeResponseTimeChart(allResults, filePrefix + "_response_time.png");
+        logger.info("Generated comparative charts");
         
-        // Generate comparative offloading distribution chart
-        generateComparativeOffloadingChart(allResults, filePrefix + "_offloading.png");
-        
-        logger.info("Generated comparative visualizations");
+        return new String[] {
+            energyChart,
+            responseTimeChart,
+            offloadingChart,
+            costChart
+        };
     }
     
     /**
      * Generate comparative energy consumption chart
      * 
+     * @param simulationNames Names of the simulations
      * @param allResults List of simulation results
      * @param outputFile Output file path
+     * @return Path to the generated chart file
      */
-    private static void generateComparativeEnergyChart(List<SimulationResults> allResults, String outputFile) {
+    public static String generateComparativeEnergyChart(String[] simulationNames, List<SimulationResults> allResults, String outputFile) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
-        String[] names = {"Baseline", "Energy-Focused", "Latency-Focused", "Security-Focused"};
         for (int i = 0; i < allResults.size(); i++) {
-            dataset.addValue(allResults.get(i).getAverageEnergyPerTask(), "Average Energy (J)", names[i]);
+            dataset.addValue(allResults.get(i).getAverageEnergyPerTask(), "Average Energy (J)", simulationNames[i]);
         }
         
         JFreeChart chart = ChartFactory.createBarChart(
@@ -324,23 +296,27 @@ public class Main {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            logger.info("Generated comparative energy chart: {}", outputFile);
+            return outputFile;
         } catch (IOException e) {
             logger.error("Error saving comparative energy chart: {}", e.getMessage());
+            return null;
         }
     }
     
     /**
      * Generate comparative response time chart
      * 
+     * @param simulationNames Names of the simulations
      * @param allResults List of simulation results
      * @param outputFile Output file path
+     * @return Path to the generated chart file
      */
-    private static void generateComparativeResponseTimeChart(List<SimulationResults> allResults, String outputFile) {
+    public static String generateComparativeResponseTimeChart(String[] simulationNames, List<SimulationResults> allResults, String outputFile) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
-        String[] names = {"Baseline", "Energy-Focused", "Latency-Focused", "Security-Focused"};
         for (int i = 0; i < allResults.size(); i++) {
-            dataset.addValue(allResults.get(i).getAverageResponseTime(), "Average Response Time (s)", names[i]);
+            dataset.addValue(allResults.get(i).getAverageResponseTime(), "Average Response Time (s)", simulationNames[i]);
         }
         
         JFreeChart chart = ChartFactory.createBarChart(
@@ -362,26 +338,30 @@ public class Main {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            logger.info("Generated comparative response time chart: {}", outputFile);
+            return outputFile;
         } catch (IOException e) {
             logger.error("Error saving comparative response time chart: {}", e.getMessage());
+            return null;
         }
     }
     
     /**
      * Generate comparative offloading distribution chart
      * 
+     * @param simulationNames Names of the simulations
      * @param allResults List of simulation results
      * @param outputFile Output file path
+     * @return Path to the generated chart file
      */
-    private static void generateComparativeOffloadingChart(List<SimulationResults> allResults, String outputFile) {
+    public static String generateComparativeOffloadingChart(String[] simulationNames, List<SimulationResults> allResults, String outputFile) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         
-        String[] names = {"Baseline", "Energy-Focused", "Latency-Focused", "Security-Focused"};
         for (int i = 0; i < allResults.size(); i++) {
             SimulationResults results = allResults.get(i);
-            dataset.addValue(results.getLocalExecutionPercentage(), "Local Execution (%)", names[i]);
-            dataset.addValue(results.getEdgeOffloadPercentage(), "Edge Offload (%)", names[i]);
-            dataset.addValue(results.getCloudOffloadPercentage(), "Cloud Offload (%)", names[i]);
+            dataset.addValue(results.getLocalExecutionPercentage(), "Local Execution (%)", simulationNames[i]);
+            dataset.addValue(results.getEdgeOffloadPercentage(), "Edge Offload (%)", simulationNames[i]);
+            dataset.addValue(results.getCloudOffloadPercentage(), "Cloud Offload (%)", simulationNames[i]);
         }
         
         JFreeChart chart = ChartFactory.createBarChart(
@@ -405,8 +385,53 @@ public class Main {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            logger.info("Generated comparative offloading chart: {}", outputFile);
+            return outputFile;
         } catch (IOException e) {
             logger.error("Error saving comparative offloading chart: {}", e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Generate comparative cost chart
+     * 
+     * @param simulationNames Names of the simulations
+     * @param allResults List of simulation results
+     * @param outputFile Output file path
+     * @return Path to the generated chart file
+     */
+    public static String generateComparativeCostChart(String[] simulationNames, List<SimulationResults> allResults, String outputFile) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        
+        for (int i = 0; i < allResults.size(); i++) {
+            dataset.addValue(allResults.get(i).getAverageExecutionCost(), "Average Cost ($)", simulationNames[i]);
+        }
+        
+        JFreeChart chart = ChartFactory.createBarChart(
+            "Comparative Execution Cost",
+            "Simulation Configuration",
+            "Average Cost per Task ($)",
+            dataset,
+            PlotOrientation.VERTICAL,
+            true,
+            true,
+            false
+        );
+        
+        CategoryPlot plot = chart.getCategoryPlot();
+        BarRenderer renderer = (BarRenderer) plot.getRenderer();
+        renderer.setSeriesPaint(0, new Color(255, 153, 0));
+        renderer.setDrawBarOutline(false);
+        renderer.setItemMargin(0.1);
+        
+        try {
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            logger.info("Generated comparative cost chart: {}", outputFile);
+            return outputFile;
+        } catch (IOException e) {
+            logger.error("Error saving comparative cost chart: {}", e.getMessage());
+            return null;
         }
     }
 }
