@@ -231,7 +231,7 @@ public class Main {
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
         } catch (IOException e) {
-            logger.error("Error saving energy consumption chart: {}", e.getMessage());
+            logger.log(Level.SEVERE, "Error saving energy consumption chart: " + e.getMessage());
         }
     }
     
@@ -266,7 +266,7 @@ public class Main {
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
         } catch (IOException e) {
-            logger.error("Error saving response time chart: {}", e.getMessage());
+            logger.log(Level.SEVERE, "Error saving response time chart: " + e.getMessage());
         }
     }
     
@@ -325,7 +325,7 @@ public class Main {
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
         } catch (IOException e) {
-            logger.error("Error saving comparative energy chart: {}", e.getMessage());
+            logger.log(Level.SEVERE, "Error saving comparative energy chart: " + e.getMessage());
         }
     }
     
@@ -363,7 +363,7 @@ public class Main {
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
         } catch (IOException e) {
-            logger.error("Error saving comparative response time chart: {}", e.getMessage());
+            logger.log(Level.SEVERE, "Error saving comparative response time chart: " + e.getMessage());
         }
     }
     
@@ -406,7 +406,7 @@ public class Main {
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
         } catch (IOException e) {
-            logger.error("Error saving comparative offloading chart: {}", e.getMessage());
+            logger.log(Level.SEVERE, "Error saving comparative offloading chart: " + e.getMessage());
         }
     }
 }

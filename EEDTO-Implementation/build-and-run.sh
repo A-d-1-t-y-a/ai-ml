@@ -82,7 +82,7 @@ if [ -f "target/eedto-1.0-SNAPSHOT-jar-with-dependencies.jar" ]; then
     java -jar target/eedto-1.0-SNAPSHOT-jar-with-dependencies.jar
 elif [ -f "target/classes/com/fog/eedto/Main.class" ]; then
     echo "Running from compiled classes..."
-    java -cp "target/classes:target/dependency/*" com.fog.eedto.Main
+    java -cp "target/classes:target/dependency/*" com.fog.eedto.SimpleMain
 else
     echo "ERROR: No executable found. Build may have failed."
     exit 1

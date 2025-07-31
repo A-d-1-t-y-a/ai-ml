@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
@@ -32,7 +32,7 @@ import com.fog.eedto.simulation.SimulationResults;
  * Utility class for generating charts and graphs for EEDTO simulation results.
  */
 public class ChartGenerator {
-    private static final Logger logger = LogManager.getLogger(ChartGenerator.class);
+    private static final Logger logger = Logger.getLogger(ChartGenerator.class.getName());
     
     // Directory for storing output files
     private static final String OUTPUT_DIR = "output";
@@ -59,7 +59,7 @@ public class ChartGenerator {
         String responseTimeChart = generateResponseTimeBarChart(name, results, filePrefix + "_response_time.png");
         String costChart = generateCostBarChart(name, results, filePrefix + "_cost.png");
         
-        logger.info("Generated charts for simulation: {}", name);
+        logger.info(String.format("Generated charts for simulation: %s", name));
         
         return new String[] {
             taskDistributionChart,
@@ -105,10 +105,10 @@ public class ChartGenerator {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
-            logger.info("Generated task distribution chart: {}", outputFile);
+            logger.info(String.format("Generated task distribution chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
-            logger.error("Error saving pie chart: {}", e.getMessage());
+            logger.severe("Error saving task distribution chart: " + e.getMessage());
             return null;
         }
     }
@@ -144,10 +144,10 @@ public class ChartGenerator {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
-            logger.info("Generated energy consumption chart: {}", outputFile);
+            logger.info(String.format("Generated energy consumption chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
-            logger.error("Error saving energy consumption chart: {}", e.getMessage());
+            logger.severe("Error saving energy consumption chart: " + e.getMessage());
             return null;
         }
     }
@@ -183,10 +183,10 @@ public class ChartGenerator {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
-            logger.info("Generated response time chart: {}", outputFile);
+            logger.info(String.format("Generated response time chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
-            logger.error("Error saving response time chart: {}", e.getMessage());
+            logger.severe("Error saving response time chart: " + e.getMessage());
             return null;
         }
     }
@@ -222,10 +222,10 @@ public class ChartGenerator {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
-            logger.info("Generated cost chart: {}", outputFile);
+            logger.info(String.format("Generated cost chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
-            logger.error("Error saving cost chart: {}", e.getMessage());
+            logger.severe("Error saving cost chart: " + e.getMessage());
             return null;
         }
     }
@@ -296,10 +296,10 @@ public class ChartGenerator {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
-            logger.info("Generated comparative energy chart: {}", outputFile);
+            logger.info(String.format("Generated comparative energy chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
-            logger.error("Error saving comparative energy chart: {}", e.getMessage());
+            logger.log(Level.SEVERE, "Error saving comparative energy chart: " + e.getMessage());
             return null;
         }
     }
@@ -338,10 +338,10 @@ public class ChartGenerator {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
-            logger.info("Generated comparative response time chart: {}", outputFile);
+            logger.info(String.format("Generated comparative response time chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
-            logger.error("Error saving comparative response time chart: {}", e.getMessage());
+            logger.log(Level.SEVERE, "Error saving comparative response time chart: " + e.getMessage());
             return null;
         }
     }
@@ -385,10 +385,10 @@ public class ChartGenerator {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
-            logger.info("Generated comparative offloading chart: {}", outputFile);
+            logger.info(String.format("Generated comparative offloading chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
-            logger.error("Error saving comparative offloading chart: {}", e.getMessage());
+            logger.log(Level.SEVERE, "Error saving comparative offloading chart: " + e.getMessage());
             return null;
         }
     }
@@ -427,10 +427,10 @@ public class ChartGenerator {
         
         try {
             ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
-            logger.info("Generated comparative cost chart: {}", outputFile);
+            logger.info(String.format("Generated comparative cost chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
-            logger.error("Error saving comparative cost chart: {}", e.getMessage());
+            logger.log(Level.SEVERE, "Error saving comparative cost chart: " + e.getMessage());
             return null;
         }
     }

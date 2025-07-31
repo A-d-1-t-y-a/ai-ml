@@ -68,7 +68,7 @@ if exist "target\eedto-1.0-SNAPSHOT-jar-with-dependencies.jar" (
     java -jar target\eedto-1.0-SNAPSHOT-jar-with-dependencies.jar
 ) else if exist "target\classes\com\fog\eedto\Main.class" (
     echo Running from compiled classes...
-    java -cp "target\classes;target\dependency\*" com.fog.eedto.Main
+    java -cp "target\classes;target\dependency\*" com.fog.eedto.SimpleMain
 ) else (
     echo ERROR: No executable found. Build may have failed.
     exit /b 1
