@@ -55,10 +55,8 @@ TODG-Implementation/
 │       └── java/
 │           └── org/todg/simulation/
 ├── output/
-├── build.bat
-├── build.sh
-├── run.bat
-├── run.sh
+├── todg.bat
+├── todg.sh
 ├── pom.xml
 └── README.md
 ```
@@ -71,29 +69,21 @@ TODG-Implementation/
    cd TODG-Implementation
    ```
 
-2. Build the project:
+2. Build and run the project:
    - On Windows:
      ```
-     build.bat
+     todg.bat [build|run|both]
      ```
    - On Linux:
      ```
-     chmod +x build.sh
-     ./build.sh
+     chmod +x todg.sh
+     ./todg.sh [build|run|both]
      ```
 
-## Running the Simulation
-
-1. Run the simulation with default configuration:
-   - On Windows:
-     ```
-     run.bat
-     ```
-   - On Linux:
-     ```
-     chmod +x run.sh
-     ./run.sh
-     ```
+   Options:
+   - `build`: Only build the project
+   - `run`: Only run the simulation (requires previous build)
+   - `both`: Build and run (default if no option specified)
 
 2. To use a custom configuration, modify the `src/main/resources/simulation.properties` file.
 

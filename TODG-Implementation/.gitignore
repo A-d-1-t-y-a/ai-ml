@@ -63,6 +63,7 @@ Thumbs.db
 *~.nib
 
 # Specific project output directories
+# Temporarily allowing output for validation
 /output/
 /logs/
 
