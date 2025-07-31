@@ -15,7 +15,7 @@
     </properties>
 
     <dependencies>
-        <!-- We'll implement our own simulation without external dependencies -->
+        <!-- Use publicly available dependencies instead of system dependencies -->
 
         <!-- JFreeChart for graph generation -->
         <dependency>

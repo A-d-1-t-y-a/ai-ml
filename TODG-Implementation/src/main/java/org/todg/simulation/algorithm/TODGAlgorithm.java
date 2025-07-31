@@ -125,12 +125,11 @@ public class TODGAlgorithm {
             
             for (Task task : localQueue) {
                 // Make offloading decision
-                int targetServerId = makeOffloadingDecision(device, task, currentTime);
+                EdgeServer targetServer = makeOffloadingDecision(device, task, currentTime);
                 
-                if (targetServerId >= 0) {
+                if (targetServer != null) {
                     // Offload task to edge server
-                    EdgeServer targetServer = findServerById(targetServerId);
-                    Channel channel = findChannelBySourceAndDestination(device.getDeviceId(), targetServerId);
+                    Channel channel = findChannelBySourceAndDestination(device, targetServer);
                     
                     if (targetServer != null && channel != null) {
                         // Simulate transmission
@@ -227,9 +226,9 @@ public class TODGAlgorithm {
      * @param device The source IoT device
      * @param task The task to offload
      * @param currentTime The current simulation time
-     * @return The ID of the selected edge server, or -1 if the task should be processed locally
+     * @return The selected edge server, or null if the task should be processed locally
      */
-    private int makeOffloadingDecision(IoTDevice device, Task task, double currentTime) {
+    public EdgeServer makeOffloadingDecision(IoTDevice device, Task task, double currentTime) {
         // Calculate local processing metrics
         double localProcessingTime = task.getComputationalRequirement() / device.getMips();
         double localEnergyConsumption = device.calculateLocalEnergy(task);
@@ -240,14 +239,14 @@ public class TODGAlgorithm {
         // Calculate local utility
         double localUtility = calculateUtility(localProcessingTime, localEnergyConsumption, 0.0);
         
-        // Initialize variables to track the best offloading option
-        int bestServerId = -1;
+        // Default is to process locally
+        EdgeServer bestServer = null;
         double bestUtility = canMeetDeadlineLocally ? localUtility : Double.NEGATIVE_INFINITY;
         
         // Evaluate each edge server
         for (EdgeServer server : servers) {
             // Find the best available channel for this server
-            Channel bestChannel = findBestChannel(device.getDeviceId(), server.getServerId());
+            Channel bestChannel = findBestChannel(device, server);
             
             if (bestChannel != null && bestChannel.isAvailable()) {
                 // Calculate offloading metrics
@@ -267,13 +266,13 @@ public class TODGAlgorithm {
                     // Update best server if this one has better utility
                     if (utility > bestUtility) {
                         bestUtility = utility;
-                        bestServerId = server.getServerId();
+                        bestServer = server;
                     }
                 }
             }
         }
         
-        return bestServerId;
+        return bestServer;
     }
     
     /**
@@ -284,7 +283,7 @@ public class TODGAlgorithm {
      * @param serverLoad The server load (0.0 - 1.0)
      * @return The utility value
      */
-    private double calculateUtility(double time, double energy, double serverLoad) {
+    public double calculateUtility(double time, double energy, double serverLoad) {
         // Higher utility is better (negative values because we want to minimize time, energy, and load)
         return -(alpha * time + beta * energy + gamma * serverLoad);
     }
@@ -292,18 +291,18 @@ public class TODGAlgorithm {
     /**
      * Finds the best available channel for communication between a device and a server.
      * 
-     * @param deviceId The source device ID
-     * @param serverId The destination server ID
+     * @param device The source IoT device
+     * @param server The destination edge server
      * @return The best available channel, or null if no suitable channel is found
      */
-    private Channel findBestChannel(int deviceId, int serverId) {
+    public Channel findBestChannel(IoTDevice device, EdgeServer server) {
         Channel bestChannel = null;
         double bestQuality = Double.NEGATIVE_INFINITY;
         
         for (Channel channel : channels) {
             if (channel.isAvailable() && 
-                channel.getSourceDeviceId() == deviceId && 
-                channel.getDestinationServerId() == serverId) {
+                channel.getSourceDeviceId() == device.getDeviceId() && 
+                channel.getDestinationServerId() == server.getServerId()) {
                 
                 double quality = channel.getBandwidth() / (1 + channel.getInterference());
                 
@@ -323,7 +322,7 @@ public class TODGAlgorithm {
      * @param serverId The server ID to find
      * @return The edge server, or null if not found
      */
-    private EdgeServer findServerById(int serverId) {
+    public EdgeServer findServerById(int serverId) {
         for (EdgeServer server : servers) {
             if (server.getServerId() == serverId) {
                 return server;
@@ -333,16 +332,16 @@ public class TODGAlgorithm {
     }
     
     /**
-     * Finds a channel by its source device ID and destination server ID.
+     * Finds a channel by its source device and destination server.
      * 
-     * @param sourceDeviceId The source device ID
-     * @param destinationServerId The destination server ID
+     * @param device The source IoT device
+     * @param server The destination edge server
      * @return The channel, or null if not found
      */
-    private Channel findChannelBySourceAndDestination(int sourceDeviceId, int destinationServerId) {
+    public Channel findChannelBySourceAndDestination(IoTDevice device, EdgeServer server) {
         for (Channel channel : channels) {
-            if (channel.getSourceDeviceId() == sourceDeviceId && 
-                channel.getDestinationServerId() == destinationServerId) {
+            if (channel.getSourceDeviceId() == device.getDeviceId() && 
+                channel.getDestinationServerId() == server.getServerId()) {
                 return channel;
             }
         }

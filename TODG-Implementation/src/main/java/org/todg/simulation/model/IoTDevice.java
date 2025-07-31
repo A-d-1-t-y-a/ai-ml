@@ -128,13 +128,13 @@ public class IoTDevice {
      * @param edgeServers The list of available edge servers
      * @param channels The list of available communication channels
      * @param currentTime The current simulation time
-     * @return The ID of the selected edge server, or -1 if the task should be processed locally
+     * @return The selected edge server, or null if the task should be processed locally
      */
-    public int makeOffloadingDecision(Task task, List<EdgeServer> edgeServers, 
+    public EdgeServer makeOffloadingDecision(Task task, List<EdgeServer> edgeServers, 
                                      List<Channel> channels, double currentTime) {
         // If no edge servers or channels are available, process locally
         if (edgeServers == null || edgeServers.isEmpty() || channels == null || channels.isEmpty()) {
-            return -1;
+            return null;
         }
         
         // Calculate local processing metrics
@@ -145,7 +145,7 @@ public class IoTDevice {
         boolean canMeetDeadlineLocally = (localProcessingTime <= task.getDeadline());
         
         // Initialize variables to track the best offloading option
-        int bestServerId = -1;
+        EdgeServer bestServer = null;
         double bestUtility = canMeetDeadlineLocally ? calculateUtility(localProcessingTime, localEnergyConsumption) : Double.NEGATIVE_INFINITY;
         
         // Evaluate each edge server
@@ -170,13 +170,13 @@ public class IoTDevice {
                     // Update best server if this one has better utility
                     if (utility > bestUtility) {
                         bestUtility = utility;
-                        bestServerId = server.getServerId();
+                        bestServer = server;
                     }
                 }
             }
         }
         
-        return bestServerId;
+        return bestServer;
     }
     
     /**
@@ -186,7 +186,7 @@ public class IoTDevice {
      * @param server The target edge server
      * @return The best available channel, or null if no suitable channel is found
      */
-    private Channel findBestChannel(List<Channel> channels, EdgeServer server) {
+    public Channel findBestChannel(List<Channel> channels, EdgeServer server) {
         Channel bestChannel = null;
         double bestQuality = Double.NEGATIVE_INFINITY;
         
@@ -211,7 +211,7 @@ public class IoTDevice {
      * @param channel The communication channel
      * @return The transmission time in seconds
      */
-    private double calculateTransmissionTime(Task task, Channel channel) {
+    public double calculateTransmissionTime(Task task, Channel channel) {
         // Convert data size from MB to Mb (megabytes to megabits)
         double dataSizeInMb = task.getDataSize() * 8;
         
@@ -231,7 +231,7 @@ public class IoTDevice {
      * @param task The task to process
      * @return The energy consumption in Joules
      */
-    private double calculateLocalEnergy(Task task) {
+    public double calculateLocalEnergy(Task task) {
         // Simplified energy model: energy = power * time
         // Assume power consumption is proportional to MIPS
         double processingPower = 0.5 + (mips * 0.001); // Watts
@@ -247,7 +247,7 @@ public class IoTDevice {
      * @param channel The communication channel used
      * @return The energy consumption in Joules
      */
-    private double calculateOffloadingEnergy(Task task, Channel channel) {
+    public double calculateOffloadingEnergy(Task task, Channel channel) {
         // Energy for transmission = transmission power * transmission time
         double transmissionPower = 0.9; // Watts
         double transmissionTime = calculateTransmissionTime(task, channel);
@@ -262,7 +262,7 @@ public class IoTDevice {
      * @param energy The energy consumption
      * @return The utility value
      */
-    private double calculateUtility(double time, double energy) {
+    public double calculateUtility(double time, double energy) {
         // Utility is inversely proportional to time and energy
         // Alpha and beta are weighting factors for time and energy
         double alpha = 0.7;
