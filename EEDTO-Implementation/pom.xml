@@ -85,7 +85,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.fog.eedto.EEDTOSimulation</mainClass>
+                            <mainClass>com.fog.eedto.SimpleMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

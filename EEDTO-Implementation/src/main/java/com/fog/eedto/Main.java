@@ -157,7 +157,7 @@ public class Main {
         // Generate response time bar chart
         generateResponseTimeBarChart(name, results, filePrefix + "_response_time.png");
         
-        logger.info("Generated visualizations for simulation: {}", name);
+        logger.info(String.format("Generated visualizations for simulation: %s", name));
     }
     
     /**

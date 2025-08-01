@@ -177,7 +177,7 @@ public class Simulation {
      * Run the simulation
      */
     public void run() {
-        logger.info("Starting simulation for {} seconds", simulationEndTime);
+        logger.info(String.format("Starting simulation for %.2f seconds", simulationEndTime));
         
         // Event-driven simulation
         while (currentTime < simulationEndTime) {
@@ -197,9 +197,9 @@ public class Simulation {
             
             // Log progress
             if ((int) currentTime % 10 == 0) {
-                logger.info("Simulation time: {} / {} seconds", (int) currentTime, (int) simulationEndTime);
-                logger.info("Tasks generated: {}, completed: {}, rejected: {}", 
-                           totalTasksGenerated, totalTasksCompleted, totalTasksRejected);
+                logger.info(String.format("Simulation time: %d / %d seconds", (int) currentTime, (int) simulationEndTime));
+                logger.info(String.format("Tasks generated: %d, completed: %d, rejected: %d", 
+                           totalTasksGenerated, totalTasksCompleted, totalTasksRejected));
             }
         }
         
@@ -220,7 +220,7 @@ public class Simulation {
                 iotDevice.addTask(task);
                 totalTasksGenerated++;
                 
-                logger.debug("Generated task {} on device {}", task.getId(), iotDevice.getId());
+                logger.fine(String.format("Generated task %d on device %d", task.getId(), iotDevice.getId()));
             }
         }
     }
