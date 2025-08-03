@@ -101,6 +101,28 @@ public class ConfigurationManager {
     }
     
     /**
+     * Get a long property value.
+     * 
+     * @param key Property key
+     * @param defaultValue Default value if property is not found or invalid
+     * @return Property value or default value
+     */
+    public static long getLong(String key, long defaultValue) {
+        ensureInitialized();
+        String value = properties.getProperty(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            logger.log(Level.WARNING, "Invalid long value for key " + key + ": " + value);
+            return defaultValue;
+        }
+    }
+    
+    /**
      * Get a boolean property value.
      * 
      * @param key Property key

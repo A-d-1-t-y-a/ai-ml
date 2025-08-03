@@ -130,6 +130,11 @@ public class SimpleMain {
                 ConfigurationManager.getInt("security.blockchainDifficulty", 2)
             );
             
+            // Store results and log
+            allResults.add(securityResults);
+            simulationNames.add("Security-Focused");
+            logResults("Security-Focused", securityResults);
+            
             // Generate all output files
             logger.info("Generating output files...");
             generateCSVResults();
