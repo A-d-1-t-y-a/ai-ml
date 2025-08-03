@@ -16,6 +16,7 @@ import java.util.List;
 import com.fog.eedto.simulation.Simulation;
 import com.fog.eedto.simulation.SimulationResults;
 import com.fog.eedto.util.ChartGenerator;
+import com.fog.eedto.util.ConfigurationManager;
 
 /**
  * Simplified Main class for the EEDTO system that focuses on core functionality
@@ -27,6 +28,12 @@ public class SimpleMain {
     private static List<String> simulationNames = new ArrayList<>();
     
     public static void main(String[] args) {
+        // Initialize configuration
+        if (!ConfigurationManager.initialize()) {
+            logger.severe("Failed to initialize configuration. Exiting.");
+            return;
+        }
+        
         // Create output directory if it doesn't exist
         File outputDir = new File("output");
         if (!outputDir.exists()) {
@@ -45,12 +52,25 @@ public class SimpleMain {
         logger.info("Starting EEDTO simulation");
         
         try {
+            // Get common simulation parameters
+            int numIoTDevices = ConfigurationManager.getInt("devices.iot", 10);
+            int numEdgeServers = ConfigurationManager.getInt("devices.edge", 3);
+            int numCloudServers = ConfigurationManager.getInt("devices.cloud", 1);
+            double simulationDuration = ConfigurationManager.getDouble("simulation.duration", 300);
+            double timeStep = ConfigurationManager.getDouble("simulation.timeStep", 0.1);
+            
             // Run baseline simulation
             logger.info("Running baseline simulation");
             SimulationResults baselineResults = runSimulation(
                 "Baseline",
-                10, 3, 1, 300, 0.1,
-                0.33, 0.33, 0.33, 0.2, 5, 3, 2
+                numIoTDevices, numEdgeServers, numCloudServers, simulationDuration, timeStep,
+                ConfigurationManager.getDouble("baseline.energyWeight", 0.33),
+                ConfigurationManager.getDouble("baseline.latencyWeight", 0.33),
+                ConfigurationManager.getDouble("baseline.securityWeight", 0.33),
+                ConfigurationManager.getDouble("baseline.energyThreshold", 0.2),
+                ConfigurationManager.getDouble("baseline.latencyThreshold", 5),
+                ConfigurationManager.getInt("baseline.securityLevel", 3),
+                ConfigurationManager.getInt("baseline.blockchainDifficulty", 2)
             );
             
             // Store results and log
@@ -62,8 +82,14 @@ public class SimpleMain {
             logger.info("Running energy-focused simulation");
             SimulationResults energyResults = runSimulation(
                 "Energy-Focused",
-                10, 3, 1, 300, 0.1,
-                0.6, 0.2, 0.2, 0.2, 5, 3, 2
+                numIoTDevices, numEdgeServers, numCloudServers, simulationDuration, timeStep,
+                ConfigurationManager.getDouble("energy.energyWeight", 0.6),
+                ConfigurationManager.getDouble("energy.latencyWeight", 0.2),
+                ConfigurationManager.getDouble("energy.securityWeight", 0.2),
+                ConfigurationManager.getDouble("energy.energyThreshold", 0.2),
+                ConfigurationManager.getDouble("energy.latencyThreshold", 5),
+                ConfigurationManager.getInt("energy.securityLevel", 3),
+                ConfigurationManager.getInt("energy.blockchainDifficulty", 2)
             );
             
             // Store results and log
@@ -75,8 +101,14 @@ public class SimpleMain {
             logger.info("Running latency-focused simulation");
             SimulationResults latencyResults = runSimulation(
                 "Latency-Focused",
-                10, 3, 1, 300, 0.1,
-                0.2, 0.6, 0.2, 0.2, 5, 3, 2
+                numIoTDevices, numEdgeServers, numCloudServers, simulationDuration, timeStep,
+                ConfigurationManager.getDouble("latency.energyWeight", 0.2),
+                ConfigurationManager.getDouble("latency.latencyWeight", 0.6),
+                ConfigurationManager.getDouble("latency.securityWeight", 0.2),
+                ConfigurationManager.getDouble("latency.energyThreshold", 0.2),
+                ConfigurationManager.getDouble("latency.latencyThreshold", 5),
+                ConfigurationManager.getInt("latency.securityLevel", 3),
+                ConfigurationManager.getInt("latency.blockchainDifficulty", 2)
             );
             
             // Store results and log
@@ -88,14 +120,15 @@ public class SimpleMain {
             logger.info("Running security-focused simulation");
             SimulationResults securityResults = runSimulation(
                 "Security-Focused",
-                10, 3, 1, 300, 0.1,
-                0.2, 0.2, 0.6, 0.2, 5, 3, 2
+                numIoTDevices, numEdgeServers, numCloudServers, simulationDuration, timeStep,
+                ConfigurationManager.getDouble("security.energyWeight", 0.2),
+                ConfigurationManager.getDouble("security.latencyWeight", 0.2),
+                ConfigurationManager.getDouble("security.securityWeight", 0.6),
+                ConfigurationManager.getDouble("security.energyThreshold", 0.2),
+                ConfigurationManager.getDouble("security.latencyThreshold", 5),
+                ConfigurationManager.getInt("security.securityLevel", 3),
+                ConfigurationManager.getInt("security.blockchainDifficulty", 2)
             );
-            
-            // Store results and log
-            allResults.add(securityResults);
-            simulationNames.add("Security-Focused");
-            logResults("Security-Focused", securityResults);
             
             // Generate all output files
             logger.info("Generating output files...");

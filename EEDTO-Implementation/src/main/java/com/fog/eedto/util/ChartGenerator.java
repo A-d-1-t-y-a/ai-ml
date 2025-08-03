@@ -37,6 +37,17 @@ public class ChartGenerator {
     // Directory for storing output files
     private static final String OUTPUT_DIR = "output";
     
+    // Chart dimensions from configuration
+    private static final int CHART_WIDTH = ConfigurationManager.getInt("chart.width", 800);
+    private static final int CHART_HEIGHT = ConfigurationManager.getInt("chart.height", 600);
+    
+    // Chart colors from configuration
+    private static final Color LOCAL_EXECUTION_COLOR = ConfigurationManager.getColor("chart.localExecutionColor", new Color(0, 153, 51));
+    private static final Color EDGE_OFFLOAD_COLOR = ConfigurationManager.getColor("chart.edgeOffloadColor", new Color(51, 153, 255));
+    private static final Color CLOUD_OFFLOAD_COLOR = ConfigurationManager.getColor("chart.cloudOffloadColor", new Color(153, 51, 255));
+    private static final Color FAILED_OFFLOAD_COLOR = ConfigurationManager.getColor("chart.failedOffloadColor", new Color(255, 51, 51));
+    private static final Color COST_COLOR = ConfigurationManager.getColor("chart.costColor", new Color(255, 153, 0));
+    
     /**
      * Generate all charts for a single simulation
      * 
@@ -93,10 +104,10 @@ public class ChartGenerator {
         );
         
         PiePlot<String> plot = (PiePlot<String>) chart.getPlot();
-        plot.setSectionPaint("Local Execution", new Color(0, 153, 51));
-        plot.setSectionPaint("Edge Offload", new Color(51, 153, 255));
-        plot.setSectionPaint("Cloud Offload", new Color(153, 51, 255));
-        plot.setSectionPaint("Failed Offload", new Color(255, 51, 51));
+        plot.setSectionPaint("Local Execution", LOCAL_EXECUTION_COLOR);
+        plot.setSectionPaint("Edge Offload", EDGE_OFFLOAD_COLOR);
+        plot.setSectionPaint("Cloud Offload", CLOUD_OFFLOAD_COLOR);
+        plot.setSectionPaint("Failed Offload", FAILED_OFFLOAD_COLOR);
         
         plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
         plot.setNoDataMessage("No data available");
@@ -104,7 +115,7 @@ public class ChartGenerator {
         plot.setLabelGap(0.02);
         
         try {
-            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, CHART_WIDTH, CHART_HEIGHT);
             logger.info(String.format("Generated task distribution chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
@@ -143,7 +154,7 @@ public class ChartGenerator {
         renderer.setItemMargin(0.1);
         
         try {
-            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, CHART_WIDTH, CHART_HEIGHT);
             logger.info(String.format("Generated energy consumption chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
@@ -182,7 +193,7 @@ public class ChartGenerator {
         renderer.setItemMargin(0.1);
         
         try {
-            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, CHART_WIDTH, CHART_HEIGHT);
             logger.info(String.format("Generated response time chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
@@ -221,7 +232,7 @@ public class ChartGenerator {
         renderer.setItemMargin(0.1);
         
         try {
-            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, CHART_WIDTH, CHART_HEIGHT);
             logger.info(String.format("Generated cost chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
@@ -295,7 +306,7 @@ public class ChartGenerator {
         renderer.setItemMargin(0.1);
         
         try {
-            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, CHART_WIDTH, CHART_HEIGHT);
             logger.info(String.format("Generated comparative energy chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
@@ -337,7 +348,7 @@ public class ChartGenerator {
         renderer.setItemMargin(0.1);
         
         try {
-            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, CHART_WIDTH, CHART_HEIGHT);
             logger.info(String.format("Generated comparative response time chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
@@ -377,14 +388,14 @@ public class ChartGenerator {
         
         CategoryPlot plot = chart.getCategoryPlot();
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
-        renderer.setSeriesPaint(0, new Color(0, 153, 51));
-        renderer.setSeriesPaint(1, new Color(51, 153, 255));
-        renderer.setSeriesPaint(2, new Color(153, 51, 255));
+        renderer.setSeriesPaint(0, LOCAL_EXECUTION_COLOR);
+        renderer.setSeriesPaint(1, EDGE_OFFLOAD_COLOR);
+        renderer.setSeriesPaint(2, CLOUD_OFFLOAD_COLOR);
         renderer.setDrawBarOutline(false);
         renderer.setItemMargin(0.1);
         
         try {
-            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, CHART_WIDTH, CHART_HEIGHT);
             logger.info(String.format("Generated comparative offloading chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {
@@ -426,7 +437,7 @@ public class ChartGenerator {
         renderer.setItemMargin(0.1);
         
         try {
-            ChartUtils.saveChartAsPNG(new File(outputFile), chart, 800, 600);
+            ChartUtils.saveChartAsPNG(new File(outputFile), chart, CHART_WIDTH, CHART_HEIGHT);
             logger.info(String.format("Generated comparative cost chart: %s", outputFile));
             return outputFile;
         } catch (IOException e) {

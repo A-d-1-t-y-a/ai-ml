@@ -1,6 +1,7 @@
 package com.fog.eedto.model;
 
 import java.util.Random;
+import com.fog.eedto.util.ConfigurationManager;
 
 /**
  * Represents an IoT device in the EEDTO system.
@@ -60,25 +61,49 @@ public class IoTDevice extends Device {
      * @return Generated task
      */
     public Task generateTask(int taskId, double currentTime) {
-        // Generate random task parameters based on realistic values
-        long length = 1000 + random.nextInt(9000); // 1000-10000 MI
-        long inputSize = 10 + random.nextInt(990); // 10-1000 KB
-        long outputSize = 1 + random.nextInt(99); // 1-100 KB
-        double deadline = currentTime + (5 + random.nextInt(16)); // 5-20 seconds from now
+        // Determine task type based on probabilities from configuration
+        double lightweightProb = ConfigurationManager.getDouble("task.lightweightProbability", 0.6);
+        double mediumProb = ConfigurationManager.getDouble("task.mediumProbability", 0.3);
+        double randomValue = random.nextDouble();
+        
+        Task.TaskType taskType;
+        int minSize, maxSize, minMI, maxMI, minDeadline, maxDeadline;
+        
+        if (randomValue < lightweightProb) {
+            taskType = Task.TaskType.LIGHTWEIGHT;
+            minSize = ConfigurationManager.getInt("task.lightweight.size.min", 10);
+            maxSize = ConfigurationManager.getInt("task.lightweight.size.max", 100);
+            minMI = ConfigurationManager.getInt("task.lightweight.mi.min", 100);
+            maxMI = ConfigurationManager.getInt("task.lightweight.mi.max", 1000);
+            minDeadline = ConfigurationManager.getInt("task.lightweight.deadline.min", 1);
+            maxDeadline = ConfigurationManager.getInt("task.lightweight.deadline.max", 5);
+        } else if (randomValue < lightweightProb + mediumProb) {
+            taskType = Task.TaskType.MEDIUM;
+            minSize = ConfigurationManager.getInt("task.medium.size.min", 100);
+            maxSize = ConfigurationManager.getInt("task.medium.size.max", 1000);
+            minMI = ConfigurationManager.getInt("task.medium.mi.min", 1000);
+            maxMI = ConfigurationManager.getInt("task.medium.mi.max", 10000);
+            minDeadline = ConfigurationManager.getInt("task.medium.deadline.min", 5);
+            maxDeadline = ConfigurationManager.getInt("task.medium.deadline.max", 20);
+        } else {
+            taskType = Task.TaskType.INTENSIVE;
+            minSize = ConfigurationManager.getInt("task.heavyweight.size.min", 1000);
+            maxSize = ConfigurationManager.getInt("task.heavyweight.size.max", 10000);
+            minMI = ConfigurationManager.getInt("task.heavyweight.mi.min", 10000);
+            maxMI = ConfigurationManager.getInt("task.heavyweight.mi.max", 100000);
+            minDeadline = ConfigurationManager.getInt("task.heavyweight.deadline.min", 20);
+            maxDeadline = ConfigurationManager.getInt("task.heavyweight.deadline.max", 60);
+        }
+        
+        // Generate random task parameters based on configuration values
+        long length = minMI + random.nextInt(maxMI - minMI + 1);
+        long inputSize = minSize + random.nextInt(maxSize - minSize + 1);
+        long outputSize = Math.max(1, inputSize / 2); // Output is typically smaller than input
+        double deadline = currentTime + (minDeadline + random.nextInt(maxDeadline - minDeadline + 1));
         
         // Convert KB to bytes
         inputSize *= 1024;
         outputSize *= 1024;
-        
-        // Determine task type based on length
-        Task.TaskType taskType;
-        if (length < 3000) {
-            taskType = Task.TaskType.LIGHTWEIGHT;
-        } else if (length < 7000) {
-            taskType = Task.TaskType.MEDIUM;
-        } else {
-            taskType = Task.TaskType.INTENSIVE;
-        }
         
         return new Task(taskId, length, inputSize, outputSize, deadline, currentTime, taskType);
     }

@@ -11,6 +11,7 @@ import com.fog.eedto.model.Device;
 import com.fog.eedto.model.EdgeServer;
 import com.fog.eedto.model.IoTDevice;
 import com.fog.eedto.model.Task;
+import com.fog.eedto.util.ConfigurationManager;
 
 /**
  * Implementation of the Energy-Efficient Dynamic Task Offloading (EEDTO) algorithm.
@@ -260,16 +261,16 @@ public class EEDTOAlgorithm {
         
         switch (deviceType) {
             case IOT_DEVICE:
-                deviceSecurityLevel = 2; // IoT devices have lower security
+                deviceSecurityLevel = ConfigurationManager.getInt("security.iotDeviceLevel", 2); // IoT devices have lower security
                 break;
             case EDGE_SERVER:
-                deviceSecurityLevel = 4; // Edge servers have medium security
+                deviceSecurityLevel = ConfigurationManager.getInt("security.edgeServerLevel", 4); // Edge servers have medium security
                 break;
             case CLOUD_SERVER:
-                deviceSecurityLevel = 5; // Cloud servers have high security
+                deviceSecurityLevel = ConfigurationManager.getInt("security.cloudServerLevel", 5); // Cloud servers have high security
                 break;
             default:
-                deviceSecurityLevel = 1;
+                deviceSecurityLevel = ConfigurationManager.getInt("security.defaultLevel", 1);
         }
         
         // Calculate security score based on how well the device meets the required security level
@@ -288,7 +289,16 @@ public class EEDTOAlgorithm {
         // Energy model for data transmission: E = P * T
         // where P is transmission power and T is transmission time
         
-        double transmissionPower = 0.1; // Watts (simplified model)
+        // Get transmission power from configuration based on device type
+        double transmissionPower;
+        if (sourceDevice instanceof IoTDevice) {
+            transmissionPower = ConfigurationManager.getDouble("iotDevice.transmissionPower", 0.1);
+        } else if (sourceDevice instanceof EdgeServer) {
+            transmissionPower = ConfigurationManager.getDouble("edgeServer.transmissionPower", 0.2);
+        } else { // CloudServer
+            transmissionPower = ConfigurationManager.getDouble("cloudServer.transmissionPower", 0.3);
+        }
+        
         double transmissionTime = sourceDevice.calculateTransmissionTime(task, targetDevice);
         
         return transmissionPower * transmissionTime;

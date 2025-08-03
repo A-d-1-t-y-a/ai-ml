@@ -15,6 +15,7 @@ import com.fog.eedto.model.Device;
 import com.fog.eedto.model.EdgeServer;
 import com.fog.eedto.model.IoTDevice;
 import com.fog.eedto.model.Task;
+import com.fog.eedto.util.ConfigurationManager;
 
 /**
  * Simulation class for the EEDTO system.
@@ -109,67 +110,74 @@ public class Simulation {
     private void initializeDevices(int numIoTDevices, int numEdgeServers, int numCloudServers) {
         // Create IoT devices
         for (int i = 0; i < numIoTDevices; i++) {
-            // IoT devices have limited resources
-            double mips = 500 + random.nextDouble() * 500; // 500-1000 MIPS
-            int ram = 256 + random.nextInt(768); // 256-1024 MB
-            long storage = 1024 + random.nextInt(3072); // 1-4 GB
-            double bandwidth = 10 + random.nextDouble() * 40; // 10-50 Mbps
-            double energyEfficiency = 100 + random.nextDouble() * 200; // 100-300 MIPS/W
-            double batteryCapacity = 10000 + random.nextDouble() * 10000; // 10000-20000 J
-            double idlePower = 0.1 + random.nextDouble() * 0.4; // 0.1-0.5 W
+            // Get device parameters from configuration
+            double mipsMin = ConfigurationManager.getDouble("iotDevice.mips.min", 500);
+            double mipsMax = ConfigurationManager.getDouble("iotDevice.mips.max", 1000);
+            double batteryCapacityMin = ConfigurationManager.getDouble("iotDevice.batteryCapacity.min", 5000);
+            double batteryCapacityMax = ConfigurationManager.getDouble("iotDevice.batteryCapacity.max", 10000);
+            double transmissionRangeMin = ConfigurationManager.getDouble("iotDevice.transmissionRange.min", 100);
+            double transmissionRangeMax = ConfigurationManager.getDouble("iotDevice.transmissionRange.max", 200);
+            double bandwidthMin = ConfigurationManager.getDouble("iotDevice.bandwidth.min", 1);
+            double bandwidthMax = ConfigurationManager.getDouble("iotDevice.bandwidth.max", 10);
+            
+            // Generate random values within configured ranges
+            double mips = mipsMin + random.nextDouble() * (mipsMax - mipsMin);
+            double batteryCapacity = batteryCapacityMin + random.nextDouble() * (batteryCapacityMax - batteryCapacityMin);
+            double transmissionRange = transmissionRangeMin + random.nextDouble() * (transmissionRangeMax - transmissionRangeMin);
+            double bandwidth = bandwidthMin + random.nextDouble() * (bandwidthMax - bandwidthMin);
             
             IoTDevice iotDevice = new IoTDevice(
-                i, "IoT-" + i, mips, ram, storage, bandwidth, energyEfficiency,
-                batteryCapacity, idlePower
+                i, "IoT Device " + i, mips, batteryCapacity, transmissionRange, bandwidth
             );
-            
             iotDevices.add(iotDevice);
-            logger.fine(String.format("Created IoT device: %s", iotDevice));
+            logger.fine(String.format("Created IoT device %d: %s", i, iotDevice));
         }
         
         // Create edge servers
         for (int i = 0; i < numEdgeServers; i++) {
-            // Edge servers have moderate resources
-            double mips = 5000 + random.nextDouble() * 5000; // 5000-10000 MIPS
-            int ram = 4096 + random.nextInt(4096); // 4-8 GB
-            long storage = 102400 + random.nextInt(102400); // 100-200 GB
-            double bandwidth = 100 + random.nextDouble() * 400; // 100-500 Mbps
-            double energyEfficiency = 300 + random.nextDouble() * 200; // 300-500 MIPS/W
-            double powerConsumption = 10 + random.nextDouble() * 10; // 10-20 W
-            double latency = 5 + random.nextDouble() * 15; // 5-20 ms
-            int maxConcurrentTasks = 10 + random.nextInt(10); // 10-20 tasks
-            double costPerMI = 0.00001 + random.nextDouble() * 0.00001; // $0.00001-0.00002 per MI
+            // Get edge server parameters from configuration
+            double mipsMin = ConfigurationManager.getDouble("edgeServer.mips.min", 5000);
+            double mipsMax = ConfigurationManager.getDouble("edgeServer.mips.max", 10000);
+            double transmissionRangeMin = ConfigurationManager.getDouble("edgeServer.transmissionRange.min", 500);
+            double transmissionRangeMax = ConfigurationManager.getDouble("edgeServer.transmissionRange.max", 1000);
+            double bandwidthMin = ConfigurationManager.getDouble("edgeServer.bandwidth.min", 50);
+            double bandwidthMax = ConfigurationManager.getDouble("edgeServer.bandwidth.max", 100);
+            double costPerTaskMin = ConfigurationManager.getDouble("edgeServer.costPerTask.min", 0.05);
+            double costPerTaskMax = ConfigurationManager.getDouble("edgeServer.costPerTask.max", 0.10);
+            
+            // Generate random values within configured ranges
+            double mips = mipsMin + random.nextDouble() * (mipsMax - mipsMin);
+            double transmissionRange = transmissionRangeMin + random.nextDouble() * (transmissionRangeMax - transmissionRangeMin);
+            double bandwidth = bandwidthMin + random.nextDouble() * (bandwidthMax - bandwidthMin);
+            double costPerTask = costPerTaskMin + random.nextDouble() * (costPerTaskMax - costPerTaskMin);
             
             EdgeServer edgeServer = new EdgeServer(
-                i, "Edge-" + i, mips, ram, storage, bandwidth, energyEfficiency,
-                powerConsumption, latency, maxConcurrentTasks, costPerMI
+                i, "Edge Server " + i, mips, transmissionRange, bandwidth, costPerTask
             );
-            
             edgeServers.add(edgeServer);
-            logger.fine(String.format("Created edge server: %s", edgeServer));
+            logger.fine(String.format("Created edge server %d: %s", i, edgeServer));
         }
         
         // Create cloud servers
         for (int i = 0; i < numCloudServers; i++) {
-            // Cloud servers have high resources
-            double mips = 20000 + random.nextDouble() * 30000; // 20000-50000 MIPS
-            int ram = 16384 + random.nextInt(16384); // 16-32 GB
-            long storage = 1048576 + random.nextInt(1048576); // 1-2 TB
-            double bandwidth = 500 + random.nextDouble() * 500; // 500-1000 Mbps
-            double energyEfficiency = 500 + random.nextDouble() * 300; // 500-800 MIPS/W
-            double powerConsumption = 50 + random.nextDouble() * 50; // 50-100 W
-            double latency = 50 + random.nextDouble() * 50; // 50-100 ms
-            int maxConcurrentTasks = 100 + random.nextInt(100); // 100-200 tasks
-            double costPerMI = 0.000005 + random.nextDouble() * 0.000005; // $0.000005-0.00001 per MI
-            double scalingFactor = 1.5 + random.nextDouble(); // 1.5-2.5
+            // Get cloud server parameters from configuration
+            double mipsMin = ConfigurationManager.getDouble("cloudServer.mips.min", 20000);
+            double mipsMax = ConfigurationManager.getDouble("cloudServer.mips.max", 50000);
+            double bandwidthMin = ConfigurationManager.getDouble("cloudServer.bandwidth.min", 100);
+            double bandwidthMax = ConfigurationManager.getDouble("cloudServer.bandwidth.max", 1000);
+            double costPerTaskMin = ConfigurationManager.getDouble("cloudServer.costPerTask.min", 0.20);
+            double costPerTaskMax = ConfigurationManager.getDouble("cloudServer.costPerTask.max", 0.50);
+            
+            // Generate random values within configured ranges
+            double mips = mipsMin + random.nextDouble() * (mipsMax - mipsMin);
+            double bandwidth = bandwidthMin + random.nextDouble() * (bandwidthMax - bandwidthMin);
+            double costPerTask = costPerTaskMin + random.nextDouble() * (costPerTaskMax - costPerTaskMin);
             
             CloudServer cloudServer = new CloudServer(
-                i, "Cloud-" + i, mips, ram, storage, bandwidth, energyEfficiency,
-                powerConsumption, latency, maxConcurrentTasks, costPerMI, scalingFactor
+                i, "Cloud Server " + i, mips, bandwidth, costPerTask
             );
-            
             cloudServers.add(cloudServer);
-            logger.fine(String.format("Created cloud server: %s", cloudServer));
+            logger.fine(String.format("Created cloud server %d: %s", i, cloudServer));
         }
     }
     
@@ -211,18 +219,88 @@ public class Simulation {
      * Generate tasks for IoT devices
      */
     private void generateTasks() {
+        // Generate tasks for each IoT device based on task generation rate
         for (IoTDevice iotDevice : iotDevices) {
-            // Generate tasks based on task generation rate
-            double taskProbability = taskGenerationRate; // Tasks per second
+            // Calculate number of tasks to generate for this time step
+            double expectedTasks = taskGenerationRate;
+            int numTasks = (int) Math.floor(expectedTasks);
+            if (random.nextDouble() < (expectedTasks - numTasks)) {
+                numTasks++;
+            }
             
-            if (random.nextDouble() < taskProbability) {
-                Task task = iotDevice.generateTask(taskIdCounter.incrementAndGet(), currentTime);
+            // Generate tasks
+            for (int i = 0; i < numTasks; i++) {
+                Task task = generateRandomTask(iotDevice);
                 iotDevice.addTask(task);
                 totalTasksGenerated++;
-                
-                logger.fine(String.format("Generated task %d on device %d", task.getId(), iotDevice.getId()));
+                logger.fine(String.format("Generated task %d for device %d: %s", task.getId(), iotDevice.getId(), task));
             }
         }
+    }
+    
+    /**
+     * Generate a random task for an IoT device
+     * 
+     * @param sourceDevice Source IoT device
+     * @return Generated task
+     */
+    private Task generateRandomTask(IoTDevice sourceDevice) {
+        int taskId = taskIdCounter.incrementAndGet();
+        
+        // Get task parameters from configuration
+        double lightweightProbability = ConfigurationManager.getDouble("task.lightweightProbability", 0.6);
+        double mediumProbability = ConfigurationManager.getDouble("task.mediumProbability", 0.3);
+        
+        // Determine task type based on probabilities
+        Task.TaskType taskType;
+        double rand = random.nextDouble();
+        if (rand < lightweightProbability) {
+            taskType = Task.TaskType.LIGHTWEIGHT;
+        } else if (rand < lightweightProbability + mediumProbability) {
+            taskType = Task.TaskType.MEDIUM;
+        } else {
+            taskType = Task.TaskType.HEAVYWEIGHT;
+        }
+        
+        // Get task size ranges from configuration based on type
+        double minSize, maxSize;
+        double minMI, maxMI;
+        double minDeadline, maxDeadline;
+        
+        switch (taskType) {
+            case LIGHTWEIGHT:
+                minSize = ConfigurationManager.getDouble("task.lightweight.size.min", 10);
+                maxSize = ConfigurationManager.getDouble("task.lightweight.size.max", 100);
+                minMI = ConfigurationManager.getDouble("task.lightweight.mi.min", 100);
+                maxMI = ConfigurationManager.getDouble("task.lightweight.mi.max", 1000);
+                minDeadline = ConfigurationManager.getDouble("task.lightweight.deadline.min", 1);
+                maxDeadline = ConfigurationManager.getDouble("task.lightweight.deadline.max", 5);
+                break;
+            case MEDIUM:
+                minSize = ConfigurationManager.getDouble("task.medium.size.min", 100);
+                maxSize = ConfigurationManager.getDouble("task.medium.size.max", 1000);
+                minMI = ConfigurationManager.getDouble("task.medium.mi.min", 1000);
+                maxMI = ConfigurationManager.getDouble("task.medium.mi.max", 10000);
+                minDeadline = ConfigurationManager.getDouble("task.medium.deadline.min", 5);
+                maxDeadline = ConfigurationManager.getDouble("task.medium.deadline.max", 20);
+                break;
+            case HEAVYWEIGHT:
+            default:
+                minSize = ConfigurationManager.getDouble("task.heavyweight.size.min", 1000);
+                maxSize = ConfigurationManager.getDouble("task.heavyweight.size.max", 10000);
+                minMI = ConfigurationManager.getDouble("task.heavyweight.mi.min", 10000);
+                maxMI = ConfigurationManager.getDouble("task.heavyweight.mi.max", 100000);
+                minDeadline = ConfigurationManager.getDouble("task.heavyweight.deadline.min", 20);
+                maxDeadline = ConfigurationManager.getDouble("task.heavyweight.deadline.max", 60);
+                break;
+        }
+        
+        // Generate random values within configured ranges
+        double size = minSize + random.nextDouble() * (maxSize - minSize); // KB
+        double mi = minMI + random.nextDouble() * (maxMI - minMI); // Million Instructions
+        double deadline = currentTime + minDeadline + random.nextDouble() * (maxDeadline - minDeadline); // seconds
+        
+        return new Task(taskId, taskType, size, mi, currentTime, deadline, sourceDevice.getId());
     }
     
     /**
