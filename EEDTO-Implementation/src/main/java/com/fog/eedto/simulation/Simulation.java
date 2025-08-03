@@ -126,8 +126,15 @@ public class Simulation {
             double transmissionRange = transmissionRangeMin + random.nextDouble() * (transmissionRangeMax - transmissionRangeMin);
             double bandwidth = bandwidthMin + random.nextDouble() * (bandwidthMax - bandwidthMin);
             
+            // Get additional parameters from configuration
+            int ram = ConfigurationManager.getInt("iotDevice.ram", 512);
+            long storage = ConfigurationManager.getLong("iotDevice.storage", 1024);
+            double energyEfficiency = ConfigurationManager.getDouble("iotDevice.energyEfficiency", 200);
+            double idlePower = ConfigurationManager.getDouble("iotDevice.idlePower", 0.5);
+            
             IoTDevice iotDevice = new IoTDevice(
-                i, "IoT Device " + i, mips, batteryCapacity, transmissionRange, bandwidth
+                i, "IoT Device " + i, mips, ram, storage, bandwidth, energyEfficiency, 
+                batteryCapacity, idlePower
             );
             iotDevices.add(iotDevice);
             logger.fine(String.format("Created IoT device %d: %s", i, iotDevice));
@@ -151,8 +158,17 @@ public class Simulation {
             double bandwidth = bandwidthMin + random.nextDouble() * (bandwidthMax - bandwidthMin);
             double costPerTask = costPerTaskMin + random.nextDouble() * (costPerTaskMax - costPerTaskMin);
             
+            // Get additional parameters from configuration
+            int ram = ConfigurationManager.getInt("edgeServer.ram", 4096);
+            long storage = ConfigurationManager.getLong("edgeServer.storage", 1024 * 1024);
+            double energyEfficiency = ConfigurationManager.getDouble("edgeServer.energyEfficiency", 100);
+            double powerConsumption = ConfigurationManager.getDouble("edgeServer.powerConsumption", 200);
+            double latency = ConfigurationManager.getDouble("edgeServer.latency", 10);
+            int maxConcurrentTasks = ConfigurationManager.getInt("edgeServer.maxConcurrentTasks", 20);
+            
             EdgeServer edgeServer = new EdgeServer(
-                i, "Edge Server " + i, mips, transmissionRange, bandwidth, costPerTask
+                i, "Edge Server " + i, mips, ram, storage, bandwidth, energyEfficiency,
+                powerConsumption, latency, maxConcurrentTasks, costPerTask
             );
             edgeServers.add(edgeServer);
             logger.fine(String.format("Created edge server %d: %s", i, edgeServer));
@@ -173,8 +189,18 @@ public class Simulation {
             double bandwidth = bandwidthMin + random.nextDouble() * (bandwidthMax - bandwidthMin);
             double costPerTask = costPerTaskMin + random.nextDouble() * (costPerTaskMax - costPerTaskMin);
             
+            // Get additional parameters from configuration
+            int ram = ConfigurationManager.getInt("cloudServer.ram", 16384);
+            long storage = ConfigurationManager.getLong("cloudServer.storage", 10 * 1024 * 1024);
+            double energyEfficiency = ConfigurationManager.getDouble("cloudServer.energyEfficiency", 80);
+            double powerConsumption = ConfigurationManager.getDouble("cloudServer.powerConsumption", 500);
+            double latency = ConfigurationManager.getDouble("cloudServer.latency", 100);
+            int maxConcurrentTasks = ConfigurationManager.getInt("cloudServer.maxConcurrentTasks", 100);
+            double scalingFactor = ConfigurationManager.getDouble("cloudServer.scalingFactor", 2.0);
+            
             CloudServer cloudServer = new CloudServer(
-                i, "Cloud Server " + i, mips, bandwidth, costPerTask
+                i, "Cloud Server " + i, mips, ram, storage, bandwidth, energyEfficiency,
+                powerConsumption, latency, maxConcurrentTasks, costPerTask, scalingFactor
             );
             cloudServers.add(cloudServer);
             logger.fine(String.format("Created cloud server %d: %s", i, cloudServer));
@@ -259,7 +285,7 @@ public class Simulation {
         } else if (rand < lightweightProbability + mediumProbability) {
             taskType = Task.TaskType.MEDIUM;
         } else {
-            taskType = Task.TaskType.HEAVYWEIGHT;
+            taskType = Task.TaskType.INTENSIVE;
         }
         
         // Get task size ranges from configuration based on type
@@ -284,14 +310,14 @@ public class Simulation {
                 minDeadline = ConfigurationManager.getDouble("task.medium.deadline.min", 5);
                 maxDeadline = ConfigurationManager.getDouble("task.medium.deadline.max", 20);
                 break;
-            case HEAVYWEIGHT:
+            case INTENSIVE:
             default:
-                minSize = ConfigurationManager.getDouble("task.heavyweight.size.min", 1000);
-                maxSize = ConfigurationManager.getDouble("task.heavyweight.size.max", 10000);
-                minMI = ConfigurationManager.getDouble("task.heavyweight.mi.min", 10000);
-                maxMI = ConfigurationManager.getDouble("task.heavyweight.mi.max", 100000);
-                minDeadline = ConfigurationManager.getDouble("task.heavyweight.deadline.min", 20);
-                maxDeadline = ConfigurationManager.getDouble("task.heavyweight.deadline.max", 60);
+                minSize = ConfigurationManager.getDouble("task.intensive.size.min", 1000);
+                maxSize = ConfigurationManager.getDouble("task.intensive.size.max", 10000);
+                minMI = ConfigurationManager.getDouble("task.intensive.mi.min", 10000);
+                maxMI = ConfigurationManager.getDouble("task.intensive.mi.max", 100000);
+                minDeadline = ConfigurationManager.getDouble("task.intensive.deadline.min", 20);
+                maxDeadline = ConfigurationManager.getDouble("task.intensive.deadline.max", 60);
                 break;
         }
         
@@ -300,7 +326,12 @@ public class Simulation {
         double mi = minMI + random.nextDouble() * (maxMI - minMI); // Million Instructions
         double deadline = currentTime + minDeadline + random.nextDouble() * (maxDeadline - minDeadline); // seconds
         
-        return new Task(taskId, taskType, size, mi, currentTime, deadline, sourceDevice.getId());
+        // Convert size to input and output sizes
+        long inputSize = (long)(size * 1024); // Convert KB to bytes
+        long outputSize = (long)(size * 512); // Output size is half of input size in bytes
+        long length = (long)mi; // Million Instructions
+        
+        return new Task(taskId, length, inputSize, outputSize, deadline, currentTime, taskType);
     }
     
     /**
