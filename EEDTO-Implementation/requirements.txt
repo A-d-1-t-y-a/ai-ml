@@ -1,0 +1,35 @@
+# EEDTO Implementation Requirements
+# Java-based project using Maven for dependency management
+
+# Core Dependencies (managed by Maven in pom.xml):
+# - CloudSim Plus 7.3.0 (Simulation framework)
+# - Web3j 4.9.5 (Blockchain functionality) 
+# - Log4j 2.17.2 (Logging)
+# - JFreeChart 1.5.3 (Visualization)
+# - Apache Commons Lang 3.12.0 (Utilities)
+# - Apache Commons Math 3.6.1 (Mathematical operations)
+# - Apache Commons Collections 4.2 (Data structures)
+# - Gson 2.8.9 (JSON processing)
+# - JUnit 4.13.2 (Testing)
+
+# System Requirements:
+# - Java 11 or higher
+# - Maven 3.6 or higher
+# - Windows 10/11 or Linux (Ubuntu 18.04+)
+# - Minimum 4GB RAM
+# - 1GB free disk space
+
+# Build Instructions:
+# 1. Ensure Java 11+ and Maven 3.6+ are installed
+# 2. Run: mvn clean compile
+# 3. Run: mvn package
+# 4. Execute: java -cp target/classes com.fog.eedto.SimpleMain
+
+# Platform-specific build scripts:
+# Windows: build-and-run.bat
+# Linux: build-and-run.sh
+
+# Output Directories:
+# - logs/: Simulation logs and results
+# - output/: Generated charts and reports
+# - target/: Compiled classes and JAR files
