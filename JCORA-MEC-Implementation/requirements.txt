@@ -1,0 +1,26 @@
+# JCORA-MEC Implementation Dependencies
+
+# Java 11 or higher is required
+
+# Maven Dependencies (managed by pom.xml):
+# - CloudSim Plus 7.0.0 (org.cloudsimplus:cloudsim-plus)
+# - DeepLearning4J 1.0.0-M2 (org.deeplearning4j:deeplearning4j-core)
+# - ND4J 1.0.0-M2 (org.nd4j:nd4j-native-platform)
+# - SLF4J 1.7.36 (org.slf4j:slf4j-api)
+# - Logback 1.2.11 (ch.qos.logback:logback-classic)
+# - JFreeChart 1.5.3 (org.jfree:jfreechart)
+# - Apache Commons Math 3.6.1 (org.apache.commons:commons-math3)
+# - Apache Commons Lang 3.12.0 (org.apache.commons:commons-lang3)
+# - JUnit 5.8.2 (org.junit.jupiter:junit-jupiter-api)
+
+# System Requirements:
+# - At least 4GB of RAM
+# - At least 2GB of free disk space
+# - Modern CPU with at least 2 cores
+
+# Build Tools:
+# - Maven 3.6 or higher
+
+# Operating Systems:
+# - Windows (with build.bat and run.bat)
+# - Linux (with build.sh and run.sh)
