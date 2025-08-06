@@ -249,4 +249,58 @@ public class ConfigurationLoader {
         return new Object[]{stateSize, actionSize, gamma, epsilon, epsilonMin, epsilonDecay, 
                            batchSize, replayMemorySize, targetNetworkUpdateFreq};
     }
+    
+    /**
+     * Get the maximum energy value for reward normalization.
+     * 
+     * @return Maximum energy value in Joules
+     */
+    public double getMaxEnergyForNormalization() {
+        return getDouble("reward.maxEnergy", 100.0);
+    }
+    
+    /**
+     * Get the maximum time value for reward normalization.
+     * 
+     * @return Maximum time value in seconds
+     */
+    public double getMaxTimeForNormalization() {
+        return getDouble("reward.maxTime", 10.0);
+    }
+    
+    /**
+     * Get the energy weight for reward calculation.
+     * 
+     * @return Energy weight (0.0-1.0)
+     */
+    public double getEnergyWeight() {
+        return getDouble("reward.energyWeight", 0.5);
+    }
+    
+    /**
+     * Get the time weight for reward calculation.
+     * 
+     * @return Time weight (0.0-1.0)
+     */
+    public double getTimeWeight() {
+        return getDouble("reward.timeWeight", 0.5);
+    }
+    
+    /**
+     * Get the deadline bonus reward.
+     * 
+     * @return Deadline bonus reward value
+     */
+    public double getDeadlineBonusReward() {
+        return getDouble("reward.deadlineBonus", 1.0);
+    }
+    
+    /**
+     * Get the deadline penalty reward.
+     * 
+     * @return Deadline penalty reward value
+     */
+    public double getDeadlinePenaltyReward() {
+        return getDouble("reward.deadlinePenalty", 1.0);
+    }
 }

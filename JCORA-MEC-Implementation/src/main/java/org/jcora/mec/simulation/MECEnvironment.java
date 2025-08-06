@@ -38,6 +38,14 @@ public class MECEnvironment {
     private final double timeStep;
     private final double taskGenerationProbability;
     
+    // Reward calculation parameters
+    private final double maxEnergyForNormalization;
+    private final double maxTimeForNormalization;
+    private final double energyWeight;
+    private final double timeWeight;
+    private final double deadlineBonusReward;
+    private final double deadlinePenaltyReward;
+    
     // Performance metrics
     private final List<Double> energyConsumptionHistory;
     private final List<Double> responseTimeHistory;
@@ -55,13 +63,24 @@ public class MECEnvironment {
      * @param taskGenerationProbability Probability of generating a new task at each time step
      */
     public MECEnvironment(List<IoTDevice> devices, List<EdgeServer> servers, DRLAgent agent,
-                         double simulationDuration, double timeStep, double taskGenerationProbability) {
+                         double simulationDuration, double timeStep, double taskGenerationProbability,
+                         double maxEnergyForNormalization, double maxTimeForNormalization,
+                         double energyWeight, double timeWeight,
+                         double deadlineBonusReward, double deadlinePenaltyReward) {
         this.devices = devices;
         this.servers = servers;
         this.agent = agent;
         this.simulationDuration = simulationDuration;
         this.timeStep = timeStep;
         this.taskGenerationProbability = taskGenerationProbability;
+        
+        // Initialize reward calculation parameters
+        this.maxEnergyForNormalization = maxEnergyForNormalization > 0 ? maxEnergyForNormalization : 100.0;
+        this.maxTimeForNormalization = maxTimeForNormalization > 0 ? maxTimeForNormalization : 10.0;
+        this.energyWeight = energyWeight;
+        this.timeWeight = timeWeight;
+        this.deadlineBonusReward = deadlineBonusReward;
+        this.deadlinePenaltyReward = deadlinePenaltyReward;
         
         this.random = new Random();
         this.currentTime = 0.0;
@@ -288,19 +307,24 @@ public class MECEnvironment {
      * @return Reward value
      */
     private double calculateReward(double energyConsumed, double responseTime, boolean meetsDeadline) {
-        // Normalize energy consumption and response time
-        double normalizedEnergy = Math.min(1.0, energyConsumed / 100.0); // Assuming max energy is 100J
-        double normalizedTime = Math.min(1.0, responseTime / 10.0);      // Assuming max time is 10s
+        // Normalize energy consumption and response time using configurable parameters
+        double normalizedEnergy = Math.min(1.0, energyConsumed / maxEnergyForNormalization);
+        double normalizedTime = Math.min(1.0, responseTime / maxTimeForNormalization);
         
-        // Calculate reward
-        double reward = -0.5 * normalizedEnergy - 0.5 * normalizedTime;
+        // Calculate reward using configurable weights
+        double reward = -energyWeight * normalizedEnergy - timeWeight * normalizedTime;
         
-        // Add bonus for meeting deadline
+        // Add configurable bonus/penalty for meeting/missing deadline
         if (meetsDeadline) {
-            reward += 1.0;
+            reward += deadlineBonusReward;
         } else {
-            reward -= 1.0;
+            reward -= deadlinePenaltyReward;
         }
+        
+        // Log reward calculation details
+        System.out.println("Reward calculation: Energy=" + energyConsumed + "J (normalized=" + normalizedEnergy + 
+                         "), Time=" + responseTime + "s (normalized=" + normalizedTime + "), " +
+                         "Meets deadline=" + meetsDeadline + ", Reward=" + reward);
         
         return reward;
     }

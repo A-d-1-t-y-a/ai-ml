@@ -55,6 +55,13 @@ public class DRLAgent {
     private final int stateSize;
     private final int actionSize;
     
+    // Current state, action, reward, next state, and done flag for tracking
+    private INDArray currentState;
+    private int currentAction;
+    private double currentReward;
+    private INDArray nextState;
+    private boolean done;
+    
     /**
      * Constructor for creating a new DRL Agent.
      * 
@@ -169,14 +176,24 @@ public class DRLAgent {
      * @return Selected action index
      */
     public int selectAction(INDArray state) {
+        // Store current state
+        this.currentState = state;
+        
         // Epsilon-greedy action selection
         if (random.nextDouble() < epsilon) {
-            // Exploration: select a random action
-            return random.nextInt(actionSize);
+            // Exploration: select random action
+            int action = random.nextInt(actionSize);
+            System.out.println("Exploration: Selected random action " + action + " (epsilon=" + epsilon + ")");
+            this.currentAction = action;
+            return action;
         } else {
-            // Exploitation: select the best action according to the Q-Network
+            // Exploitation: select best action according to Q-network
             INDArray qValues = qNetwork.output(state);
-            return Nd4j.argMax(qValues, 1).getInt(0);
+            int action = Nd4j.argMax(qValues, 1).getInt(0);
+            System.out.println("Exploitation: Selected best action " + action + " with Q-value " + 
+                             qValues.getDouble(action) + " (epsilon=" + epsilon + ")");
+            this.currentAction = action;
+            return action;
         }
     }
     
@@ -190,14 +207,25 @@ public class DRLAgent {
      * @param done Whether the episode is done
      */
     public void remember(INDArray state, int action, double reward, INDArray nextState, boolean done) {
+        // Store current experience values
+        this.currentState = state;
+        this.currentAction = action;
+        this.currentReward = reward;
+        this.nextState = nextState;
+        this.done = done;
+        
         // Create new experience
         Experience experience = new Experience(state, action, reward, nextState, done);
         
         // Add to replay memory
         if (replayMemory.size() >= replayMemorySize) {
-            replayMemory.remove(0); // Remove oldest experience if memory is full
+            replayMemory.remove(0);  // Remove oldest experience if memory is full
         }
         replayMemory.add(experience);
+        
+        System.out.println("Added experience to replay memory: Action=" + action + 
+                         ", Reward=" + reward + ", Done=" + done + 
+                         ", Memory size=" + replayMemory.size() + "/" + replayMemorySize);
     }
     
     /**
@@ -206,17 +234,28 @@ public class DRLAgent {
      * @param updateStep Current update step
      */
     public void train(int updateStep) {
-        // Check if there are enough experiences in replay memory
+        // Skip training if replay memory doesn't have enough experiences
         if (replayMemory.size() < batchSize) {
+            System.out.println("Skipping training: Not enough experiences in replay memory. " + 
+                             "Current size: " + replayMemory.size() + ", Required: " + batchSize);
             return;
         }
         
-        // Sample a batch of experiences from replay memory
+        System.out.println("Training DRL agent at step " + updateStep + 
+                         " with batch size " + batchSize + 
+                         " (epsilon: " + epsilon + ")");
+        
+        // Sample batch of experiences from replay memory
         List<Experience> batch = sampleBatch();
         
-        // Prepare training data
-        INDArray states = Nd4j.create(batchSize, stateSize);
-        INDArray targets = Nd4j.create(batchSize, actionSize);
+        // Prepare input and target arrays
+        INDArray states = Nd4j.zeros(batchSize, stateSize);
+        INDArray targets = Nd4j.zeros(batchSize, actionSize);
+        
+        // Fill input array with states from batch
+        for (int i = 0; i < batchSize; i++) {
+            states.putRow(i, batch.get(i).getState());
+        }
         
         // Calculate target Q-values for each experience in the batch
         for (int i = 0; i < batchSize; i++) {
@@ -304,6 +343,51 @@ public class DRLAgent {
         } catch (IOException e) {
             System.err.println("Failed to load model: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Get the current state.
+     * 
+     * @return Current state as INDArray
+     */
+    public INDArray getState() {
+        return currentState;
+    }
+    
+    /**
+     * Get the current action.
+     * 
+     * @return Current action index
+     */
+    public int getAction() {
+        return currentAction;
+    }
+    
+    /**
+     * Get the current reward.
+     * 
+     * @return Current reward value
+     */
+    public double getReward() {
+        return currentReward;
+    }
+    
+    /**
+     * Get the next state.
+     * 
+     * @return Next state as INDArray
+     */
+    public INDArray getNextState() {
+        return nextState;
+    }
+    
+    /**
+     * Check if the current episode is done.
+     * 
+     * @return True if the episode is done, false otherwise
+     */
+    public boolean isDone() {
+        return done;
     }
     
     /**

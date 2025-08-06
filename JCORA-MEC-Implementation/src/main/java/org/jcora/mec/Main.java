@@ -79,9 +79,28 @@ public class Main {
         double timeStep = config.getTimeStep();
         double taskGenerationProbability = config.getTaskGenerationProbability();
         
-        // Create MEC environment
+        // Get reward calculation parameters
+        double maxEnergyForNormalization = config.getMaxEnergyForNormalization();
+        double maxTimeForNormalization = config.getMaxTimeForNormalization();
+        double energyWeight = config.getEnergyWeight();
+        double timeWeight = config.getTimeWeight();
+        double deadlineBonusReward = config.getDeadlineBonusReward();
+        double deadlinePenaltyReward = config.getDeadlinePenaltyReward();
+        
+        // Log reward parameters
+        System.out.println("Reward parameters: maxEnergy=" + maxEnergyForNormalization + 
+                         ", maxTime=" + maxTimeForNormalization + 
+                         ", energyWeight=" + energyWeight + 
+                         ", timeWeight=" + timeWeight + 
+                         ", deadlineBonus=" + deadlineBonusReward + 
+                         ", deadlinePenalty=" + deadlinePenaltyReward);
+        
+        // Create MEC environment with reward parameters
         MECEnvironment environment = new MECEnvironment(devices, servers, agent, simulationDuration,
-                                                      timeStep, taskGenerationProbability);
+                                                      timeStep, taskGenerationProbability,
+                                                      maxEnergyForNormalization, maxTimeForNormalization,
+                                                      energyWeight, timeWeight,
+                                                      deadlineBonusReward, deadlinePenaltyReward);
         
         // Run simulation
         environment.runSimulation();
@@ -156,9 +175,20 @@ public class Main {
             double timeStep = config.getTimeStep();
             double taskGenerationProbability = config.getTaskGenerationProbability();
             
-            // Create MEC environment
+            // Get reward calculation parameters
+            double maxEnergyForNormalization = config.getMaxEnergyForNormalization();
+            double maxTimeForNormalization = config.getMaxTimeForNormalization();
+            double energyWeight = config.getEnergyWeight();
+            double timeWeight = config.getTimeWeight();
+            double deadlineBonusReward = config.getDeadlineBonusReward();
+            double deadlinePenaltyReward = config.getDeadlinePenaltyReward();
+            
+            // Create MEC environment with reward parameters
             MECEnvironment environment = new MECEnvironment(devices, servers, agent, simulationDuration,
-                                                          timeStep, taskGenerationProbability);
+                                                          timeStep, taskGenerationProbability,
+                                                          maxEnergyForNormalization, maxTimeForNormalization,
+                                                          energyWeight, timeWeight,
+                                                          deadlineBonusReward, deadlinePenaltyReward);
             
             // Run simulation
             environment.runSimulation();
