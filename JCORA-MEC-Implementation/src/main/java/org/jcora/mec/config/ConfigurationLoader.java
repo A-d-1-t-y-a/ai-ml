@@ -2,8 +2,10 @@ package org.jcora.mec.config;
 
 import org.jcora.mec.model.EdgeServer;
 import org.jcora.mec.model.IoTDevice;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+// Use simple System.out logging instead of SLF4J for now
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,7 +18,8 @@ import java.util.Properties;
  * Utility class for loading simulation configuration from properties files.
  */
 public class ConfigurationLoader {
-    private static final Logger logger = LoggerFactory.getLogger(ConfigurationLoader.class);
+    // Use simple System.out logging instead of SLF4J for now
+    // private static final Logger logger = LoggerFactory.getLogger(ConfigurationLoader.class);
     
     // Default configuration file path
     private static final String DEFAULT_CONFIG_PATH = "config/simulation.properties";
@@ -40,9 +43,9 @@ public class ConfigurationLoader {
         properties = new Properties();
         try (InputStream input = new FileInputStream(configPath)) {
             properties.load(input);
-            logger.info("Loaded configuration from {}", configPath);
+            System.out.println("Loaded configuration from " + configPath);
         } catch (IOException e) {
-            logger.error("Failed to load configuration from {}: {}", configPath, e.getMessage());
+            System.err.println("Failed to load configuration from " + configPath + ": " + e.getMessage());
         }
     }
     
@@ -72,7 +75,7 @@ public class ConfigurationLoader {
         try {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            logger.warn("Invalid integer value for {}: {}", key, value);
+            System.err.println("Invalid integer value for " + key + ": " + value);
             return defaultValue;
         }
     }
@@ -92,7 +95,7 @@ public class ConfigurationLoader {
         try {
             return Double.parseDouble(value);
         } catch (NumberFormatException e) {
-            logger.warn("Invalid double value for {}: {}", key, value);
+            System.err.println("Invalid double value for " + key + ": " + value);
             return defaultValue;
         }
     }
@@ -141,7 +144,7 @@ public class ConfigurationLoader {
                     idleEnergyConsumption, transmissionPower, batteryCapacity);
             devices.add(device);
             
-            logger.debug("Created IoT device: {}", device);
+            // System.out.println("Created IoT device: " + device);
         }
         
         return devices;
@@ -176,7 +179,7 @@ public class ConfigurationLoader {
                     idleEnergyConsumption, maxBandwidth, maxConnections);
             servers.add(server);
             
-            logger.debug("Created edge server: {}", server);
+            // System.out.println("Created edge server: " + server);
         }
         
         return servers;

@@ -9,8 +9,10 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+// Use simple System.out logging instead of SLF4J for now
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
@@ -26,7 +28,8 @@ import java.util.List;
  * Utility class for generating visualizations of simulation results.
  */
 public class VisualizationUtil {
-    private static final Logger logger = LoggerFactory.getLogger(VisualizationUtil.class);
+    // Use simple System.out logging instead of SLF4J for now
+    // private static final Logger logger = LoggerFactory.getLogger(VisualizationUtil.class);
     
     // Chart dimensions
     private static final int CHART_WIDTH = 800;
@@ -43,10 +46,10 @@ public class VisualizationUtil {
         if (!Files.exists(path)) {
             try {
                 Files.createDirectories(path);
-                logger.info("Created output directory: {}", outputDir);
+                System.out.println("Created output directory: " + outputDir);
                 return true;
             } catch (IOException e) {
-                logger.error("Failed to create output directory: {}", e.getMessage());
+                System.err.println("Failed to create output directory: " + e.getMessage());
                 return false;
             }
         }
@@ -106,9 +109,9 @@ public class VisualizationUtil {
         // Save chart to file
         try {
             ChartUtils.saveChartAsPNG(new File(filename), chart, CHART_WIDTH, CHART_HEIGHT);
-            logger.info("Generated energy consumption chart: {}", filename);
+            System.out.println("Generated energy consumption chart: " + filename);
         } catch (IOException e) {
-            logger.error("Failed to generate energy consumption chart: {}", e.getMessage());
+            System.err.println("Failed to generate energy consumption chart: " + e.getMessage());
         }
     }
     
@@ -165,9 +168,9 @@ public class VisualizationUtil {
         // Save chart to file
         try {
             ChartUtils.saveChartAsPNG(new File(filename), chart, CHART_WIDTH, CHART_HEIGHT);
-            logger.info("Generated response time chart: {}", filename);
+            System.out.println("Generated response time chart: " + filename);
         } catch (IOException e) {
-            logger.error("Failed to generate response time chart: {}", e.getMessage());
+            System.err.println("Failed to generate response time chart: " + e.getMessage());
         }
     }
     
@@ -224,9 +227,9 @@ public class VisualizationUtil {
         // Save chart to file
         try {
             ChartUtils.saveChartAsPNG(new File(filename), chart, CHART_WIDTH, CHART_HEIGHT);
-            logger.info("Generated deadline miss rate chart: {}", filename);
+            System.out.println("Generated deadline miss rate chart: " + filename);
         } catch (IOException e) {
-            logger.error("Failed to generate deadline miss rate chart: {}", e.getMessage());
+            System.err.println("Failed to generate deadline miss rate chart: " + e.getMessage());
         }
     }
     
@@ -283,9 +286,9 @@ public class VisualizationUtil {
         // Save chart to file
         try {
             ChartUtils.saveChartAsPNG(new File(filename), chart, CHART_WIDTH, CHART_HEIGHT);
-            logger.info("Generated task completion rate chart: {}", filename);
+            System.out.println("Generated task completion rate chart: " + filename);
         } catch (IOException e) {
-            logger.error("Failed to generate task completion rate chart: {}", e.getMessage());
+            System.err.println("Failed to generate task completion rate chart: " + e.getMessage());
         }
     }
     
@@ -380,9 +383,9 @@ public class VisualizationUtil {
         String filename = String.format("%s/%s.png", outputDir, filenameSuffix);
         try {
             ChartUtils.saveChartAsPNG(new File(filename), chart, CHART_WIDTH, CHART_HEIGHT);
-            logger.info("Generated comparison chart: {}", filename);
+            System.out.println("Generated comparison chart: " + filename);
         } catch (IOException e) {
-            logger.error("Failed to generate comparison chart: {}", e.getMessage());
+            System.err.println("Failed to generate comparison chart: " + e.getMessage());
         }
     }
 }

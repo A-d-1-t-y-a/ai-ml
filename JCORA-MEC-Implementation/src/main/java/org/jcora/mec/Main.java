@@ -7,8 +7,10 @@ import org.jcora.mec.model.IoTDevice;
 import org.jcora.mec.simulation.MECEnvironment;
 import org.jcora.mec.util.LoggingUtil;
 import org.jcora.mec.util.VisualizationUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+// Use simple System.out logging instead of SLF4J for now
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,8 @@ import java.util.List;
  * with the Deep Reinforcement Learning agent for joint computation offloading and resource allocation.
  */
 public class Main {
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+    // Use simple System.out logging instead of SLF4J for now
+    // private static final Logger logger = LoggerFactory.getLogger(Main.class);
     
     /**
      * Main method to run the simulation.
@@ -27,7 +30,7 @@ public class Main {
      * @param args Command line arguments
      */
     public static void main(String[] args) {
-        logger.info("Starting JCORA-MEC simulation");
+        System.out.println("Starting JCORA-MEC simulation");
         
         // Parse command line arguments
         String configPath = "config/simulation.properties";
@@ -41,7 +44,7 @@ public class Main {
         // Run simulation
         runSimulation(config);
         
-        logger.info("JCORA-MEC simulation completed");
+        System.out.println("JCORA-MEC simulation completed");
     }
     
     /**
@@ -66,9 +69,9 @@ public class Main {
         int replayMemorySize = (int) drlParams[7];
         int targetNetworkUpdateFreq = (int) drlParams[8];
         
-        // Create DRL agent
-        DRLAgent agent = new DRLAgent(stateSize, actionSize, gamma, epsilon, epsilonMin, epsilonDecay,
-                                     batchSize, replayMemorySize, targetNetworkUpdateFreq);
+        // Temporarily disable DRL agent creation to isolate dependency issues
+        System.out.println("DRL Agent creation temporarily disabled for testing");
+        DRLAgent agent = null; // Temporarily set to null
         
         // Get simulation parameters
         double simulationDuration = config.getSimulationDuration();
@@ -99,15 +102,15 @@ public class Main {
         VisualizationUtil.generateTaskCompletionRateChart(environment, outputDir, scenarioName);
         
         // Log summary
-        logger.info("Simulation results:");
-        logger.info("Total tasks: {}", environment.getTotalTasks());
-        logger.info("Completed tasks: {} ({}%)", environment.getCompletedTasks(), 
-                   String.format("%.2f", environment.getTaskCompletionRate()));
-        logger.info("Failed tasks: {} ({}%)", environment.getFailedTasks(), 
-                   String.format("%.2f", 100.0 - environment.getTaskCompletionRate()));
-        logger.info("Total energy consumed: {} J", String.format("%.2f", environment.getTotalEnergyConsumed()));
-        logger.info("Average response time: {} s", String.format("%.2f", environment.getAverageResponseTime()));
-        logger.info("Deadline miss rate: {}%", String.format("%.2f", environment.getDeadlineMissRate()));
+        System.out.println("Simulation results:");
+        System.out.println("Total tasks: " + environment.getTotalTasks());
+        System.out.println("Completed tasks: " + environment.getCompletedTasks() + " (" + 
+                String.format("%.2f", environment.getTaskCompletionRate()) + "%)");
+        System.out.println("Failed tasks: " + environment.getFailedTasks() + " (" + 
+                String.format("%.2f", 100.0 - environment.getTaskCompletionRate()) + "%)");
+        System.out.println("Total energy consumed: " + String.format("%.2f", environment.getTotalEnergyConsumed()) + " J");
+        System.out.println("Average response time: " + String.format("%.2f", environment.getAverageResponseTime()) + " s");
+        System.out.println("Deadline miss rate: " + String.format("%.2f", environment.getDeadlineMissRate()) + "%");
     }
     
     /**
@@ -176,6 +179,13 @@ public class Main {
             VisualizationUtil.generateResponseTimeChart(environment, outputDir, scenarioName);
             VisualizationUtil.generateDeadlineMissRateChart(environment, outputDir, scenarioName);
             VisualizationUtil.generateTaskCompletionRateChart(environment, outputDir, scenarioName);
+            
+            // Log summary
+            System.out.println("Simulation summary for scenario: " + scenarioName);
+            System.out.println("Total energy consumed: " + environment.getTotalEnergyConsumed() + " J");
+            System.out.println("Average response time: " + environment.getAverageResponseTime() + " ms");
+            System.out.println("Deadline miss rate: " + (environment.getDeadlineMissRate() * 100) + "%");
+            System.out.println("Task completion rate: " + (environment.getTaskCompletionRate() * 100) + "%");
             
             // Collect metrics for comparison
             scenarioNames.add(scenarioName);

@@ -15,8 +15,10 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+// Use simple System.out logging instead of SLF4J for now
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +31,8 @@ import java.util.Random;
  * This agent uses a Deep Q-Network (DQN) to make decisions on task offloading and resource allocation.
  */
 public class DRLAgent {
-    private static final Logger logger = LoggerFactory.getLogger(DRLAgent.class);
+    // Use simple System.out logging instead of SLF4J for now
+    // private static final Logger logger = LoggerFactory.getLogger(DRLAgent.class);
     
     // DRL parameters
     private final double gamma;               // Discount factor
@@ -123,7 +126,7 @@ public class DRLAgent {
         // Copy weights from Q-Network to Target Network
         targetNetwork.setParams(qNetwork.params().dup());
         
-        logger.info("Neural networks initialized successfully");
+        System.out.println("Neural networks initialized successfully");
     }
     
     /**
@@ -246,7 +249,7 @@ public class DRLAgent {
         // Update target network if needed
         if (updateStep % targetNetworkUpdateFreq == 0) {
             targetNetwork.setParams(qNetwork.params().dup());
-            logger.info("Target network updated at step {}", updateStep);
+            System.out.println("Target network updated at step " + updateStep);
         }
         
         // Decay epsilon
@@ -281,9 +284,9 @@ public class DRLAgent {
         try {
             File file = new File(filePath);
             qNetwork.save(file);
-            logger.info("Model saved to {}", filePath);
+            System.out.println("Model saved to " + filePath);
         } catch (IOException e) {
-            logger.error("Failed to save model: {}", e.getMessage());
+            System.err.println("Failed to save model: " + e.getMessage());
         }
     }
     
@@ -297,9 +300,9 @@ public class DRLAgent {
             File file = new File(filePath);
             qNetwork = MultiLayerNetwork.load(file, true);
             targetNetwork.setParams(qNetwork.params().dup());
-            logger.info("Model loaded from {}", filePath);
+            System.out.println("Model loaded from " + filePath);
         } catch (IOException e) {
-            logger.error("Failed to load model: {}", e.getMessage());
+            System.err.println("Failed to load model: " + e.getMessage());
         }
     }
     

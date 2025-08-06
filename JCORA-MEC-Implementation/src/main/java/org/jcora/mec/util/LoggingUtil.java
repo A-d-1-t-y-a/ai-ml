@@ -4,8 +4,10 @@ import org.jcora.mec.model.EdgeServer;
 import org.jcora.mec.model.IoTDevice;
 import org.jcora.mec.model.Task;
 import org.jcora.mec.simulation.MECEnvironment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+// Use simple System.out logging instead of SLF4J for now
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,7 +24,8 @@ import java.util.List;
  * Utility class for logging simulation results and generating CSV files.
  */
 public class LoggingUtil {
-    private static final Logger logger = LoggerFactory.getLogger(LoggingUtil.class);
+    // Use simple System.out logging instead of SLF4J for now
+    // private static final Logger logger = LoggerFactory.getLogger(LoggingUtil.class);
     
     /**
      * Create the output directory if it doesn't exist.
@@ -35,10 +38,10 @@ public class LoggingUtil {
         if (!Files.exists(path)) {
             try {
                 Files.createDirectories(path);
-                logger.info("Created output directory: {}", outputDir);
+                System.out.println("Created output directory: " + outputDir);
                 return true;
             } catch (IOException e) {
-                logger.error("Failed to create output directory: {}", e.getMessage());
+                System.err.println("Failed to create output directory: " + e.getMessage());
                 return false;
             }
         }
@@ -85,9 +88,9 @@ public class LoggingUtil {
                 writer.newLine();
             }
             
-            logger.info("Generated metrics CSV file: {}", filename);
+            System.out.println("Generated metrics CSV file: " + filename);
         } catch (IOException e) {
-            logger.error("Failed to generate metrics CSV file: {}", e.getMessage());
+            System.err.println("Failed to generate metrics CSV file: " + e.getMessage());
         }
     }
     
@@ -127,9 +130,9 @@ public class LoggingUtil {
                 writer.newLine();
             }
             
-            logger.info("Generated device stats CSV file: {}", filename);
+            System.out.println("Generated device stats CSV file: " + filename);
         } catch (IOException e) {
-            logger.error("Failed to generate device stats CSV file: {}", e.getMessage());
+            System.err.println("Failed to generate device stats CSV file: " + e.getMessage());
         }
     }
     
@@ -170,9 +173,9 @@ public class LoggingUtil {
                 writer.newLine();
             }
             
-            logger.info("Generated server stats CSV file: {}", filename);
+            System.out.println("Generated server stats CSV file: " + filename);
         } catch (IOException e) {
-            logger.error("Failed to generate server stats CSV file: {}", e.getMessage());
+            System.err.println("Failed to generate server stats CSV file: " + e.getMessage());
         }
     }
     
@@ -237,9 +240,9 @@ public class LoggingUtil {
             writer.write("to optimize the overall performance of the IoT-Edge computing system.");
             writer.newLine();
             
-            logger.info("Generated summary report: {}", filename);
+            System.out.println("Generated summary report: " + filename);
         } catch (IOException e) {
-            logger.error("Failed to generate summary report: {}", e.getMessage());
+            System.err.println("Failed to generate summary report: " + e.getMessage());
         }
     }
 }

@@ -5,8 +5,10 @@ import org.jcora.mec.model.EdgeServer;
 import org.jcora.mec.model.IoTDevice;
 import org.jcora.mec.model.Task;
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+// Use simple System.out logging instead of SLF4J for now
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -15,7 +17,8 @@ import java.util.*;
  * This class coordinates the interaction between IoT devices, edge servers, and the DRL agent.
  */
 public class MECEnvironment {
-    private static final Logger logger = LoggerFactory.getLogger(MECEnvironment.class);
+    // Use simple System.out logging instead of SLF4J for now
+    // private static final Logger logger = LoggerFactory.getLogger(MECEnvironment.class);
     
     private final List<IoTDevice> devices;
     private final List<EdgeServer> servers;
@@ -79,11 +82,11 @@ public class MECEnvironment {
      * Run the simulation.
      */
     public void runSimulation() {
-        logger.info("Starting simulation with {} devices and {} servers", devices.size(), servers.size());
+        System.out.println("Starting simulation with " + devices.size() + " devices and " + servers.size() + " servers");
         
         int step = 0;
         while (currentTime < simulationDuration) {
-            logger.debug("Simulation step {} at time {}", step, currentTime);
+            // System.out.println("Simulation step " + step + " at time " + currentTime);
             
             // Generate new tasks
             generateTasks();
@@ -102,11 +105,11 @@ public class MECEnvironment {
             step++;
         }
         
-        logger.info("Simulation completed after {} steps", step);
-        logger.info("Total tasks: {}, Completed: {}, Failed: {}", totalTasks, completedTasks, failedTasks);
-        logger.info("Average energy consumption: {} J", totalEnergyConsumed / totalTasks);
-        logger.info("Average response time: {} s", totalResponseTime / completedTasks);
-        logger.info("Average deadline miss rate: {}%", (totalDeadlineMissRate / totalTasks) * 100);
+        System.out.println("Simulation completed after " + step + " steps");
+        System.out.println("Total tasks: " + totalTasks + ", Completed: " + completedTasks + ", Failed: " + failedTasks);
+        System.out.println("Average energy consumption: " + (totalEnergyConsumed / totalTasks) + " J");
+        System.out.println("Average response time: " + (totalResponseTime / completedTasks) + " s");
+        System.out.println("Average deadline miss rate: " + ((totalDeadlineMissRate / totalTasks) * 100) + "%");
     }
     
     /**
@@ -129,7 +132,7 @@ public class MECEnvironment {
                 // Add the task to the device
                 device.addTask(task);
                 
-                logger.debug("Generated task {} for device {}", taskId, device.getId());
+                // System.out.println("Generated task " + taskId + " for device " + device.getId());
             }
         }
     }
@@ -139,11 +142,9 @@ public class MECEnvironment {
      */
     private void processTasks() {
         for (IoTDevice device : devices) {
-            // Get the device's task queue
             List<Task> taskQueue = device.getTaskQueue();
-            
-            // Process each task in the queue
             Iterator<Task> iterator = taskQueue.iterator();
+            
             while (iterator.hasNext()) {
                 Task task = iterator.next();
                 
@@ -152,22 +153,31 @@ public class MECEnvironment {
                     continue;
                 }
                 
-                // Get the current state
-                INDArray state = agent.getState(device, servers, task);
-                
-                // Select an action using the DRL agent
-                int action = agent.selectAction(state);
-                
-                // Execute the action
-                double reward = executeAction(device, task, action);
-                
-                // Get the next state
-                INDArray nextState = agent.getState(device, servers, task);
-                
-                // Store the experience in the agent's replay memory
-                boolean done = task.getStatus() == Task.TaskStatus.COMPLETED || 
-                              task.getStatus() == Task.TaskStatus.FAILED;
-                agent.remember(state, action, reward, nextState, done);
+                // Check if DRL agent is available
+                if (agent != null) {
+                    // Get the current state
+                    INDArray state = agent.getState(device, servers, task);
+                    
+                    // Select an action using the DRL agent
+                    int action = agent.selectAction(state);
+                    
+                    // Execute the action
+                    double reward = executeAction(device, task, action);
+                    
+                    // Get the next state
+                    INDArray nextState = agent.getState(device, servers, task);
+                    
+                    // Store the experience in the agent's replay memory
+                    boolean done = task.getStatus() == Task.TaskStatus.COMPLETED || 
+                                  task.getStatus() == Task.TaskStatus.FAILED;
+                    agent.remember(state, action, reward, nextState, done);
+                } else {
+                    // DRL agent is disabled, use a simple round-robin approach
+                    System.out.println("DRL agent disabled, using round-robin for task: " + task.getId());
+                    int serverIndex = (int)(Math.random() * servers.size());
+                    EdgeServer server = servers.get(serverIndex);
+                    executeAction(device, task, serverIndex);
+                }
                 
                 // Remove the task from the queue if it's being processed
                 if (task.getStatus() != Task.TaskStatus.CREATED) {
@@ -177,7 +187,9 @@ public class MECEnvironment {
         }
         
         // Train the agent
-        agent.train((int)(currentTime / timeStep));
+        if (agent != null) {
+            agent.train((int)(currentTime / timeStep));
+        }
     }
     
     /**
@@ -208,13 +220,13 @@ public class MECEnvironment {
                 // Reward formula: balance between energy efficiency and response time
                 reward = calculateReward(energyConsumed, responseTime, meetsDeadline);
                 
-                logger.debug("Task {} processed locally on device {}", task.getId(), device.getId());
+                // System.out.println("Task " + task.getId() + " processed locally on device " + device.getId());
             } else {
                 // Task failed (e.g., due to insufficient battery)
                 reward = -10.0; // Penalty for failure
                 failedTasks++;
                 
-                logger.debug("Task {} failed to process locally on device {}", task.getId(), device.getId());
+                // System.out.println("Task " + task.getId() + " failed to process locally on device " + device.getId());
             }
         } else if (action <= servers.size()) {
             // Offload the task to a server
@@ -243,14 +255,13 @@ public class MECEnvironment {
                     // Reward formula: balance between energy efficiency and response time
                     reward = calculateReward(offloadingEnergy + serverEnergy, responseTime, meetsDeadline);
                     
-                    logger.debug("Task {} offloaded from device {} to server {}", 
-                                task.getId(), device.getId(), server.getId());
+                    // System.out.println("Task " + task.getId() + " offloaded from device " + device.getId() + " to server " + server.getId());
                 } else {
                     // Task failed to process on the server
                     reward = -10.0; // Penalty for failure
                     failedTasks++;
                     
-                    logger.debug("Task {} failed to process on server {}", task.getId(), server.getId());
+                    // System.out.println("Task " + task.getId() + " failed to process on server " + server.getId());
                 }
                 
                 // Release bandwidth
@@ -261,8 +272,7 @@ public class MECEnvironment {
                 task.setStatus(Task.TaskStatus.FAILED);
                 failedTasks++;
                 
-                logger.debug("Failed to allocate bandwidth for task {} on server {}", 
-                            task.getId(), server.getId());
+                // System.out.println("Failed to allocate bandwidth for task " + task.getId() + " on server " + server.getId());
             }
         }
         
@@ -327,7 +337,7 @@ public class MECEnvironment {
                         totalDeadlineMissRate += 1.0;
                     }
                     
-                    logger.debug("Task {} completed on server {}", task.getId(), server.getId());
+                    // System.out.println("Task " + task.getId() + " completed on server " + server.getId());
                 }
             }
             
