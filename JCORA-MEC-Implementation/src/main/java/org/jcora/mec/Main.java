@@ -109,15 +109,26 @@ public class Main {
         String outputDir = config.getOutputDirectory();
         String scenarioName = config.getScenarioName();
         
-        // Temporarily disable CSV and chart generation to isolate dependency issues
-        System.out.println("CSV and chart generation temporarily disabled for testing");
-        
         // Create output directory if it doesn't exist
         File outDir = new File(outputDir);
         if (!outDir.exists()) {
             outDir.mkdirs();
             System.out.println("Created output directory: " + outputDir);
         }
+        
+        // Generate CSV files
+        System.out.println("Generating CSV files and reports in " + outputDir);
+        LoggingUtil.generateMetricsCSV(environment, outputDir, scenarioName);
+        LoggingUtil.generateDeviceStatsCSV(devices, outputDir, scenarioName);
+        LoggingUtil.generateServerStatsCSV(servers, outputDir, scenarioName);
+        LoggingUtil.generateSummaryReport(environment, outputDir, scenarioName);
+        
+        // Generate charts
+        System.out.println("Generating visualization charts in " + outputDir);
+        VisualizationUtil.generateEnergyConsumptionChart(environment, outputDir, scenarioName);
+        VisualizationUtil.generateResponseTimeChart(environment, outputDir, scenarioName);
+        VisualizationUtil.generateDeadlineMissRateChart(environment, outputDir, scenarioName);
+        VisualizationUtil.generateTaskCompletionRateChart(environment, outputDir, scenarioName);
         
         // Log summary
         System.out.println("Simulation results:");
