@@ -521,4 +521,44 @@ public class SimulationResults {
     public double getNetworkEfficiency() {
         return networkEfficiency;
     }
+    
+    /**
+     * Gets the network usage data
+     * 
+     * @return Map of network usage data
+     */
+    public Map<String, Double> getNetworkUsageData() {
+        return new HashMap<>(networkUsage);
+    }
+    
+    /**
+     * Gets the resource utilization data
+     * 
+     * @return Map of resource utilization data
+     */
+    public Map<String, Double> getResourceUtilizationData() {
+        return new HashMap<>(resourceUtilization);
+    }
+    
+    /**
+     * Records orchestration decision time
+     * 
+     * @param decisionTime Time taken for orchestration decision in seconds
+     */
+    public void recordOrchestrationTime(double decisionTime) {
+        // For now, just log the decision time
+        // In a full implementation, this could be stored and analyzed
+        LOGGER.info("Orchestration decision time: " + String.format("%.3f", decisionTime) + "s");
+    }
+    
+    /**
+     * Records task type distribution
+     * 
+     * @param taskType Type of task (Cloud, Fog, Mist)
+     */
+    public void recordTaskTypeDistribution(String taskType) {
+        // For now, just log the task type
+        // In a full implementation, this could be stored and analyzed
+        LOGGER.info("Task classified as: " + taskType);
+    }
 }
