@@ -103,6 +103,15 @@ public class CloudSimPlusManager {
     }
     
     /**
+     * Constructor with parameters
+     */
+    public CloudSimPlusManager(SimulationParameters parameters, SimulationResults results) {
+        this();
+        this.parameters = parameters;
+        this.results = results;
+    }
+    
+    /**
      * Initialize the CloudSim Plus simulation
      */
     public void initialize(SimulationParameters parameters, SimulationResults results) {
@@ -117,6 +126,64 @@ public class CloudSimPlusManager {
         createVMs();
         
         System.out.println("CloudSim Plus simulation initialized successfully.");
+    }
+    
+    /**
+     * Initialize the simulation (overloaded method)
+     */
+    public void initialize() {
+        System.out.println("Initializing CloudSim Plus simulation with default parameters...");
+        createDatacenters();
+        createVMs();
+        System.out.println("CloudSim Plus simulation initialized successfully.");
+    }
+    
+    /**
+     * Create VMs for the simulation (public method)
+     */
+    public void createVMs() {
+        System.out.println("Creating VMs for CloudSim Plus simulation...");
+        
+        // Create VMs with different configurations
+        int vmId = 0;
+        for (int i = 0; i < parameters.getNumberOfCloudDataCenters(); i++) {
+            for (int j = 0; j < 2; j++) { // 2 VMs per cloud datacenter
+                vms.add(new MockVm(vmId++, 2000.0, 4, 4096, 10000, 10000));
+            }
+        }
+        
+        for (int i = 0; i < parameters.getNumberOfEdgeDataCenters(); i++) {
+            vms.add(new MockVm(vmId++, 1000.0, 2, 2048, 5000, 5000));
+        }
+        
+        System.out.println("Created " + vms.size() + " VMs");
+    }
+    
+    /**
+     * Create a cloudlet for the simulation
+     */
+    public Cloudlet createCloudlet(int id, long length, int pesNumber, long fileSize, long outputSize, boolean isCloudTask) {
+        // Create cloudlet using mock implementation
+        Cloudlet cloudlet = new MockCloudlet(id, length, pesNumber, fileSize, outputSize);
+        
+        // Submit to appropriate broker
+        if (isCloudTask) {
+            brokers.get(0).submitCloudlet(cloudlet); // Submit to cloud broker
+        } else {
+            brokers.get(1).submitCloudlet(cloudlet); // Submit to fog broker
+        }
+        
+        cloudlets.add(cloudlet);
+        return cloudlet;
+    }
+    
+    /**
+     * Run the CloudSim Plus simulation
+     */
+    public void runSimulation() {
+        System.out.println("Running simplified CloudSim Plus simulation...");
+        simulation.start();
+        System.out.println("CloudSim Plus simulation completed.");
     }
     
     /**
@@ -151,47 +218,6 @@ public class CloudSimPlusManager {
         brokers.add(fogBroker);
         
         System.out.println("Created " + brokers.size() + " brokers");
-    }
-    
-    /**
-     * Create VMs for the simulation
-     */
-    private void createVMs() {
-        // Create cloud VMs (high performance)
-        int numCloudVMs = 8;
-        for (int i = 0; i < numCloudVMs; i++) {
-            Vm vm = new MockVm(i, 1000, 8, 8192, 1000, 10000); // ID, MIPS per PE, PEs, RAM, BW, Size
-            vms.add(vm);
-            brokers.get(0).submitVm(vm); // Submit to cloud broker
-        }
-        
-        // Create fog VMs (moderate performance)
-        int numFogVMs = 12;
-        for (int i = 0; i < numFogVMs; i++) {
-            Vm vm = new MockVm(8 + i, 500, 4, 4096, 500, 5000); // ID, MIPS per PE, PEs, RAM, BW, Size
-            vms.add(vm);
-            brokers.get(1).submitVm(vm); // Submit to fog broker
-        }
-        
-        System.out.println("Created " + vms.size() + " VMs");
-    }
-    
-    /**
-     * Create a cloudlet for task execution
-     */
-    public Cloudlet createCloudlet(int id, long length, int pesNumber, long fileSize, long outputSize, boolean isCloudTask) {
-        // Create cloudlet using mock implementation
-        Cloudlet cloudlet = new MockCloudlet(id, length, pesNumber, fileSize, outputSize);
-        
-        // Submit to appropriate broker
-        if (isCloudTask) {
-            brokers.get(0).submitCloudlet(cloudlet); // Submit to cloud broker
-        } else {
-            brokers.get(1).submitCloudlet(cloudlet); // Submit to fog broker
-        }
-        
-        cloudlets.add(cloudlet);
-        return cloudlet;
     }
     
     /**

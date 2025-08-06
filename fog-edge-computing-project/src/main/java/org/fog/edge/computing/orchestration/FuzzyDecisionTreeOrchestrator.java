@@ -80,6 +80,17 @@ public class FuzzyDecisionTreeOrchestrator implements CustomOrchestrator {
         deviceMobility.put("vehicle", 10.0);
     }
     
+    /**
+     * Classifies a task as Cloud, Fog, or Mist based on task properties and source device
+     * 
+     * @param task The task to classify
+     * @param sourceDevice The device that generated the task
+     * @return String representing the task classification ("Cloud", "Fog", or "Mist")
+     */
+    public String classifyTask(Object task, Object sourceDevice) {
+        return classifyTaskFirstStage(task, sourceDevice);
+    }
+    
     @Override
     public Object findDestination(Object task, Object sourceDevice) {
         // Start timing for orchestration decision
