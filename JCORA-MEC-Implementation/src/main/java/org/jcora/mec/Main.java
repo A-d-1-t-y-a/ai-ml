@@ -12,6 +12,7 @@ import org.jcora.mec.util.VisualizationUtil;
 // import org.slf4j.Logger;
 // import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,17 +90,15 @@ public class Main {
         String outputDir = config.getOutputDirectory();
         String scenarioName = config.getScenarioName();
         
-        // Generate CSV files
-        LoggingUtil.generateMetricsCSV(environment, outputDir, scenarioName);
-        LoggingUtil.generateDeviceStatsCSV(devices, outputDir, scenarioName);
-        LoggingUtil.generateServerStatsCSV(servers, outputDir, scenarioName);
-        LoggingUtil.generateSummaryReport(environment, outputDir, scenarioName);
+        // Temporarily disable CSV and chart generation to isolate dependency issues
+        System.out.println("CSV and chart generation temporarily disabled for testing");
         
-        // Generate charts
-        VisualizationUtil.generateEnergyConsumptionChart(environment, outputDir, scenarioName);
-        VisualizationUtil.generateResponseTimeChart(environment, outputDir, scenarioName);
-        VisualizationUtil.generateDeadlineMissRateChart(environment, outputDir, scenarioName);
-        VisualizationUtil.generateTaskCompletionRateChart(environment, outputDir, scenarioName);
+        // Create output directory if it doesn't exist
+        File outDir = new File(outputDir);
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+            System.out.println("Created output directory: " + outputDir);
+        }
         
         // Log summary
         System.out.println("Simulation results:");
