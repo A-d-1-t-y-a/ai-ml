@@ -70,30 +70,14 @@ public class SimulationScenario {
         List<org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator.DeviceInfo> edgeDevices = new ArrayList<>();
         
         // Create a temporary instance of FuzzyDecisionTreeOrchestrator to access its inner classes
-        try {
-            // Use reflection to create mock device instances
-            org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator orchestrator = 
-                new org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator();
-            
-            // Get the MockDeviceInfo class
-            Class<?> mockDeviceInfoClass = Class.forName(
-                "org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator$MockDeviceInfo");
-            
-            // Get the constructor
-            java.lang.reflect.Constructor<?> constructor = 
-                mockDeviceInfoClass.getDeclaredConstructor(
-                    org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator.class,
-                    int.class, String.class);
-            constructor.setAccessible(true);
-            
-            // Create 5 mock edge devices
-            for (int i = 1; i <= 5; i++) {
-                Object deviceInfo = constructor.newInstance(orchestrator, i, "Edge-Device-" + i);
-                edgeDevices.add((org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator.DeviceInfo) deviceInfo);
-            }
-        } catch (Exception e) {
-            System.err.println("Error creating mock edge devices: " + e.getMessage());
-            e.printStackTrace();
+        org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator orchestrator = 
+            new org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator();
+        
+        // Create 5 mock edge devices directly without reflection
+        for (int i = 1; i <= 5; i++) {
+            org.fog.edge.computing.orchestration.FuzzyDecisionTreeOrchestrator.MockDeviceInfo deviceInfo = 
+                orchestrator.new MockDeviceInfo(i, "Edge-Device-" + i);
+            edgeDevices.add(deviceInfo);
         }
         
         return edgeDevices;

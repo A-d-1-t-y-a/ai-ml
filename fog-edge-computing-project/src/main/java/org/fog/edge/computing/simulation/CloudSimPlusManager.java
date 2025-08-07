@@ -134,6 +134,7 @@ public class CloudSimPlusManager {
     public void initialize() {
         System.out.println("Initializing CloudSim Plus simulation with default parameters...");
         createDatacenters();
+        createBrokers();
         createVMs();
         System.out.println("CloudSim Plus simulation initialized successfully.");
     }
