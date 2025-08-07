@@ -1,3 +1,5 @@
+org\fog\edge\computing\orchestration\FuzzyLogicOrchestrator.class
+org\fog\edge\computing\orchestration\OrchestratorComparison$ComparisonResults.class
 org\fog\edge\computing\simulation\CloudSimPlusManager$MockHost.class
 org\fog\edge\computing\simulation\SimulationManager$Datacenter.class
 org\fog\edge\computing\simulation\CloudSimPlusManager$Host.class
@@ -10,6 +12,7 @@ org\fog\edge\computing\simulation\SimulationScenario$MockDatacenter.class
 org\fog\edge\computing\simulation\CloudSimPlusManager$DatacenterBroker.class
 org\fog\edge\computing\simulation\CloudSimPlusManager$MockDatacenterBroker.class
 org\fog\edge\computing\Main.class
+org\fog\edge\computing\orchestration\ECOOAOrchestrator.class
 org\fog\edge\computing\simulation\CloudSimPlusManager$MockVm.class
 org\fog\edge\computing\simulation\CloudSimPlusManager$Datacenter.class
 org\fog\edge\computing\simulation\CloudSimPlusManager$MockCloudlet.class
@@ -20,7 +23,9 @@ org\fog\edge\computing\orchestration\FuzzyDecisionTreeOrchestrator$MockDeviceInf
 org\fog\edge\computing\simulation\SimulationManager$Interfaces.class
 org\fog\edge\computing\simulation\SimulationManager$CloudSim.class
 org\fog\edge\computing\orchestration\CustomOrchestrator.class
+org\fog\edge\computing\orchestration\OrchestratorComparison$PerformanceMetrics.class
 org\fog\edge\computing\simulation\CloudSimPlusManager.class
+org\fog\edge\computing\utils\ConfigurationManager.class
 org\fog\edge\computing\orchestration\FuzzyDecisionTreeOrchestrator$DeviceInfo.class
 org\fog\edge\computing\utils\GraphGenerator.class
 org\fog\edge\computing\simulation\SimulationManager$TaskProperties.class
@@ -30,4 +35,5 @@ org\fog\edge\computing\simulation\CloudSimPlusManager$MockCloudSim.class
 org\fog\edge\computing\utils\SimulationParameters.class
 org\fog\edge\computing\simulation\CloudSimPlusManager$MockDatacenter.class
 org\fog\edge\computing\simulation\SimulationManager.class
+org\fog\edge\computing\orchestration\OrchestratorComparison.class
 org\fog\edge\computing\utils\SimulationResults.class
